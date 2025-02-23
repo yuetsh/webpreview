@@ -8,7 +8,7 @@ import {
   NTabPane,
   NConfigProvider,
 } from "naive-ui"
-import "normalize.css"
+import "normalize.css" 
 import App from "./App.vue"
 
 const app = createApp(App)
