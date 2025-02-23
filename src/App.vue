@@ -3,7 +3,7 @@ import { darkTheme, dateZhCN, zhCN } from "naive-ui"
 import { useDark, useMagicKeys, whenever } from "@vueuse/core"
 import Editor from "./components/Editor.vue"
 import Preview from "./components/Preview.vue"
-import { html, css } from "./store.ts"
+import { html, css, js } from "./store.ts"
 
 const isDark = useDark()
 
@@ -39,9 +39,9 @@ whenever(ctrl_r, () => {})
           <n-tab-pane name="css" tab="CSS">
             <Editor language="css" v-model:value="css" />
           </n-tab-pane>
-          <!-- <n-tab-pane name="js" tab="JS">
+          <n-tab-pane name="js" tab="JS">
             <Editor language="js" v-model:value="js" />
-          </n-tab-pane> -->
+          </n-tab-pane>
         </n-tabs>
       </template>
       <template #2>
