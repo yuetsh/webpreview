@@ -11,12 +11,12 @@
     </n-tab-pane>
     <n-tab-pane name="actions" tab="选项">
       <n-flex vertical class="wrapper">
-        <!-- <n-flex align="center">
+        <n-flex align="center">
           <span class="label">主题</span>
           <n-button @click="toggleDark()">
             {{ isDark ? "浅色" : "深色" }}
           </n-button>
-        </n-flex> -->
+        </n-flex>
         <n-flex align="center">
           <span class="label">重置</span>
           <n-button @click="reset('html')">HTML</n-button>

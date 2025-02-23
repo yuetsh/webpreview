@@ -19,7 +19,7 @@ export function reset(lang: "html" | "css" | "js") {
   }
 }
 
-export const size = useStorage("web-fontsize", 14)
+export const size = useStorage("web-fontsize", 24)
 export function changeSize(num: number) {
   size.value = num
 }
