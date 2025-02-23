@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { darkTheme, dateZhCN, zhCN } from "naive-ui"
 import { useDark, useMagicKeys, whenever } from "@vueuse/core"
-import Editor from "./components/Editor.vue"
+import Editors from "./components/Editors.vue"
 import Preview from "./components/Preview.vue"
-import { html, css, js } from "./store.ts"
 
 const isDark = useDark()
 
@@ -32,17 +31,7 @@ whenever(ctrl_r, () => {})
   >
     <n-split :max="0.75" :min="0.25">
       <template #1>
-        <n-tabs default-value="html" type="segment">
-          <n-tab-pane name="html" tab="HTML">
-            <Editor language="html" v-model:value="html" />
-          </n-tab-pane>
-          <n-tab-pane name="css" tab="CSS">
-            <Editor language="css" v-model:value="css" />
-          </n-tab-pane>
-          <n-tab-pane name="js" tab="JS">
-            <Editor language="js" v-model:value="js" />
-          </n-tab-pane>
-        </n-tabs>
+        <Editors />
       </template>
       <template #2>
         <Preview />
@@ -50,5 +39,3 @@ whenever(ctrl_r, () => {})
     </n-split>
   </n-config-provider>
 </template>
-
-<style scoped></style>

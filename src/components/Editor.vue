@@ -51,6 +51,6 @@ const lang = computed(() => {
     indentWithTab
     :extensions="[styleTheme, lang, isDark ? oneDark : smoothy]"
     :tabSize="4"
-    :style="{ height: 'calc(100vh - 52px)', fontSize: props.fontSize + 'px' }"
+    :style="{ height: '100%', fontSize: props.fontSize + 'px' }"
   />
 </template>

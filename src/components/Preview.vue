@@ -8,12 +8,11 @@ import { onMounted, useTemplateRef, watch } from "vue"
 
 const iframe = useTemplateRef<HTMLIFrameElement>("iframe")
 
-
 function preview() {
   if (!iframe.value) return
-  const doc = iframe.value.contentDocument
-  doc!.open()
-  doc!.write(`<!DOCTYPE html>
+  const doc = iframe.value.contentDocument!
+  doc.open()
+  doc.write(`<!DOCTYPE html>
   <html lang="zh-Hans-CN">
     <head>
       <meta charset="UTF-8" />
@@ -25,7 +24,7 @@ function preview() {
       ${html.value}
     </body>
   </html>`)
-  doc!.close()
+  doc.close()
 }
 
 watch([html, css], preview)
