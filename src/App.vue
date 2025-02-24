@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { useMagicKeys, whenever } from "@vueuse/core"
+import { dateZhCN, zhCN } from "naive-ui"
 import Editors from "./components/Editors.vue"
 import Preview from "./components/Preview.vue"
+import { useMagicKeys, whenever } from "@vueuse/core"
 
 const { ctrl_s } = useMagicKeys({
   passive: false,
@@ -21,12 +22,14 @@ whenever(ctrl_r, () => {})
 </script>
 
 <template>
-  <n-split :max="0.75" :min="0.25">
-    <template #1>
-      <Editors />
-    </template>
-    <template #2>
-      <Preview />
-    </template>
-  </n-split>
+  <n-config-provider :locale="zhCN" :date-locale="dateZhCN">
+    <n-split direction="horizontal">
+      <template #1>
+        <Editors />
+      </template>
+      <template #2>
+        <Preview />
+      </template>
+    </n-split>
+  </n-config-provider>
 </template>

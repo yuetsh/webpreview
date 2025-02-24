@@ -2,10 +2,10 @@
 import { EditorView } from "@codemirror/view"
 import { Codemirror } from "vue-codemirror"
 import { smoothy } from "../themes/smoothy.ts"
-import { computed } from "vue"
 import { css } from "@codemirror/lang-css"
 import { javascript } from "@codemirror/lang-javascript"
 import { html } from "@codemirror/lang-html"
+import { computed } from "vue"
 
 const styleTheme = EditorView.baseTheme({
   "& .cm-scroller": {

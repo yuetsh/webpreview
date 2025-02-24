@@ -1,5 +1,8 @@
 import { defineConfig } from "@rsbuild/core"
 import { pluginVue } from "@rsbuild/plugin-vue"
+// import AutoImport from "unplugin-auto-import/rspack"
+import { NaiveUiResolver } from "unplugin-vue-components/resolvers"
+import Components from "unplugin-vue-components/rspack"
 
 export default defineConfig({
   plugins: [pluginVue()],
@@ -9,6 +12,28 @@ export default defineConfig({
   source: {
     entry: {
       index: "./src/main.ts",
+    },
+  },
+  tools: {
+    rspack: {
+      plugins: [
+        // AutoImport({
+        //   imports: [
+        //     "vue",
+        //     {
+        //       "naive-ui": [
+        //         "useDialog",
+        //         "useMessage",
+        //         "useNotification",
+        //         "useLoadingBar",
+        //       ],
+        //     },
+        //   ],
+        // }),
+        Components({
+          resolvers: [NaiveUiResolver()],
+        }),
+      ],
     },
   },
   performance: {
