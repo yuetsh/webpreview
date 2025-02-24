@@ -5,7 +5,7 @@
         <template #tab>
           <n-flex align="center">
             <Icon icon="skill-icons:html" :width="20" :height="20"></Icon>
-            <span>HTML5</span>
+            <span>HTML</span>
           </n-flex>
         </template>
         <Editor language="html" :font-size="size" v-model:value="html" />
@@ -14,7 +14,7 @@
         <template #tab>
           <n-flex align="center">
             <Icon icon="skill-icons:css" :width="20" :height="20"></Icon>
-            <span>CSS3</span>
+            <span>CSS</span>
           </n-flex>
         </template>
         <Editor language="css" :font-size="size" v-model:value="css" />
@@ -23,7 +23,7 @@
         <template #tab>
           <n-flex align="center">
             <Icon icon="skill-icons:javascript" :width="20" :height="20"></Icon>
-            <span>JavaScript</span>
+            <span>JS</span>
           </n-flex>
         </template>
         <Editor language="js" :font-size="size" v-model:value="js" />
