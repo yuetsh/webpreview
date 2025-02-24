@@ -1,5 +1,7 @@
 <template>
-  <iframe class="iframe" ref="iframe"></iframe>
+  <div>
+    <iframe class="iframe" ref="iframe"></iframe>
+  </div>
 </template>
 
 <script lang="ts" setup>

@@ -23,7 +23,7 @@ whenever(ctrl_r, () => {})
 
 <template>
   <n-config-provider :locale="zhCN" :date-locale="dateZhCN">
-    <n-split direction="horizontal">
+    <n-split :min="0.25" :max="0.75">
       <template #1>
         <Editors />
       </template>
