@@ -2,6 +2,7 @@
 import { dateZhCN, zhCN } from "naive-ui"
 import Editors from "./components/Editors.vue"
 import Preview from "./components/Preview.vue"
+import Tutorial from "./components/Tutorial.vue"
 import { useMagicKeys, whenever } from "@vueuse/core"
 
 const { ctrl_s } = useMagicKeys({
@@ -22,14 +23,25 @@ whenever(ctrl_r, () => {})
 </script>
 
 <template>
-  <n-config-provider :locale="zhCN" :date-locale="dateZhCN">
-    <n-split :min="0.25" :max="0.75">
-      <template #1>
-        <Editors />
-      </template>
+  <n-config-provider class="myContainer" :locale="zhCN" :date-locale="dateZhCN" inline-theme-disabled>
+    <n-split :default-size="1 / 3" min="300px" max="700px">
+      <template #1><Tutorial /></template>
       <template #2>
-        <Preview />
+        <n-split direction="vertical">
+          <template #1>
+            <Editors />
+          </template>
+          <template #2>
+            <Preview />
+          </template>
+        </n-split>
       </template>
     </n-split>
   </n-config-provider>
 </template>
+<style scoped>
+.myContainer {
+  height: 100vh;
+  width: 100vw;
+}
+</style>

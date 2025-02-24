@@ -1,7 +1,8 @@
 <template>
   <n-tabs
-    size="large"
+    style="height: 100%"
     pane-class="pane"
+    size="large"
     :default-value="currentTab"
     type="segment"
     @update:value="changeTab"
@@ -9,7 +10,7 @@
     <n-tab-pane name="html" tab="HTML">
       <template #tab>
         <n-flex align="center">
-          <Icon icon="skill-icons:html" :width="20" :height="20"></Icon>
+          <Icon icon="skill-icons:html" :width="20"></Icon>
           <span>HTML</span>
         </n-flex>
       </template>
@@ -18,7 +19,7 @@
     <n-tab-pane name="css" tab="CSS">
       <template #tab>
         <n-flex align="center">
-          <Icon icon="skill-icons:css" :width="20" :height="20"></Icon>
+          <Icon icon="skill-icons:css" :width="20"></Icon>
           <span>CSS</span>
         </n-flex>
       </template>
@@ -27,7 +28,7 @@
     <n-tab-pane name="js" tab="JavaScript">
       <template #tab>
         <n-flex align="center">
-          <Icon icon="skill-icons:javascript" :width="20" :height="20"></Icon>
+          <Icon icon="skill-icons:javascript" :width="20"></Icon>
           <span>JavaScript</span>
         </n-flex>
       </template>
@@ -36,7 +37,7 @@
     <n-tab-pane name="actions" tab="选项">
       <template #tab>
         <n-flex align="center">
-          <Icon icon="solar:settings-bold" :width="20" :height="20"></Icon>
+          <Icon icon="skill-icons:actix-dark" :width="20"></Icon>
           <span>选项</span>
         </n-flex>
       </template>
@@ -72,7 +73,7 @@
 import { Icon } from "@iconify/vue"
 import Editor from "./Editor.vue"
 import { useStorage } from "@vueuse/core"
-import { html, css, js, reset, size, changeSize } from "../store.ts"
+import { html, css, js, reset, size, changeSize } from "../store"
 
 const currentTab = useStorage("web-tab", "html")
 
@@ -83,7 +84,8 @@ function changeTab(tab: "html" | "css" | "js" | "actions") {
 </script>
 <style scoped>
 .pane {
-  height: calc(100vh - 62px);
+  height: 100%;
+  overflow: scroll;
 }
 .wrapper {
   padding-left: 16px;

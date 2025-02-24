@@ -1,8 +1,11 @@
 <template>
-  <n-flex align="center" justify="space-between" class="pane">
-    <n-text class="preview">预览</n-text>
+  <n-flex align="center" justify="space-between" class="title">
+    <n-flex align="center">
+      <Icon icon="noto:eyes" :width="20"></Icon>
+      <n-text class="titleText">预览</n-text>
+    </n-flex>
     <n-flex>
-      <n-button>提交</n-button>
+      <!-- <n-button>提交</n-button> -->
     </n-flex>
   </n-flex>
   <iframe class="iframe" ref="iframe"></iframe>
@@ -10,16 +13,16 @@
 
 <script lang="ts" setup>
 import { watchDebounced } from "@vueuse/core"
-import { html, css, js } from "../store.ts"
+import { html, css, js } from "../store"
 import { onMounted, useTemplateRef } from "vue"
+import { Icon } from "@iconify/vue"
 
 const iframe = useTemplateRef<HTMLIFrameElement>("iframe")
 
 function preview() {
   if (!iframe.value) return
   const doc = iframe.value.contentDocument!
-  doc.open()
-  doc.write(`<!DOCTYPE html>
+  const content = `<!DOCTYPE html>
 <html lang="zh-Hans-CN">
   <head>
     <meta charset="UTF-8" />
@@ -33,19 +36,21 @@ function preview() {
     ${html.value}
     <script type="module">${js.value}<\/script>
   </body>
-</html>`)
+</html>`
+  doc.open()
+  doc.write(content)
   doc.close()
 }
 watchDebounced([html, css, js], preview, { debounce: 500, maxWait: 1000 })
 onMounted(preview)
 </script>
 <style scoped>
-.pane {
+.title {
   height: 46px;
   background-color: rgb(247, 247, 250);
   padding: 0 20px;
 }
-.preview {
+.titleText {
   font-size: 16px;
 }
 .iframe {
