@@ -1,6 +1,6 @@
 <template>
   <n-config-provider :locale="zhCN" :date-locale="dateZhCN">
-    <n-tabs pane-class="pane" default-value="html" type="segment">
+    <n-tabs size="large" pane-class="pane" default-value="html" type="segment">
       <n-tab-pane name="html" tab="HTML">
         <template #tab>
           <n-flex align="center">
@@ -67,10 +67,10 @@ import { html, css, js, reset, size, changeSize } from "../store.ts"
 </script>
 <style scoped>
 .pane {
-  height: calc(100vh - 52px);
+  height: calc(100vh - 62px);
 }
 .wrapper {
-  padding: 12px;
+  padding-left: 16px;
 }
 .label {
   font-size: 16px;
