@@ -1,7 +1,11 @@
 <template>
-  <div>
-    <iframe class="iframe" ref="iframe"></iframe>
-  </div>
+  <n-flex align="center" justify="space-between" class="pane">
+    <n-text class="preview">预览</n-text>
+    <n-flex>
+      <n-button>提交</n-button>
+    </n-flex>
+  </n-flex>
+  <iframe class="iframe" ref="iframe"></iframe>
 </template>
 
 <script lang="ts" setup>
@@ -23,6 +27,7 @@ function preview() {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>${css.value}</style>
     <link rel="stylesheet" href="/normalize.min.css" />
+    <script src="/jquery.min.js"><\/script>
   </head>
   <body>
     ${html.value}
@@ -35,6 +40,14 @@ watchDebounced([html, css, js], preview, { debounce: 500, maxWait: 1000 })
 onMounted(preview)
 </script>
 <style scoped>
+.pane {
+  height: 46px;
+  background-color: rgb(247, 247, 250);
+  padding: 0 20px;
+}
+.preview {
+  font-size: 16px;
+}
 .iframe {
   width: 100%;
   height: 100%;
