@@ -3,8 +3,9 @@
 </template>
 
 <script lang="ts" setup>
+import { watchDebounced } from "@vueuse/core"
 import { html, css, js } from "../store.ts"
-import { onMounted, useTemplateRef, watch } from "vue"
+import { onMounted, useTemplateRef } from "vue"
 
 const iframe = useTemplateRef<HTMLIFrameElement>("iframe")
 
@@ -23,12 +24,12 @@ function preview() {
   </head>
   <body>
     ${html.value}
-    <script>${js.value}<\/script>
+    <script type="module">${js.value}<\/script>
   </body>
 </html>`)
   doc.close()
 }
-watch([html, css], preview)
+watchDebounced([html, css, js], preview, { debounce: 500, maxWait: 1000 })
 onMounted(preview)
 </script>
 <style scoped>
