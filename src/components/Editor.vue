@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import { EditorView } from "@codemirror/view"
 import { Codemirror } from "vue-codemirror"
-import { oneDark } from "../themes/oneDark.ts"
 import { smoothy } from "../themes/smoothy.ts"
-import { useDark } from "@vueuse/core"
 import { computed } from "vue"
 import { css } from "@codemirror/lang-css"
 import { javascript } from "@codemirror/lang-javascript"
@@ -33,8 +31,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const code = defineModel<string>("value")
 
-const isDark = useDark()
-
 const lang = computed(() => {
   if (props.language === "html") {
     return html()
@@ -49,7 +45,7 @@ const lang = computed(() => {
   <Codemirror
     v-model="code"
     indentWithTab
-    :extensions="[styleTheme, lang, isDark ? oneDark : smoothy]"
+    :extensions="[styleTheme, lang, smoothy]"
     :tabSize="4"
     :style="{ height: '100%', fontSize: props.fontSize + 'px' }"
   />

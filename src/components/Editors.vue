@@ -1,27 +1,41 @@
 <template>
-  <n-config-provider
-    :locale="zhCN"
-    :date-locale="dateZhCN"
-    :theme="null"
-  >
+  <n-config-provider :locale="zhCN" :date-locale="dateZhCN">
     <n-tabs pane-class="pane" default-value="html" type="segment">
       <n-tab-pane name="html" tab="HTML">
+        <template #tab>
+          <n-flex align="center">
+            <Icon icon="skill-icons:html" :width="20" :height="20"></Icon>
+            <span>HTML5</span>
+          </n-flex>
+        </template>
         <Editor language="html" :font-size="size" v-model:value="html" />
       </n-tab-pane>
       <n-tab-pane name="css" tab="CSS">
+        <template #tab>
+          <n-flex align="center">
+            <Icon icon="skill-icons:css" :width="20" :height="20"></Icon>
+            <span>CSS3</span>
+          </n-flex>
+        </template>
         <Editor language="css" :font-size="size" v-model:value="css" />
       </n-tab-pane>
-      <n-tab-pane name="js" tab="JS">
+      <n-tab-pane disabled name="js" tab="JS(未完成)">
+        <template #tab>
+          <n-flex align="center">
+            <Icon icon="skill-icons:javascript" :width="20" :height="20"></Icon>
+            <span>JS(未完成)</span>
+          </n-flex>
+        </template>
         <Editor language="js" :font-size="size" v-model:value="js" />
       </n-tab-pane>
       <n-tab-pane name="actions" tab="选项">
+        <template #tab>
+          <n-flex align="center">
+            <Icon icon="solar:settings-bold" :width="20" :height="20"></Icon>
+            <span>选项</span>
+          </n-flex>
+        </template>
         <n-flex vertical class="wrapper">
-          <!-- <n-flex align="center">
-            <span class="label">主题</span>
-            <n-button @click="toggleDark()">
-              {{ isDark ? "浅色" : "深色" }}
-            </n-button>
-          </n-flex> -->
           <n-flex align="center">
             <span class="label">重置</span>
             <n-button @click="reset('html')">HTML</n-button>
@@ -46,13 +60,10 @@
   </n-config-provider>
 </template>
 <script lang="ts" setup>
-import { darkTheme, dateZhCN, zhCN } from "naive-ui"
-import { useDark, useToggle } from "@vueuse/core"
+import { dateZhCN, zhCN } from "naive-ui"
+import { Icon } from "@iconify/vue"
 import Editor from "./Editor.vue"
 import { html, css, js, reset, size, changeSize } from "../store.ts"
-
-const isDark = useDark()
-const toggleDark = useToggle(isDark)
 </script>
 <style scoped>
 .pane {
