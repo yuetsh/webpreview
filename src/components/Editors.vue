@@ -23,7 +23,7 @@
         <template #tab>
           <n-flex align="center">
             <Icon icon="skill-icons:javascript" :width="20" :height="20"></Icon>
-            <span>JS</span>
+            <span>JavaScript</span>
           </n-flex>
         </template>
         <Editor language="js" :font-size="size" v-model:value="js" />
