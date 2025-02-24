@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { html, css } from "../store.ts"
+import { html, css, js } from "../store.ts"
 import { onMounted, useTemplateRef, watch } from "vue"
 
 const iframe = useTemplateRef<HTMLIFrameElement>("iframe")
@@ -23,6 +23,7 @@ function preview() {
   </head>
   <body>
     ${html.value}
+    <script>${js.value}<\/script>
   </body>
 </html>`)
   doc.close()

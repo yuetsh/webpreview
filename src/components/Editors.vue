@@ -19,11 +19,11 @@
         </template>
         <Editor language="css" :font-size="size" v-model:value="css" />
       </n-tab-pane>
-      <n-tab-pane disabled name="js" tab="JS(未完成)">
+      <n-tab-pane name="js" tab="JS">
         <template #tab>
           <n-flex align="center">
             <Icon icon="skill-icons:javascript" :width="20" :height="20"></Icon>
-            <span>JS(未完成)</span>
+            <span>JS(需要刷新)</span>
           </n-flex>
         </template>
         <Editor language="js" :font-size="size" v-model:value="js" />
