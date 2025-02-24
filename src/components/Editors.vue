@@ -1,5 +1,11 @@
 <template>
-  <n-tabs size="large" pane-class="pane" default-value="html" type="segment">
+  <n-tabs
+    size="large"
+    pane-class="pane"
+    :default-value="currentTab"
+    type="segment"
+    @update:value="changeTab"
+  >
     <n-tab-pane name="html" tab="HTML">
       <template #tab>
         <n-flex align="center">
@@ -60,7 +66,15 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
 import Editor from "./Editor.vue"
+import { useStorage } from "@vueuse/core"
 import { html, css, js, reset, size, changeSize } from "../store.ts"
+
+const currentTab = useStorage("web-tab", "html")
+
+function changeTab(tab: "html" | "css" | "js" | "actions") {
+  if (tab === "actions") return
+  currentTab.value = tab
+}
 </script>
 <style scoped>
 .pane {
