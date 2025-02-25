@@ -66,6 +66,11 @@
         </n-flex>
       </n-flex>
     </n-tab-pane>
+    <template #suffix>
+      <n-flex class="suffix">
+        <!-- <n-button>登录</n-button> -->
+      </n-flex>
+    </template>
   </n-tabs>
 </template>
 <script lang="ts" setup>
@@ -93,5 +98,9 @@ function changeSize(num: number) {
 
 .label {
   font-size: 16px;
+}
+
+.suffix {
+  margin-right: 20px;
 }
 </style>

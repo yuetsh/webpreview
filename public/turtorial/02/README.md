@@ -1,7 +1,1 @@
-# 什么是 CSS
-
-```css
-.greeting {
-    color: red;
-}
-```
+未完待续...
