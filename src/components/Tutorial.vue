@@ -123,6 +123,16 @@ watch(step, render)
   padding: 1rem;
   cursor: pointer;
   border-radius: 0.4rem;
+  font-family:
+    v-sans,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol";
 }
 
 .my-action-btn::before {
