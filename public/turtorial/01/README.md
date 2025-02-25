@@ -11,6 +11,9 @@
   color: red;
 }
 ```
+```js
+console.log("122")
+```
 
 ## 什么是 HTML
 

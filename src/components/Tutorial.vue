@@ -7,24 +7,35 @@
         <n-button text @click="prev" :disabled="step === '01'">
           <Icon :width="24" icon="pepicons-pencil:arrow-left"></Icon>
         </n-button>
-        <n-button text @click="next" :disabled="end">
+        <n-button text @click="next" :disabled="last">
           <Icon :width="24" icon="pepicons-pencil:arrow-right"></Icon>
         </n-button>
       </n-flex>
     </n-flex>
-    <div class="markdown-body" v-html="content"></div>
+    <div class="markdown-body" v-html="content" ref="$content"></div>
   </div>
 </template>
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
-import { step, prev, next } from "../store"
-import { onMounted, ref, shallowRef, watch } from "vue"
+import { tab, html, js, css } from "../store"
+import { onMounted, ref, useTemplateRef, watch } from "vue"
 import { marked } from "marked"
-import { markedHighlight } from "marked-highlight"
-import hljs from "highlight.js"
+import { useStorage } from "@vueuse/core"
 
-const end = ref(false)
-const content = shallowRef("")
+const step = useStorage("web-turtorial-step", "01")
+const last = ref(false)
+const content = ref("")
+const $content = useTemplateRef("$content")
+
+function prev() {
+  let num = parseInt(step.value) - 1
+  step.value = num.toString().padStart(2, "0")
+}
+
+function next() {
+  let num = parseInt(step.value) + 1
+  step.value = num.toString().padStart(2, "0")
+}
 
 async function getContent() {
   const res = await fetch(`/turtorial/${step.value}/README.md`)
@@ -32,29 +43,49 @@ async function getContent() {
   if (!!data) {
     const html = await marked.parse(data, { async: true })
     content.value = html
-    end.value = false
+    last.value = false
   } else {
-    end.value = true
+    content.value = ""
+    last.value = true
   }
 }
 
-onMounted(() => {
-  getContent()
-  marked.use({
-    gfm: true,
-    async: true,
+// 用 js 来写的，可以换成 vue 的方式
+function addCopyButton() {
+  const div = document.createElement("div")
+  div.className = "my-action-btn"
+  const pres = $content.value!.querySelectorAll("pre")
+  pres.forEach((pre) => {
+    let timer = 0
+    const copy = div.cloneNode(true) as HTMLDivElement
+    pre.appendChild(copy)
+    copy.onclick = () => {
+      // 功能
+      const outer = pre.childNodes[0] as HTMLPreElement
+      const match = outer.className.match(/-(.*)/)
+      let lang = "html"
+      if (match) lang = match[1].toLowerCase()
+      tab.value = lang
+      if (lang === "html") html.value = pre.textContent
+      if (lang === "css") css.value = pre.textContent
+      if (lang === "js") js.value = pre.textContent
+      // 样式
+      copy.classList.add("click")
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        copy.classList.remove("click")
+      }, 1000)
+    }
   })
-  marked.use(
-    markedHighlight({
-      langPrefix: "hljs language-",
-      highlight(code, lang) {
-        const language = hljs.getLanguage(lang) ? lang : "plaintext"
-        return hljs.highlight(code, { language }).value
-      },
-    }),
-  )
-})
-watch(step, getContent)
+}
+
+async function render() {
+  await getContent()
+  addCopyButton()
+}
+
+onMounted(render)
+watch(step, render)
 </script>
 <style scoped>
 .container {
@@ -63,10 +94,11 @@ watch(step, getContent)
   height: 100%;
 }
 .title {
-  height: 40px;
-  background-color: rgb(247, 247, 250);
+  height: 43px;
   padding: 0 20px;
   flex-shrink: 0;
+  border-bottom: 1px solid rgb(239, 239, 245);
+  box-sizing: border-box;
 }
 .preview {
   font-size: 16px;
@@ -75,5 +107,24 @@ watch(step, getContent)
   padding: 16px;
   box-sizing: border-box;
   overflow: auto;
+}
+</style>
+<style>
+.markdown-body pre {
+  position: relative;
+}
+.my-action-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1rem;
+  cursor: pointer;
+  border-radius: 0.4rem;
+}
+.my-action-btn::before {
+  content: "替换";
+}
+.my-action-btn.click::before {
+  content: "已替换";
 }
 </style>

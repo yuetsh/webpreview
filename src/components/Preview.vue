@@ -46,9 +46,10 @@ onMounted(preview)
 </script>
 <style scoped>
 .title {
-  height: 40px;
-  background-color: rgb(247, 247, 250);
+  height: 43px;
   padding: 0 20px;
+  border-bottom: 1px solid rgb(239, 239, 245);
+  box-sizing: border-box;
 }
 .titleText {
   font-size: 16px;

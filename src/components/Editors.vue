@@ -2,8 +2,8 @@
   <n-tabs
     style="height: 100%"
     pane-class="pane"
-    :default-value="currentTab"
-    type="segment"
+    :value="tab"
+    type="card"
     @update:value="changeTab"
   >
     <n-tab-pane name="html" tab="HTML">
@@ -24,11 +24,11 @@
       </template>
       <Editor language="css" :font-size="size" v-model:value="css" />
     </n-tab-pane>
-    <n-tab-pane name="js" tab="JavaScript">
+    <n-tab-pane name="js" tab="JS">
       <template #tab>
         <n-flex align="center">
           <Icon icon="skill-icons:javascript" :width="20"></Icon>
-          <span>JavaScript</span>
+          <span>JS</span>
         </n-flex>
       </template>
       <Editor language="js" :font-size="size" v-model:value="js" />
@@ -71,14 +71,13 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
 import Editor from "./Editor.vue"
-import { useStorage } from "@vueuse/core"
-import { html, css, js, reset, size, changeSize } from "../store"
+import { html, css, js, reset, tab, size } from "../store"
 
-const currentTab = useStorage("web-tab", "html")
-
-function changeTab(tab: "html" | "css" | "js" | "actions") {
-  if (tab === "actions") return
-  currentTab.value = tab
+function changeTab(name: string) {
+  tab.value = name
+}
+function changeSize(num: number) {
+  size.value = num
 }
 </script>
 <style scoped>
