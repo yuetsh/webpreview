@@ -12,22 +12,27 @@
         </n-button>
       </n-flex>
     </n-flex>
-    <div class="markdown-body" v-html="marked(content)"></div>
+    <div class="markdown-body" v-html="markdownContent"></div>
   </div>
 </template>
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
 import { step, prev, next, content } from "../store"
-import { onMounted, ref, watch } from "vue"
+import { onMounted, ref, shallowRef, watch } from "vue"
 import { marked } from "marked"
+import { markedHighlight } from "marked-highlight"
+import hljs from "highlight.js"
 
 const end = ref(false)
+const markdownContent = shallowRef("")
 
 async function getContent() {
   const res = await fetch(`/turtorial/${step.value}/README.md`)
   const data = await res.text()
   if (!!data) {
     content.value = data
+    const html = await marked.parse(content.value, { async: true })
+    markdownContent.value = html
     end.value = false
   } else {
     end.value = true
@@ -35,7 +40,22 @@ async function getContent() {
   }
 }
 
-onMounted(getContent)
+onMounted(() => {
+  getContent()
+  marked.use({
+    gfm: true,
+    async: true,
+  })
+  marked.use(
+    markedHighlight({
+      langPrefix: "hljs language-",
+      highlight(code, lang) {
+        const language = hljs.getLanguage(lang) ? lang : "plaintext"
+        return hljs.highlight(code, { language }).value
+      },
+    }),
+  )
+})
 watch(step, getContent)
 </script>
 <style scoped>
@@ -45,7 +65,7 @@ watch(step, getContent)
   height: 100%;
 }
 .title {
-  height: 46px;
+  height: 40px;
   background-color: rgb(247, 247, 250);
   padding: 0 20px;
   flex-shrink: 0;

@@ -46,7 +46,7 @@ onMounted(preview)
 </script>
 <style scoped>
 .title {
-  height: 46px;
+  height: 40px;
   background-color: rgb(247, 247, 250);
   padding: 0 20px;
 }

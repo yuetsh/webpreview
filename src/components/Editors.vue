@@ -2,7 +2,6 @@
   <n-tabs
     style="height: 100%"
     pane-class="pane"
-    size="large"
     :default-value="currentTab"
     type="segment"
     @update:value="changeTab"
@@ -41,7 +40,7 @@
           <span>选项</span>
         </n-flex>
       </template>
-      <n-flex size="large" vertical class="wrapper">
+      <n-flex vertical class="wrapper">
         <n-flex align="center">
           <span class="label">重置</span>
           <n-button @click="reset('html')">HTML</n-button>
