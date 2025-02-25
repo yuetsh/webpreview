@@ -84,7 +84,7 @@ function changeTab(tab: "html" | "css" | "js" | "actions") {
 <style scoped>
 .pane {
   height: 100%;
-  overflow: scroll;
+  overflow: auto;
 }
 .wrapper {
   padding-left: 16px;

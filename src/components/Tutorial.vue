@@ -74,6 +74,6 @@ watch(step, getContent)
 .markdown-body {
   padding: 16px;
   box-sizing: border-box;
-  overflow: scroll;
+  overflow: auto;
 }
 </style>
