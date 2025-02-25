@@ -25,7 +25,6 @@ export function changeSize(num: number) {
 }
 
 export const step = useStorage("web-turtorial-step", "01")
-export const content = useStorage("web-turtorial-content", "")
 export function prev() {
   let num = parseInt(step.value) - 1
   step.value = num.toString().padStart(2, "0")

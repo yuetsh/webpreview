@@ -23,7 +23,12 @@ whenever(ctrl_r, () => {})
 </script>
 
 <template>
-  <n-config-provider class="myContainer" :locale="zhCN" :date-locale="dateZhCN" inline-theme-disabled>
+  <n-config-provider
+    class="myContainer"
+    :locale="zhCN"
+    :date-locale="dateZhCN"
+    inline-theme-disabled
+  >
     <n-split :default-size="1 / 3" min="300px" max="700px">
       <template #1><Tutorial /></template>
       <template #2>

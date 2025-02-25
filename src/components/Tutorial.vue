@@ -12,31 +12,29 @@
         </n-button>
       </n-flex>
     </n-flex>
-    <div class="markdown-body" v-html="markdownContent"></div>
+    <div class="markdown-body" v-html="content"></div>
   </div>
 </template>
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
-import { step, prev, next, content } from "../store"
+import { step, prev, next } from "../store"
 import { onMounted, ref, shallowRef, watch } from "vue"
 import { marked } from "marked"
 import { markedHighlight } from "marked-highlight"
 import hljs from "highlight.js"
 
 const end = ref(false)
-const markdownContent = shallowRef("")
+const content = shallowRef("")
 
 async function getContent() {
   const res = await fetch(`/turtorial/${step.value}/README.md`)
   const data = await res.text()
   if (!!data) {
-    content.value = data
-    const html = await marked.parse(content.value, { async: true })
-    markdownContent.value = html
+    const html = await marked.parse(data, { async: true })
+    content.value = html
     end.value = false
   } else {
     end.value = true
-    content.value = ""
   }
 }
 
