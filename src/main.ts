@@ -1,8 +1,11 @@
 import { createApp } from "vue"
 import { create } from "naive-ui"
 import { marked } from "marked"
+//@ts-ignore
 import "normalize.css"
+//@ts-ignore
 import "github-markdown-css/github-markdown-light.css"
+//@ts-ignore
 import "highlight.js/styles/github.min.css"
 import App from "./App.vue"
 

@@ -13,7 +13,7 @@
 
 <script lang="ts" setup>
 import { watchDebounced } from "@vueuse/core"
-import { html, css, js } from "../store"
+import { css, html, js } from "../store"
 import { onMounted, useTemplateRef } from "vue"
 import { Icon } from "@iconify/vue"
 
@@ -41,6 +41,7 @@ function preview() {
   doc.write(content)
   doc.close()
 }
+
 watchDebounced([html, css, js], preview, { debounce: 500, maxWait: 1000 })
 onMounted(preview)
 </script>
@@ -51,9 +52,11 @@ onMounted(preview)
   border-bottom: 1px solid rgb(239, 239, 245);
   box-sizing: border-box;
 }
+
 .titleText {
   font-size: 16px;
 }
+
 .iframe {
   width: 100%;
   height: 100%;

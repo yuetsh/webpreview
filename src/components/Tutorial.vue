@@ -17,7 +17,7 @@
 </template>
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
-import { tab, html, js, css } from "../store"
+import { css, html, js, tab } from "../store"
 import { onMounted, ref, useTemplateRef, watch } from "vue"
 import { marked } from "marked"
 import { useStorage } from "@vueuse/core"
@@ -41,8 +41,7 @@ async function getContent() {
   const res = await fetch(`/turtorial/${step.value}/README.md`)
   const data = await res.text()
   if (!!data) {
-    const html = await marked.parse(data, { async: true })
-    content.value = html
+    content.value = await marked.parse(data, { async: true })
     last.value = false
   } else {
     content.value = ""
@@ -93,6 +92,7 @@ watch(step, render)
   flex-direction: column;
   height: 100%;
 }
+
 .title {
   height: 43px;
   padding: 0 20px;
@@ -100,9 +100,11 @@ watch(step, render)
   border-bottom: 1px solid rgb(239, 239, 245);
   box-sizing: border-box;
 }
+
 .preview {
   font-size: 16px;
 }
+
 .markdown-body {
   padding: 16px;
   box-sizing: border-box;
@@ -113,6 +115,7 @@ watch(step, render)
 .markdown-body pre {
   position: relative;
 }
+
 .my-action-btn {
   position: absolute;
   top: 0;
@@ -121,9 +124,11 @@ watch(step, render)
   cursor: pointer;
   border-radius: 0.4rem;
 }
+
 .my-action-btn::before {
   content: "替换";
 }
+
 .my-action-btn.click::before {
   content: "已替换";
 }

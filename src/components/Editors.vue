@@ -1,46 +1,46 @@
 <template>
   <n-tabs
-    style="height: 100%"
-    pane-class="pane"
     :value="tab"
+    pane-class="pane"
+    style="height: 100%"
     type="card"
     @update:value="changeTab"
   >
     <n-tab-pane name="html" tab="HTML">
       <template #tab>
         <n-flex align="center">
-          <Icon icon="skill-icons:html" :width="20"></Icon>
+          <Icon :width="20" icon="skill-icons:html"></Icon>
           <span>HTML</span>
         </n-flex>
       </template>
-      <Editor language="html" :font-size="size" v-model:value="html" />
+      <Editor v-model:value="html" :font-size="size" language="html" />
     </n-tab-pane>
     <n-tab-pane name="css" tab="CSS">
       <template #tab>
         <n-flex align="center">
-          <Icon icon="skill-icons:css" :width="20"></Icon>
+          <Icon :width="20" icon="skill-icons:css"></Icon>
           <span>CSS</span>
         </n-flex>
       </template>
-      <Editor language="css" :font-size="size" v-model:value="css" />
+      <Editor v-model:value="css" :font-size="size" language="css" />
     </n-tab-pane>
     <n-tab-pane name="js" tab="JS">
       <template #tab>
         <n-flex align="center">
-          <Icon icon="skill-icons:javascript" :width="20"></Icon>
+          <Icon :width="20" icon="skill-icons:javascript"></Icon>
           <span>JS</span>
         </n-flex>
       </template>
-      <Editor language="js" :font-size="size" v-model:value="js" />
+      <Editor v-model:value="js" :font-size="size" language="js" />
     </n-tab-pane>
     <n-tab-pane name="actions" tab="选项">
       <template #tab>
         <n-flex align="center">
-          <Icon icon="skill-icons:actix-dark" :width="20"></Icon>
+          <Icon :width="20" icon="skill-icons:actix-dark"></Icon>
           <span>选项</span>
         </n-flex>
       </template>
-      <n-flex vertical class="wrapper">
+      <n-flex class="wrapper" vertical>
         <n-flex align="center">
           <span class="label">重置</span>
           <n-button @click="reset('html')">HTML</n-button>
@@ -51,10 +51,10 @@
           <span class="label">字号</span>
           <n-flex align="center">
             <span :style="{ 'font-size': size + 'px' }">{{ size }}</span>
-            <n-button @click="changeSize(size - 2)" :disabled="size === 20">
+            <n-button :disabled="size === 20" @click="changeSize(size - 2)">
               调小
             </n-button>
-            <n-button @click="changeSize(size + 2)" :disabled="size === 40">
+            <n-button :disabled="size === 40" @click="changeSize(size + 2)">
               调大
             </n-button>
           </n-flex>
@@ -71,11 +71,12 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
 import Editor from "./Editor.vue"
-import { html, css, js, reset, tab, size } from "../store"
+import { css, html, js, reset, size, tab } from "../store"
 
 function changeTab(name: string) {
   tab.value = name
 }
+
 function changeSize(num: number) {
   size.value = num
 }
@@ -85,9 +86,11 @@ function changeSize(num: number) {
   height: 100%;
   overflow: auto;
 }
+
 .wrapper {
   padding-left: 16px;
 }
+
 .label {
   font-size: 16px;
 }
