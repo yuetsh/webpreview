@@ -14,6 +14,9 @@ export default defineConfig({
       index: "./src/main.ts",
     },
   },
+  output: {
+    polyfill: "usage"
+  },
   tools: {
     rspack: {
       plugins: [
