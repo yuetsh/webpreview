@@ -57,7 +57,7 @@ function addButton() {
     const match = code.className.match(/-(.*)/)
     let lang = "html"
     if (match) lang = match[1].toLowerCase()
-    copy.innerHTML = `<span class="lang">${lang}</span><div class="btn">替换<div>`
+    copy.innerHTML = `<span class="lang">${lang.toUpperCase()}</span><div class="btn">替换<div>`
     const btn = copy.children[1] as HTMLDivElement
     btn.onclick = () => {
       tab.value = lang
@@ -144,5 +144,6 @@ watch(step, render)
   padding: 1rem;
   cursor: pointer;
   border-radius: 0.4rem;
+  font-size: 1rem;
 }
 </style>
