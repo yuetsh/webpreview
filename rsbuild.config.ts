@@ -9,6 +9,7 @@ export default defineConfig({
     template: "./index.html",
   },
   source: {
+    include: [/node_modules[\\/]marked[\\/]/],
     entry: {
       index: "./src/main.ts",
     },
@@ -26,8 +27,10 @@ export default defineConfig({
     chunkSplit: {
       strategy: "split-by-experience",
       forceSplitting: {
-        "lib-ui": /node_modules[\\/]naive-ui/,
-        "lib-cm": /node_modules[\\/]@codemirror/,
+        "lib-ui": /node_modules[\\/]naive-ui[\\/]/,
+        "lib-cm": /node_modules[\\/]@codemirror[\\/]/,
+        "lib-marked": /node_modules[\\/]marked[\\/]/,
+        "lib-hljs": /node_modules[\\/]highlight\.js[\\/]/,
       },
     },
   },
