@@ -136,7 +136,7 @@ watch(step, render)
 
 .codeblock-action .btn {
   position: absolute;
-  top: 0;
+  top: 4px;
   right: 0;
   padding: 1rem;
   cursor: pointer;
