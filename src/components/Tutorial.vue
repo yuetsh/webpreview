@@ -3,7 +3,7 @@
     <n-flex align="center" class="title">
       <n-flex align="center">
         <Icon icon="twemoji:open-book" :width="20"></Icon>
-        <n-text class="preview">教程</n-text>
+        <n-text class="preview">教程(测试版)</n-text>
         <n-button text @click="prev" :disabled="step === '01'">
           <Icon :width="24" icon="pepicons-pencil:arrow-left"></Icon>
         </n-button>
