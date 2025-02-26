@@ -8,9 +8,10 @@ import "github-markdown-css/github-markdown-light.css"
 //@ts-ignore
 import "highlight.js/styles/github.min.css"
 import App from "./App.vue"
-
+import markedAlert from "marked-alert"
 import { markedHighlight } from "marked-highlight"
 import hljs from "highlight.js"
+import { alertVariants } from "./utils"
 
 marked.use({
   gfm: true,
@@ -25,6 +26,7 @@ marked.use(
     },
   }),
 )
+marked.use(markedAlert({ variants: alertVariants }))
 
 const app = createApp(App)
 const naive = create()
