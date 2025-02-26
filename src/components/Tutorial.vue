@@ -114,7 +114,7 @@ watch(step, render)
 }
 
 .markdown-body pre code {
-  white-space: normal;
+  white-space: pre-wrap;
 }
 
 .codeblock-action {
