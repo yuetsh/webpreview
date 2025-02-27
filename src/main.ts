@@ -8,8 +8,9 @@ import "normalize.css"
 import "github-markdown-css/github-markdown-light.css"
 
 import { marked } from "marked"
-import markedAlert from "marked-alert"
+import alert from "marked-alert"
 import { markedHighlight } from "marked-highlight"
+import preview from "marked-code-preview"
 import { alertVariants } from "./utils"
 
 import hljs from "highlight.js/lib/core"
@@ -36,7 +37,10 @@ marked.use(
     },
   }),
 )
-marked.use(markedAlert({ variants: alertVariants }))
+marked.use(alert({ variants: alertVariants }))
+
+const template = `<div class="markedown-body-preview">{preview}</div>`
+marked.use(preview({template}))
 
 const app = createApp(App)
 const naive = create()
