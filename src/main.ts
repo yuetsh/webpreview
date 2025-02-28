@@ -19,6 +19,7 @@ import css from "highlight.js/lib/languages/css"
 import javascript from "highlight.js/lib/languages/javascript"
 //@ts-ignore
 import "highlight.js/styles/github.min.css"
+import { router } from "./router"
 
 hljs.registerLanguage("html", xml)
 hljs.registerLanguage("css", css)
@@ -45,4 +46,5 @@ marked.use(preview({template}))
 const app = createApp(App)
 const naive = create()
 app.use(naive)
+app.use(router)
 app.mount("#app")

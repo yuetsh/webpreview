@@ -19,6 +19,8 @@ declare module 'vue' {
     NTag: typeof import('naive-ui')['NTag']
     NText: typeof import('naive-ui')['NText']
     Preview: typeof import('./src/components/Preview.vue')['default']
+    RouterLink: typeof import('vue-router')['RouterLink']
+    RouterView: typeof import('vue-router')['RouterView']
     Tutorial: typeof import('./src/components/Tutorial.vue')['default']
   }
 }
