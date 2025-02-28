@@ -41,10 +41,11 @@ marked.use(
 marked.use(alert({ variants: alertVariants }))
 
 const template = `<div class="markedown-body-preview">{preview}</div>`
-marked.use(preview({template}))
+marked.use(preview({ template }))
 
 const app = createApp(App)
 const naive = create()
+
 app.use(naive)
 app.use(router)
 app.mount("#app")

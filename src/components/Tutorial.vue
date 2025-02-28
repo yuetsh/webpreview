@@ -17,7 +17,7 @@
 </template>
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
-import { css, html, js, tab } from "../store"
+import { html, css, js, tab } from "../store/editors"
 import { onMounted, ref, useTemplateRef, watch } from "vue"
 import { marked } from "marked"
 import { useStorage } from "@vueuse/core"
@@ -61,7 +61,7 @@ function addButton() {
     const btn = copy.children[1] as HTMLDivElement
     btn.onclick = () => {
       tab.value = lang
-      const content = pre.children[1].textContent
+      const content = pre.children[1].textContent!
       if (lang === "html") html.value = content
       if (lang === "css") css.value = content
       if (lang === "js") js.value = content

@@ -13,7 +13,7 @@
 
 <script lang="ts" setup>
 import { watchDebounced } from "@vueuse/core"
-import { css, html, js } from "../store"
+import { html, css, js } from "../store/editors"
 import { onMounted, useTemplateRef } from "vue"
 import { Icon } from "@iconify/vue"
 

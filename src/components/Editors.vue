@@ -67,8 +67,10 @@
       </n-flex>
     </n-tab-pane>
     <template #suffix>
-      <n-flex class="suffix">
-        <!-- <n-button>登录</n-button> -->
+      <n-flex align="center" class="suffix">
+        <!-- <span>{{ username }}</span>
+        <n-button v-if="!authed" @click="handleLogin">登录</n-button>
+        <n-button v-else @click="handleLogout">退出</n-button> -->
       </n-flex>
     </template>
   </n-tabs>
@@ -76,7 +78,10 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
 import Editor from "./Editor.vue"
-import { css, html, js, reset, size, tab } from "../store"
+import { html, css, js, tab, size, reset } from "../store/editors"
+import { username, authed } from "../store/user"
+import { loginModal } from "../store/modal"
+import { logout } from "../api"
 
 function changeTab(name: string) {
   tab.value = name
@@ -84,6 +89,15 @@ function changeTab(name: string) {
 
 function changeSize(num: number) {
   size.value = num
+}
+
+function handleLogin() {
+  loginModal.value = true
+}
+
+async function handleLogout() {
+  await logout()
+  username.value = ""
 }
 </script>
 <style scoped>
