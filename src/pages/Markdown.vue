@@ -1,8 +1,7 @@
 <template>
-  <n-grid x-gap="10" :cols="6">
-    <n-gi :span="1" style="padding-top: 10px">
-      <n-flex vertical>
-        <n-button @click="createNew">新建</n-button>
+  <n-grid x-gap="10" :cols="8">
+    <n-gi :span="2" class="col">
+      <n-flex vertical class="list">
         <n-card
           style="cursor: pointer"
           v-for="item in list"
@@ -16,10 +15,11 @@
             </n-button>
           </template>
         </n-card>
+        <n-button @click="createNew">新建</n-button>
       </n-flex>
     </n-gi>
 
-    <n-gi :span="2" style="padding-top: 10px">
+    <n-gi :span="3" class="col">
       <n-form>
         <n-grid x-gap="10" :cols="3">
           <n-gi :span="1">
@@ -34,7 +34,7 @@
           </n-gi>
         </n-grid>
         <n-form-item label="内容">
-          <n-input v-model:value="tutorial.content" type="textarea" rows="30" />
+          <n-input v-model:value="tutorial.content" type="textarea" class="editor" />
         </n-form-item>
         <n-button block type="primary" @click="submit" :disabled="!canSubmit">
           提交
@@ -127,6 +127,19 @@ watch(
 onMounted(getContent)
 </script>
 <style scoped>
+.list {
+  overflow: auto;
+  height: calc(100vh - 20px);
+}
+
+.col {
+  padding-top: 10px;
+}
+
+.editor {
+  height: calc(100vh - 200px);
+}
+
 .markdwon-body {
   box-sizing: border-box;
   overflow: auto;
