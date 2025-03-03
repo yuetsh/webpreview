@@ -60,16 +60,16 @@ export class Tutorial {
     return res.data
   }
 
-  static async create(payload: TutorialIn) {
+  static async createOrUpdate(payload: TutorialIn) {
     const res = await http.post("/tutorial/", payload)
     return res.data
   }
 
-  static async remove(display: string) {
+  static async remove(display: number) {
     await http.delete(`/tutorial/${display}`)
   }
 
-  static async get(display: string) {
+  static async get(display: number) {
     const res = await http.get(`/tutorial/${display}`)
     return res.data
   }

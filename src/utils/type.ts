@@ -5,13 +5,13 @@ export enum Role {
 }
 
 export interface TutorialSlim {
-  display: string
+  display: number
   title: string
   is_public: boolean
 }
 
 export interface TutorialIn {
-  display: string
+  display: number
   title: string
   content: string
 }
