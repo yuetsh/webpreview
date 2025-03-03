@@ -2,11 +2,11 @@
 import { dateZhCN, zhCN } from "naive-ui"
 import Login from "./components/Login.vue"
 import { onMounted, watch } from "vue"
-import { getMyProfile } from "./api"
+import { Account } from "./api"
 import { authed, user } from "./store/user"
 
 onMounted(async () => {
-  const data = await getMyProfile()
+  const data = await Account.getMyProfile()
   user.loaded = true
   user.username = data.username
   user.role = data.role
@@ -25,8 +25,10 @@ watch(authed, (v) => {
   <n-config-provider class="myContainer" :locale="zhCN" :date-locale="dateZhCN">
     <n-modal-provider>
       <n-message-provider>
-        <router-view></router-view>
-        <Login />
+        <n-dialog-provider>
+          <router-view></router-view>
+          <Login />
+        </n-dialog-provider>
       </n-message-provider>
     </n-modal-provider>
   </n-config-provider>

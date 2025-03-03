@@ -92,7 +92,7 @@ import Editor from "./Editor.vue"
 import { html, css, js, tab, size, reset } from "../store/editors"
 import { user, authed, roleNormal } from "../store/user"
 import { loginModal } from "../store/modal"
-import { logout } from "../api"
+import { Account } from "../api"
 import { Role } from "../utils/type"
 import { router } from "../router"
 import { computed, h } from "vue"
@@ -123,7 +123,7 @@ const menu = computed(() => [
 function clickMenu(name: string) {
   switch (name) {
     case "dashboard":
-      router.push({ name: "dashboard" })
+      router.push({ name: "tutorial" })
       break
     case "logout":
       handleLogout()
@@ -144,7 +144,7 @@ function handleLogin() {
 }
 
 async function handleLogout() {
-  await logout()
+  await Account.logout()
   user.username = ""
   user.role = Role.Normal
 }

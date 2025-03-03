@@ -1,5 +1,6 @@
 import axios from "axios"
 import { router } from "./router"
+import type { TutorialIn } from "./utils/type"
 
 const http = axios.create({
   baseURL:
@@ -30,23 +31,46 @@ http.interceptors.response.use(
           console.error("出现错误：", err.response.status, err.response.data)
       }
     } else {
-      console.error("Network error:", err.message)
+      console.error("出现错误：", err.message)
     }
     return Promise.reject(err)
   },
 )
 
-export async function login(username: string, password: string) {
-  const res = await http.post("/account/login", { username, password })
-  return res.data
+export class Account {
+  static async login(username: string, password: string) {
+    const res = await http.post("/account/login", { username, password })
+    return res.data
+  }
+
+  static async logout() {
+    const res = await http.post("/account/logout")
+    return res.data
+  }
+
+  static async getMyProfile() {
+    const res = await http.get("/account/profile")
+    return res.data
+  }
 }
 
-export async function logout() {
-  const res = await http.post("/account/logout")
-  return res.data
-}
+export class Tutorial {
+  static async list() {
+    const res = await http.get("/tutorial/")
+    return res.data
+  }
 
-export async function getMyProfile() {
-  const res = await http.get("/account/profile")
-  return res.data
+  static async create(payload: TutorialIn) {
+    const res = await http.post("/tutorial/", payload)
+    return res.data
+  }
+
+  static async remove(display: string) {
+    await http.delete(`/tutorial/${display}`)
+  }
+
+  static async get(display: string) {
+    const res = await http.get(`/tutorial/${display}`)
+    return res.data
+  }
 }

@@ -4,12 +4,19 @@ import { loginModal } from "./store/modal"
 import Home from "./pages/Home.vue"
 
 const routes = [
-  { path: "/", component: Home },
+  { path: "/", name: "home", component: Home },
   {
     path: "/dashboard",
     name: "dashboard",
     component: () => import("./pages/Dashboard.vue"),
     meta: { auth: true },
+    children: [
+      {
+        path: "tutorial",
+        name: "tutorial",
+        component: () => import("./pages/Markdown.vue"),
+      },
+    ],
   },
 ]
 

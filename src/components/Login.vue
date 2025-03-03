@@ -30,7 +30,7 @@
 </template>
 <script lang="ts" setup>
 import { ref } from "vue"
-import { login } from "../api"
+import { Account } from "../api"
 import { loginModal } from "../store/modal"
 import { user } from "../store/user"
 
@@ -41,7 +41,7 @@ const showMeesage = ref(false)
 
 async function submit() {
   try {
-    const data = await login(name.value, password.value)
+    const data = await Account.login(name.value, password.value)
     user.username = data.username
     user.role = data.role
     user.loaded = true
