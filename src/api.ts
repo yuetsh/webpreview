@@ -73,4 +73,9 @@ export class Tutorial {
     const res = await http.get(`/tutorial/${display}`)
     return res.data
   }
+
+  static async listDisplay() {
+    const res = await http.get("/tutorial/display")
+    return res.data
+  }
 }

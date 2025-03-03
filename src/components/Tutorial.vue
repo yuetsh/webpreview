@@ -4,10 +4,10 @@
       <n-flex align="center">
         <Icon icon="twemoji:open-book" :width="20"></Icon>
         <n-text class="preview">教程(测试版)</n-text>
-        <n-button text @click="prev" :disabled="step === '01'">
+        <n-button text @click="prev" :disabled="prevDisabled">
           <Icon :width="24" icon="pepicons-pencil:arrow-left"></Icon>
         </n-button>
-        <n-button text @click="next" :disabled="last">
+        <n-button text @click="next" :disabled="nextDisabled">
           <Icon :width="24" icon="pepicons-pencil:arrow-right"></Icon>
         </n-button>
       </n-flex>
@@ -18,30 +18,43 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
 import { html, css, js, tab } from "../store/editors"
-import { onMounted, ref, useTemplateRef, watch } from "vue"
+import { computed, onMounted, ref, useTemplateRef, watch } from "vue"
 import { marked } from "marked"
 import { useStorage } from "@vueuse/core"
+import { Tutorial } from "../api"
 
-const step = useStorage("web-turtorial-step", "01")
-const last = ref(false)
+const step = useStorage("web-turtorial-step", 1)
+const displays = ref<number[]>([])
 const content = ref("")
 const $content = useTemplateRef("$content")
 
+const prevDisabled = computed(() => {
+  const i = displays.value.indexOf(step.value)
+  return i === 0
+})
+const nextDisabled = computed(() => {
+  const i = displays.value.indexOf(step.value)
+  return i === displays.value.length - 1
+})
+
 function prev() {
-  let num = parseInt(step.value) - 1
-  step.value = num.toString().padStart(2, "0")
+  const i = displays.value.indexOf(step.value)
+  step.value = displays.value[i - 1]
 }
 
 function next() {
-  let num = parseInt(step.value) + 1
-  step.value = num.toString().padStart(2, "0")
+  const i = displays.value.indexOf(step.value)
+  step.value = displays.value[i + 1]
 }
 
 async function getContent() {
-  const res = await fetch(`/turtorial/${step.value}/README.md`)
-  const data = await res.text()
-  content.value = await marked.parse(data, { async: true })
-  last.value = data == "全部结束"
+  const res = await Tutorial.listDisplay()
+  displays.value = res
+  if (!displays.value.includes(step.value)) {
+    step.value = displays.value[0]
+  }
+  const data = await Tutorial.get(step.value)
+  content.value = await marked.parse(data.content, { async: true })
 }
 
 // 用 js 来写的，可以换成 vue 的方式
