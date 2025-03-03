@@ -7,10 +7,14 @@
   >
     <n-form>
       <n-form-item label="用户名">
-        <n-input v-model:value="name"></n-input>
+        <n-input v-model:value="name" name="username"></n-input>
       </n-form-item>
       <n-form-item label="密码">
-        <n-input v-model:value="password"></n-input>
+        <n-input
+          type="password"
+          v-model:value="password"
+          name="password"
+        ></n-input>
       </n-form-item>
       <n-alert
         type="error"
@@ -19,7 +23,7 @@
         title="登录失败"
       ></n-alert>
       <n-flex>
-        <n-button @click="submit">登录</n-button>
+        <n-button block @click="submit" type="primary">登录</n-button>
       </n-flex>
     </n-form>
   </n-modal>

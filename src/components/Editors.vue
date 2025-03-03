@@ -68,9 +68,11 @@
     </n-tab-pane>
     <template #suffix>
       <n-flex align="center" class="suffix">
-        <!-- <span>{{ username }}</span>
-        <n-button v-if="!authed" @click="handleLogin">登录</n-button>
-        <n-button v-else @click="handleLogout">退出</n-button> -->
+        <span>{{ username }}</span>
+        <n-button v-if="!authed" @click="handleLogin" secondary type="primary">
+          登录
+        </n-button>
+        <n-button v-else @click="handleLogout">退出</n-button>
       </n-flex>
     </template>
   </n-tabs>

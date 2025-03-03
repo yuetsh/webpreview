@@ -23,8 +23,8 @@ whenever(ctrl_s, () => {})
 whenever(ctrl_r, () => {})
 
 onMounted(async () => {
-  // const data = await getMyProfile()
-  // username.value = data
+  const data = await getMyProfile()
+  username.value = data
 })
 
 watch(authed, (v) => {

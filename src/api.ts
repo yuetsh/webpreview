@@ -2,7 +2,7 @@ import axios from "axios"
 import { router } from "./router"
 
 const http = axios.create({
-  baseURL: "http://localhost:8000/api",
+  baseURL: "https://webapi.xuyue.cc/api",
   xsrfCookieName: "xsrfCookieName",
   xsrfHeaderName: "X-CSRFTOKEN",
   withCredentials: true,
