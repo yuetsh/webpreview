@@ -1,7 +1,7 @@
 {
-  "name": "webpreview",
+  "name": "web",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "start": "rsbuild dev",
@@ -30,11 +30,11 @@
   },
   "devDependencies": {
     "@iconify/vue": "^4.3.0",
-    "@rsbuild/core": "^1.2.11",
+    "@rsbuild/core": "^1.2.14",
     "@rsbuild/plugin-vue": "^1.0.6",
     "@vue/tsconfig": "^0.7.0",
-    "prettier": "^3.5.2",
-    "typescript": "^5.7.3",
-    "unplugin-vue-components": "^28.4.0"
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.2",
+    "unplugin-vue-components": "^28.4.1"
   }
 }

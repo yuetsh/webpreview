@@ -68,11 +68,20 @@
     </n-tab-pane>
     <template #suffix>
       <n-flex align="center" class="suffix">
-        <span>{{ username }}</span>
-        <n-button v-if="!authed" @click="handleLogin" secondary type="primary">
+        <template v-if="user.loaded && authed">
+          <n-button type="primary" secondary @click="submit">提交</n-button>
+          <n-dropdown :options="menu" @select="clickMenu">
+            <n-button>{{ user.username }}</n-button>
+          </n-dropdown>
+        </template>
+        <n-button
+          v-if="user.loaded && !authed"
+          @click="handleLogin"
+          secondary
+          type="primary"
+        >
           登录
         </n-button>
-        <n-button v-else @click="handleLogout">退出</n-button>
       </n-flex>
     </template>
   </n-tabs>
@@ -81,9 +90,46 @@
 import { Icon } from "@iconify/vue"
 import Editor from "./Editor.vue"
 import { html, css, js, tab, size, reset } from "../store/editors"
-import { username, authed } from "../store/user"
+import { user, authed, roleNormal } from "../store/user"
 import { loginModal } from "../store/modal"
 import { logout } from "../api"
+import { Role } from "../utils/type"
+import { router } from "../router"
+import { computed, h } from "vue"
+import { useMessage } from "naive-ui"
+
+const message = useMessage()
+
+const menu = computed(() => [
+  {
+    label: "后台",
+    key: "dashboard",
+    show: !roleNormal.value,
+    icon: () =>
+      h(Icon, {
+        icon: "streamline-emojis:robot-face-1",
+      }),
+  },
+  {
+    label: "退出",
+    key: "logout",
+    icon: () =>
+      h(Icon, {
+        icon: "streamline-emojis:hot-beverage-2",
+      }),
+  },
+])
+
+function clickMenu(name: string) {
+  switch (name) {
+    case "dashboard":
+      router.push({ name: "dashboard" })
+      break
+    case "logout":
+      handleLogout()
+      break
+  }
+}
 
 function changeTab(name: string) {
   tab.value = name
@@ -99,7 +145,12 @@ function handleLogin() {
 
 async function handleLogout() {
   await logout()
-  username.value = ""
+  user.username = ""
+  user.role = Role.Normal
+}
+
+function submit() {
+  message.error("未实装")
 }
 </script>
 <style scoped>

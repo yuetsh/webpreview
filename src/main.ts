@@ -11,7 +11,7 @@ import { marked } from "marked"
 import alert from "marked-alert"
 import { markedHighlight } from "marked-highlight"
 import preview from "marked-code-preview"
-import { alertVariants } from "./utils"
+import { alertVariants } from "./utils/const"
 
 import hljs from "highlight.js/lib/core"
 import xml from "highlight.js/lib/languages/xml"

@@ -4,9 +4,6 @@
       <Icon icon="noto:eyes" :width="20"></Icon>
       <n-text class="titleText">预览</n-text>
     </n-flex>
-    <n-flex>
-      <!-- <n-button>提交</n-button> -->
-    </n-flex>
   </n-flex>
   <iframe class="iframe" ref="iframe"></iframe>
 </template>

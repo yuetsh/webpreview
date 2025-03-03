@@ -32,7 +32,7 @@
 import { ref } from "vue"
 import { login } from "../api"
 import { loginModal } from "../store/modal"
-import { username } from "../store/user"
+import { user } from "../store/user"
 
 const name = ref("")
 const password = ref("")
@@ -42,7 +42,9 @@ const showMeesage = ref(false)
 async function submit() {
   try {
     const data = await login(name.value, password.value)
-    username.value = data
+    user.username = data.username
+    user.role = data.role
+    user.loaded = true
     loginModal.value = false
   } catch (err) {
     showMeesage.value = true
