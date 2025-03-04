@@ -7,7 +7,7 @@ const http = axios.create({
   baseURL:
     import.meta.env.MODE === "development"
       ? "http://localhost:8000/api"
-      : "https://webapi.xuyue.cc/api",
+      : "https://web.xuyue.cc/api",
   xsrfCookieName: "xsrfCookieName",
   xsrfHeaderName: "X-CSRFTOKEN",
   withCredentials: true,
