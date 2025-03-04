@@ -7,16 +7,20 @@
           :key="item.display"
           @click="show(item.display)"
           style="cursor: pointer"
+          :embedded="!item.is_public"
         >
           <template #header>
             <n-flex align="center">
-              <Icon
-                :icon="
-                  item.is_public
-                    ? 'twemoji:check-mark-button'
-                    : 'twemoji:locked'
-                "
-              ></Icon>
+              <n-button text @click.stop="togglePublic(item.display)">
+                <Icon
+                  width="24"
+                  :icon="
+                    item.is_public
+                      ? 'twemoji:check-mark-button'
+                      : 'twemoji:locked'
+                  "
+                ></Icon>
+              </n-button>
               <span>【{{ item.display }}】{{ item.title }}</span>
             </n-flex>
           </template>
@@ -141,6 +145,15 @@ async function show(display: number) {
   tutorial.value.content = item.content
   tutorial.value.is_public = item.is_public
   content.value = await marked.parse(item.content, { async: true })
+}
+
+async function togglePublic(display: number) {
+  const data = await Tutorial.togglePublic(display)
+  message.success(data.message)
+  list.value = list.value.map((item) => {
+    if (item.display === display) item.is_public = !item.is_public
+    return item
+  })
 }
 
 watch(

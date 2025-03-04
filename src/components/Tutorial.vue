@@ -4,10 +4,10 @@
       <n-flex align="center">
         <Icon icon="twemoji:open-book" :width="20"></Icon>
         <n-text class="preview">教程(测试版)</n-text>
-        <n-button text @click="prev" :disabled="prevDisabled">
+        <n-button text @click="prev" v-if="!hideNav" :disabled="prevDisabled">
           <Icon :width="24" icon="pepicons-pencil:arrow-left"></Icon>
         </n-button>
-        <n-button text @click="next" :disabled="nextDisabled">
+        <n-button text @click="next" v-if="!hideNav" :disabled="nextDisabled">
           <Icon :width="24" icon="pepicons-pencil:arrow-right"></Icon>
         </n-button>
       </n-flex>
@@ -29,10 +29,13 @@ const displays = ref<number[]>([])
 const content = ref("")
 const $content = useTemplateRef("$content")
 
+const hideNav = computed(() => displays.value.length <= 1)
+
 const prevDisabled = computed(() => {
   const i = displays.value.indexOf(step.value)
   return i <= 0
 })
+
 const nextDisabled = computed(() => {
   const i = displays.value.indexOf(step.value)
   return i === displays.value.length - 1

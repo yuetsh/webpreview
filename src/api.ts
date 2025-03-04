@@ -73,6 +73,11 @@ export class Tutorial {
     return res.data
   }
 
+  static async togglePublic(display: number) {
+    const res = await http.put(`/tutorial/public/${display}`)
+    return res.data
+  }
+
   static async remove(display: number) {
     await http.delete(`/tutorial/${display}`)
   }
