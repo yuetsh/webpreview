@@ -20,7 +20,7 @@
         type="error"
         v-if="showMeesage"
         class="message"
-        title="登录失败"
+        title="登录失败，请检查用户名和密码"
       ></n-alert>
       <n-flex>
         <n-button block @click="submit" type="primary">登录</n-button>

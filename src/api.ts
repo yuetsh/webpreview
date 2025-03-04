@@ -1,6 +1,7 @@
 import axios from "axios"
 import { router } from "./router"
 import type { TutorialIn } from "./utils/type"
+import { STORAGE_KEY } from "./utils/const"
 
 const http = axios.create({
   baseURL:
@@ -20,8 +21,7 @@ http.interceptors.response.use(
     if (err.response) {
       switch (err.response.status) {
         case 401: // 未授权
-          localStorage.removeItem("web-isloggedin")
-          alert("未登录")
+          localStorage.removeItem(STORAGE_KEY.LOGIN)
           router.push("/")
           break
         case 403: // 禁止访问

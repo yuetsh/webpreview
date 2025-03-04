@@ -2,6 +2,7 @@ import { createWebHistory, createRouter } from "vue-router"
 import { loginModal } from "./store/modal"
 
 import Home from "./pages/Home.vue"
+import { STORAGE_KEY } from "./utils/const"
 
 const routes = [
   { path: "/", name: "home", component: Home },
@@ -26,7 +27,7 @@ export const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const isLoggedIn = localStorage.getItem("web-isloggedin") === "true"
+  const isLoggedIn = localStorage.getItem(STORAGE_KEY.LOGIN) === "true"
   if (to.meta.auth && !isLoggedIn) {
     loginModal.value = true
     next(false)

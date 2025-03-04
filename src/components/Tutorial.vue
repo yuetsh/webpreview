@@ -22,8 +22,9 @@ import { computed, onMounted, ref, useTemplateRef, watch } from "vue"
 import { marked } from "marked"
 import { useStorage } from "@vueuse/core"
 import { Tutorial } from "../api"
+import { STORAGE_KEY } from "../utils/const"
 
-const step = useStorage("web-turtorial-step", 1)
+const step = useStorage(STORAGE_KEY.STEP, 1)
 const displays = ref<number[]>([])
 const content = ref("")
 const $content = useTemplateRef("$content")

@@ -1,4 +1,5 @@
 import { useStorage } from "@vueuse/core"
+import { STORAGE_KEY } from "../utils/const"
 
 const defaultHTML = `<div class="welcome">黄岩一职</div>`
 const defaultCSS = `.welcome {
@@ -6,12 +7,12 @@ const defaultCSS = `.welcome {
     font-size: 24px;
 }`
 
-export const html = useStorage("web-html", defaultHTML)
-export const css = useStorage("web-css", defaultCSS)
-export const js = useStorage("web-js", "")
+export const html = useStorage(STORAGE_KEY.HTML, defaultHTML)
+export const css = useStorage(STORAGE_KEY.CSS, defaultCSS)
+export const js = useStorage(STORAGE_KEY.JS, "")
 
-export const tab = useStorage("web-tab", "html")
-export const size = useStorage("web-fontsize", 24)
+export const tab = useStorage(STORAGE_KEY.TAB, "html")
+export const size = useStorage(STORAGE_KEY.FONTSIZE, 24)
 
 export function reset(lang: "html" | "css" | "js") {
   if (lang === "html") {

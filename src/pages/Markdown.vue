@@ -73,13 +73,14 @@ import { useStorage } from "@vueuse/core"
 import { Tutorial } from "../api"
 import type { TutorialSlim } from "../utils/type"
 import { useDialog, useMessage } from "naive-ui"
+import { STORAGE_KEY } from "../utils/const"
 
 const message = useMessage()
 const confirm = useDialog()
 
 const list = ref<TutorialSlim[]>([])
 const content = ref("")
-const tutorial = useStorage("web-tutorial", {
+const tutorial = useStorage(STORAGE_KEY.TUTORIAL, {
   display: 0,
   title: "",
   content: "",

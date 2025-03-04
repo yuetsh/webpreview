@@ -4,6 +4,7 @@ import Login from "./components/Login.vue"
 import { onMounted, watch } from "vue"
 import { Account } from "./api"
 import { authed, user } from "./store/user"
+import { STORAGE_KEY } from "./utils/const"
 
 onMounted(async () => {
   const data = await Account.getMyProfile()
@@ -14,9 +15,9 @@ onMounted(async () => {
 
 watch(authed, (v) => {
   if (v) {
-    localStorage.setItem("web-isloggedin", "true")
+    localStorage.setItem(STORAGE_KEY.LOGIN, "true")
   } else {
-    localStorage.removeItem("web-isloggedin")
+    localStorage.removeItem(STORAGE_KEY.LOGIN)
   }
 })
 </script>
