@@ -31,7 +31,7 @@ const $content = useTemplateRef("$content")
 
 const prevDisabled = computed(() => {
   const i = displays.value.indexOf(step.value)
-  return i === 0
+  return i <= 0
 })
 const nextDisabled = computed(() => {
   const i = displays.value.indexOf(step.value)
@@ -51,6 +51,10 @@ function next() {
 async function getContent() {
   const res = await Tutorial.listDisplay()
   displays.value = res
+  if (!displays.value.length) {
+    content.value = "暂无教程"
+    return
+  }
   if (!displays.value.includes(step.value)) {
     step.value = displays.value[0]
   }
