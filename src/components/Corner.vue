@@ -20,11 +20,12 @@
 import { computed, h } from "vue"
 import { useMessage } from "naive-ui"
 import { Icon } from "@iconify/vue"
-import { user, authed, roleNormal } from "../store/user"
+import { user, authed, roleNormal, roleSuper } from "../store/user"
 import { loginModal } from "../store/modal"
 import { Account } from "../api"
 import { Role } from "../utils/type"
 import { router } from "../router"
+import { ADMIN_URL } from "../utils/const"
 
 const message = useMessage()
 
@@ -36,6 +37,15 @@ const menu = computed(() => [
     icon: () =>
       h(Icon, {
         icon: "streamline-emojis:robot-face-1",
+      }),
+  },
+  {
+    label: "管理",
+    key: "admin",
+    show: roleSuper.value,
+    icon: () =>
+      h(Icon, {
+        icon: "skill-icons:django",
       }),
   },
   {
@@ -52,6 +62,9 @@ function clickMenu(name: string) {
   switch (name) {
     case "dashboard":
       router.push({ name: "tutorial" })
+      break
+    case "admin":
+      window.open(ADMIN_URL)
       break
     case "logout":
       handleLogout()

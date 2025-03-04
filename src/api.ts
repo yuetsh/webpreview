@@ -1,13 +1,10 @@
 import axios from "axios"
 import { router } from "./router"
 import type { TutorialIn } from "./utils/type"
-import { STORAGE_KEY } from "./utils/const"
+import { BASE_URL, STORAGE_KEY } from "./utils/const"
 
 const http = axios.create({
-  baseURL:
-    import.meta.env.MODE === "development"
-      ? "http://localhost:8000/api"
-      : "https://web.xuyue.cc/api",
+  baseURL: BASE_URL,
   xsrfCookieName: "xsrfCookieName",
   xsrfHeaderName: "X-CSRFTOKEN",
   withCredentials: true,

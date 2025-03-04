@@ -9,4 +9,4 @@ export const user = reactive({
 export const authed = computed(() => !!user.username)
 export const roleNormal = computed(() => user.role === Role.Normal)
 export const roleAdmin = computed(() => user.role === Role.Admin)
-export const roleSuper = computed(() => user.role !== Role.Super)
+export const roleSuper = computed(() => user.role === Role.Super)

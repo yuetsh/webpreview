@@ -5,7 +5,7 @@
         <n-input v-model:value="query.username" clearable />
       </div>
       <n-button @click="init">搜索</n-button>
-      <n-button>新建一个</n-button>
+      <n-button @click="goDjangoUserAdd">新建一个</n-button>
       <n-button>批量新建</n-button>
     </n-flex>
     <n-flex>
@@ -18,7 +18,8 @@ import { onMounted, reactive, ref } from "vue"
 import { Account } from "../api"
 import { parseTime } from "../utils/helper"
 import type { DataTableColumn } from "naive-ui"
-import type { User } from "../utils/type"
+import { getRole, type User } from "../utils/type"
+import { ADMIN_URL } from "../utils/const"
 
 const data = ref([])
 const query = reactive({
@@ -43,17 +44,24 @@ const columns: DataTableColumn<User>[] = [
     title: "上次登录",
     key: "last_login",
     render: (row) =>
-      row.last_login ? parseTime(row.last_login, "YYYY-MM-DD HH:mm:ss") : "从未登录",
+      row.last_login
+        ? parseTime(row.last_login, "YYYY-MM-DD HH:mm:ss")
+        : "从未登录",
   },
   {
     title: "权限",
     key: "role",
+    render: (row) => getRole(row.role),
   },
   {
     title: "选项",
     key: "actions",
   },
 ]
+
+function goDjangoUserAdd() {
+  window.open(`${ADMIN_URL}/account/user/add/`)
+}
 
 async function init() {
   data.value = await Account.list(query)

@@ -4,6 +4,14 @@ export enum Role {
   Normal = "normal",
 }
 
+export function getRole(role: Role) {
+  return {
+    [Role.Super]: "超级管理员",
+    [Role.Admin]: "管理员",
+    [Role.Normal]: "普通用户",
+  }[role]
+}
+
 export interface TutorialSlim {
   display: number
   title: string

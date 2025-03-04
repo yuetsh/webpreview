@@ -36,3 +36,13 @@ export const STORAGE_KEY = {
   TAB: "web-tab",
   FONTSIZE: "web-fontsize",
 }
+
+export const ADMIN_URL =
+  import.meta.env.MODE === "development"
+    ? "http://localhost:8000/admin"
+    : "https://web.xuyue.cc/admin"
+
+export const BASE_URL =
+  import.meta.env.MODE === "development"
+    ? "http://localhost:8000/api"
+    : "https://web.xuyue.cc/api"
