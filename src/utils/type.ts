@@ -15,3 +15,11 @@ export interface TutorialIn {
   title: string
   content: string
 }
+
+export interface User {
+  username: string
+  date_joined: Date
+  last_login: Date
+  role: Role
+  is_active: boolean
+}

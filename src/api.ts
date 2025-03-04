@@ -53,6 +53,13 @@ export class Account {
     const res = await http.get("/account/profile")
     return res.data
   }
+
+  static async list(query: { username: string }) {
+    const res = await http.get("/account/list", {
+      params: query,
+    })
+    return res.data
+  }
 }
 
 export class Tutorial {
