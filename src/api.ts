@@ -25,7 +25,8 @@ http.interceptors.response.use(
           router.push("/")
           break
         case 403: // 禁止访问
-          alert("禁止访问")
+          alert("权限不够，禁止访问")
+          router.push("/")
           break
         default:
           console.error("出现错误：", err.response.status, err.response.data)

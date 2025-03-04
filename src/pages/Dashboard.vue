@@ -1,15 +1,28 @@
 <template>
   <n-flex class="container" :wrap="false">
     <n-flex vertical class="menu">
-      <n-button @click="$router.push({ name: 'home' })">返回</n-button>
-      <n-button @click="$router.push({ name: 'tutorial' })">教程</n-button>
+      <n-button secondary @click="$router.push({ name: 'home' })">
+        返回
+      </n-button>
+      <n-button
+        v-for="item in menu"
+        :type="$route.name === item.name ? 'primary' : 'default'"
+        @click="$router.push({ name: item.name })"
+      >
+        {{ item.label }}
+      </n-button>
     </n-flex>
     <n-flex class="content">
       <router-view></router-view>
     </n-flex>
   </n-flex>
 </template>
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+const menu = [
+  { label: "教程", name: "tutorial" },
+  { label: "用户", name: "user-manage" },
+]
+</script>
 <style scoped>
 .container {
   height: 100vh;

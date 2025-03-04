@@ -17,6 +17,11 @@ const routes = [
         name: "tutorial",
         component: () => import("./pages/Markdown.vue"),
       },
+      {
+        path: "user-manage",
+        name: "user-manage",
+        component: () => import("./pages/UserManage.vue"),
+      },
     ],
   },
 ]
