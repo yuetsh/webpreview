@@ -149,6 +149,7 @@ watch(step, render)
 .markdown-body pre code {
   padding: 0;
   font-size: 1rem;
+  font-family: Monaco;
 }
 
 .codeblock-action {
