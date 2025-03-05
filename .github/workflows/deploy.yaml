@@ -26,3 +26,13 @@ jobs:
           SOURCE: dist/
           REMOTE_USER: root
           TARGET: /root/WebPreview/build
+
+      - uses: appleboy/ssh-action@v1.2.1
+        with:
+          host: ${{ secrets.HOST }}
+          username: root
+          key: ${{ secrets.KEY }}
+          script: |
+            cd ~/WebPreview/api
+            git pull
+            sh ~/WebPreview/run.sh
