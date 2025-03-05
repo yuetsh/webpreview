@@ -4,6 +4,7 @@
       <Icon icon="noto:eyes" :width="20"></Icon>
       <n-text class="titleText">预览</n-text>
     </n-flex>
+    <n-button quaternary @click="download">下载</n-button>
   </n-flex>
   <iframe class="iframe" ref="iframe"></iframe>
 </template>
@@ -16,10 +17,8 @@ import { Icon } from "@iconify/vue"
 
 const iframe = useTemplateRef<HTMLIFrameElement>("iframe")
 
-function preview() {
-  if (!iframe.value) return
-  const doc = iframe.value.contentDocument!
-  const content = `<!DOCTYPE html>
+function getContent() {
+  return `<!DOCTYPE html>
 <html lang="zh-Hans-CN">
   <head>
     <meta charset="UTF-8" />
@@ -34,9 +33,25 @@ function preview() {
     <script type="module">${js.value}<\/script>
   </body>
 </html>`
+}
+
+function preview() {
+  if (!iframe.value) return
+  const doc = iframe.value.contentDocument!
   doc.open()
-  doc.write(content)
+  doc.write(getContent())
   doc.close()
+}
+
+function download() {
+  const content = getContent()
+  const blob = new Blob([content], { type: "text/html" })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a")
+  a.href = url
+  a.download = "index.html"
+  a.click()
+  URL.revokeObjectURL(url)
 }
 
 watchDebounced([html, css, js], preview, { debounce: 500, maxWait: 1000 })
