@@ -45,7 +45,7 @@ const lang = computed(() => {
   <Codemirror
     v-model="code"
     indentWithTab
-    :extensions="[EditorView.lineWrapping, styleTheme, lang, githubLight]"
+    :extensions="[styleTheme, lang, githubLight]"
     :tabSize="4"
     :style="{ height: '100%', fontSize: props.fontSize + 'px' }"
   />
