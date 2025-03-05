@@ -135,7 +135,6 @@ watch(step, render)
 }
 
 .markdown-body pre code {
-  white-space: pre-wrap;
   padding: 0;
   font-size: 1rem;
 }
