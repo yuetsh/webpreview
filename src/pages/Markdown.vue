@@ -71,20 +71,18 @@
 </template>
 <script lang="ts" setup>
 import { marked } from "marked"
-import { computed, onMounted, ref, watch } from "vue"
+import { computed, onMounted, reactive, ref, watch } from "vue"
 import { Icon } from "@iconify/vue"
-import { useStorage } from "@vueuse/core"
 import { Tutorial } from "../api"
 import type { TutorialSlim } from "../utils/type"
 import { useDialog, useMessage } from "naive-ui"
-import { STORAGE_KEY } from "../utils/const"
 
 const message = useMessage()
 const confirm = useDialog()
 
 const list = ref<TutorialSlim[]>([])
 const content = ref("")
-const tutorial = useStorage(STORAGE_KEY.TUTORIAL, {
+const tutorial = reactive({
   display: 0,
   title: "",
   content: "",
@@ -93,30 +91,30 @@ const tutorial = useStorage(STORAGE_KEY.TUTORIAL, {
 
 const canSubmit = computed(
   () =>
-    tutorial.value.display && tutorial.value.title && tutorial.value.content,
+    tutorial.display && tutorial.title && tutorial.content,
 )
 async function getContent() {
   const res = await Tutorial.list()
   list.value = res.list
-  const data = tutorial.value.content || res.first?.content
+  const data = tutorial.content || res.first?.content
   content.value = await marked.parse(data ?? "", { async: true })
 }
 
 function createNew() {
-  tutorial.value.display = list.value[list.value.length - 1].display + 1
-  tutorial.value.title = ""
-  tutorial.value.content = ""
-  tutorial.value.is_public = false
+  tutorial.display = list.value[list.value.length - 1].display + 1
+  tutorial.title = ""
+  tutorial.content = ""
+  tutorial.is_public = false
   content.value = ""
 }
 
 async function submit() {
   try {
-    await Tutorial.createOrUpdate(tutorial.value)
-    tutorial.value.display = 0
-    tutorial.value.title = ""
-    tutorial.value.content = ""
-    tutorial.value.is_public = false
+    await Tutorial.createOrUpdate(tutorial)
+    tutorial.display = 0
+    tutorial.title = ""
+    tutorial.content = ""
+    tutorial.is_public = false
     await getContent()
     content.value = ""
   } catch (error: any) {
@@ -140,10 +138,10 @@ async function remove(display: number) {
 
 async function show(display: number) {
   const item = await Tutorial.get(display)
-  tutorial.value.display = item.display
-  tutorial.value.title = item.title
-  tutorial.value.content = item.content
-  tutorial.value.is_public = item.is_public
+  tutorial.display = item.display
+  tutorial.title = item.title
+  tutorial.content = item.content
+  tutorial.is_public = item.is_public
   content.value = await marked.parse(item.content, { async: true })
 }
 
@@ -157,7 +155,7 @@ async function togglePublic(display: number) {
 }
 
 watch(
-  () => tutorial.value.content,
+  () => tutorial.content,
   async (v: string) => {
     content.value = await marked.parse(v, { async: true })
   },

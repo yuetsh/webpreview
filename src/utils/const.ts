@@ -29,7 +29,6 @@ export const alertVariants = [
 export const STORAGE_KEY = {
   LOGIN: "web-isloggedin",
   STEP: "web-turtorial-step",
-  TUTORIAL: "web-tutorial",
   HTML: "web-html",
   CSS: "web-css",
   JS: "web-js",
