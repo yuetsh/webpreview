@@ -32,13 +32,9 @@ const props = withDefaults(defineProps<Props>(), {
 const code = defineModel<string>("value")
 
 const lang = computed(() => {
-  if (props.language === "html") {
-    return html()
-  } else if (props.language === "css") {
-    return css()
-  } else {
-    return javascript()
-  }
+  if (props.language === "html") return html()
+  if (props.language === "css") return css()
+  return javascript()
 })
 </script>
 <template>

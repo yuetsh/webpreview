@@ -3,8 +3,6 @@ import { create } from "naive-ui"
 import App from "./App.vue"
 
 //@ts-ignore
-import "normalize.css"
-//@ts-ignore
 import "github-markdown-css/github-markdown-light.css"
 
 import { marked } from "marked"

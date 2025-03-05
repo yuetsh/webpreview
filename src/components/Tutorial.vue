@@ -75,8 +75,8 @@ async function getContent() {
 function addButton() {
   const action = document.createElement("div")
   action.className = "codeblock-action"
-  const pres = $content.value!.querySelectorAll("pre")
-  pres.forEach((pre) => {
+  const pres = $content.value?.querySelectorAll("pre") ?? []
+  for (const pre of pres) {
     let timer = 0
     const copy = action.cloneNode() as HTMLDivElement
     pre.insertBefore(copy, pre.children[0])
@@ -88,7 +88,7 @@ function addButton() {
     const btn = copy.children[1] as HTMLDivElement
     btn.onclick = () => {
       tab.value = lang
-      const content = pre.children[1].textContent!
+      const content = pre.children[1].textContent
       if (lang === "html") html.value = content
       if (lang === "css") css.value = content
       if (lang === "js") js.value = content
@@ -99,12 +99,14 @@ function addButton() {
         btn.innerHTML = "替换"
       }, 1000)
     }
-  })
+  }
 }
 
 function modifyLink() {
-  const links = $content.value!.querySelectorAll("a")
-  links.forEach((link) => (link.target = "_blank"))
+  const links = $content.value?.querySelectorAll("a") ?? []
+  for (const link of links) {
+    link.target = "_blank"
+  }
 }
 
 async function render() {

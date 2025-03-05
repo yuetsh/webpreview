@@ -1,10 +1,6 @@
 <template>
   <n-flex>
-    <n-button
-      secondary
-      v-if="user.role !== Role.Super"
-      @click="edit"
-    >
+    <n-button secondary v-if="user.role !== Role.Super" @click="edit">
       修改
     </n-button>
     <n-button

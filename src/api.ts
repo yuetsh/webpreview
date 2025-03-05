@@ -35,62 +35,62 @@ http.interceptors.response.use(
   },
 )
 
-export class Account {
-  static async login(username: string, password: string) {
+export const Account = {
+  async login(username: string, password: string) {
     const res = await http.post("/account/login", { username, password })
     return res.data
-  }
+  },
 
-  static async logout() {
+  async logout() {
     const res = await http.post("/account/logout")
     return res.data
-  }
+  },
 
-  static async getMyProfile() {
+  async getMyProfile() {
     const res = await http.get("/account/profile")
     return res.data
-  }
+  },
 
-  static async list(query: { username: string; page: number }) {
+  async list(query: { username: string; page: number }) {
     const res = await http.get("/account/list", {
       params: query,
     })
     return res.data
-  }
+  },
 
-  static async toggleActive(id: number) {
+  async toggleActive(id: number) {
     const res = await http.put(`/account/active/${id}`)
     return res.data
-  }
+  },
 }
 
-export class Tutorial {
-  static async list() {
+export const Tutorial = {
+  async list() {
     const res = await http.get("/tutorial/list")
     return res.data
-  }
+  },
 
-  static async createOrUpdate(payload: TutorialIn) {
+  async createOrUpdate(payload: TutorialIn) {
     const res = await http.post("/tutorial/", payload)
     return res.data
-  }
+  },
 
-  static async togglePublic(display: number) {
+  async togglePublic(display: number) {
     const res = await http.put(`/tutorial/public/${display}`)
     return res.data
-  }
+  },
 
-  static async remove(display: number) {
+  async remove(display: number) {
     await http.delete(`/tutorial/${display}`)
-  }
+  },
 
-  static async get(display: number) {
+  async get(display: number) {
     const res = await http.get(`/tutorial/${display}`)
     return res.data
-  }
+  },
 
-  static async listDisplay() {
+  async listDisplay() {
     const res = await http.get("/tutorial/display")
     return res.data
-  }
+  },
 }

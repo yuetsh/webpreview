@@ -4,7 +4,7 @@
       <Icon icon="noto:eyes" :width="20"></Icon>
       <n-text class="titleText">预览</n-text>
     </n-flex>
-    <n-button quaternary @click="download">下载</n-button>
+    <n-button quaternary @click="download" :disabled="!showDL">下载</n-button>
   </n-flex>
   <iframe class="iframe" ref="iframe"></iframe>
 </template>
@@ -12,10 +12,11 @@
 <script lang="ts" setup>
 import { watchDebounced } from "@vueuse/core"
 import { html, css, js } from "../store/editors"
-import { onMounted, useTemplateRef } from "vue"
+import { computed, onMounted, useTemplateRef } from "vue"
 import { Icon } from "@iconify/vue"
 
 const iframe = useTemplateRef<HTMLIFrameElement>("iframe")
+const showDL = computed(() => html.value || css.value || js.value)
 
 function getContent() {
   return `<!DOCTYPE html>
@@ -37,10 +38,12 @@ function getContent() {
 
 function preview() {
   if (!iframe.value) return
-  const doc = iframe.value.contentDocument!
-  doc.open()
-  doc.write(getContent())
-  doc.close()
+  const doc = iframe.value.contentDocument
+  if (doc) {
+    doc.open()
+    doc.write(getContent())
+    doc.close()
+  }
 }
 
 function download() {
