@@ -1,5 +1,5 @@
 <template>
-  <n-split :default-size="1 / 3" min="300px" max="800px">
+  <n-split :default-size="2 / 3" min="300px" max="800px">
     <template #1>
       <Tutorial />
     </template>
