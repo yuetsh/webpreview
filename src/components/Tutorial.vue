@@ -96,9 +96,15 @@ function addButton() {
   })
 }
 
+function modifyLink() {
+  const links = $content.value!.querySelectorAll("a")
+  links.forEach((link) => (link.target = "_blank"))
+}
+
 async function render() {
   await getContent()
   addButton()
+  modifyLink()
 }
 
 onMounted(render)
