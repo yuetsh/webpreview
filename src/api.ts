@@ -51,10 +51,15 @@ export class Account {
     return res.data
   }
 
-  static async list(query: { username: string }) {
+  static async list(query: { username: string; page: number }) {
     const res = await http.get("/account/list", {
       params: query,
     })
+    return res.data
+  }
+
+  static async toggleActive(id: number) {
+    const res = await http.put(`/account/active/${id}`)
     return res.data
   }
 }

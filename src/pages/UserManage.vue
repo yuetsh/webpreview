@@ -7,23 +7,33 @@
       <n-button @click="init">搜索</n-button>
       <n-button @click="goDjangoUserAdd">新建一个</n-button>
       <n-button>批量新建</n-button>
+      <n-pagination
+        v-model:page="query.page"
+        :page-size="20"
+        :item-count="count"
+        simple
+      />
     </n-flex>
-    <n-flex>
-      <n-data-table :columns="columns" :data="data"></n-data-table>
-    </n-flex>
+    <n-data-table :columns="columns" :data="users"></n-data-table>
   </n-flex>
 </template>
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from "vue"
+import { onMounted, reactive, ref, h, watch } from "vue"
 import { Account } from "../api"
 import { parseTime } from "../utils/helper"
 import type { DataTableColumn } from "naive-ui"
 import { getRole, type User } from "../utils/type"
 import { ADMIN_URL } from "../utils/const"
+import UserActions from "../components/dashboard/UserActions.vue"
+import { useRoute, useRouter } from "vue-router"
 
-const data = ref([])
+const users = ref([])
+const count = ref(0)
+const route = useRoute()
+const router = useRouter()
 const query = reactive({
   username: "",
+  page: Number(route.params.page),
 })
 
 const columns: DataTableColumn<User>[] = [
@@ -32,7 +42,7 @@ const columns: DataTableColumn<User>[] = [
     key: "username",
   },
   {
-    title: "凭证",
+    title: "密码",
     key: "raw_password",
   },
   {
@@ -56,6 +66,7 @@ const columns: DataTableColumn<User>[] = [
   {
     title: "选项",
     key: "actions",
+    render: (row) => h(UserActions, { user: row, onReload: init }),
   },
 ]
 
@@ -64,8 +75,16 @@ function goDjangoUserAdd() {
 }
 
 async function init() {
-  data.value = await Account.list(query)
+  const data = await Account.list(query)
+  users.value = data.items
+  count.value = data.count
 }
+
+watch(query, init)
+watch(
+  () => query.page,
+  (v) => router.push({ params: { page: v } }),
+)
 
 onMounted(init)
 </script>

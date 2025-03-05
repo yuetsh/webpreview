@@ -29,6 +29,7 @@ export interface TutorialIn {
 }
 
 export interface User {
+  id: number
   username: string
   date_joined: Date
   last_login: Date

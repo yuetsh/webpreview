@@ -18,7 +18,7 @@ const routes = [
         component: () => import("./pages/Markdown.vue"),
       },
       {
-        path: "user-manage",
+        path: "user-manage/:page",
         name: "user-manage",
         component: () => import("./pages/UserManage.vue"),
       },

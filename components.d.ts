@@ -29,6 +29,7 @@ declare module 'vue' {
     NMessageProvider: typeof import('naive-ui')['NMessageProvider']
     NModal: typeof import('naive-ui')['NModal']
     NModalProvider: typeof import('naive-ui')['NModalProvider']
+    NPagination: typeof import('naive-ui')['NPagination']
     NSplit: typeof import('naive-ui')['NSplit']
     NSwitch: typeof import('naive-ui')['NSwitch']
     NTabPane: typeof import('naive-ui')['NTabPane']
@@ -39,5 +40,6 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Tutorial: typeof import('./src/components/Tutorial.vue')['default']
+    UserActions: typeof import('./src/components/dashboard/UserActions.vue')['default']
   }
 }
