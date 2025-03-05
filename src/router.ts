@@ -13,7 +13,7 @@ const routes = [
     meta: { auth: true },
     children: [
       {
-        path: "tutorial",
+        path: "tutorial/:display",
         name: "tutorial",
         component: () => import("./pages/Markdown.vue"),
       },

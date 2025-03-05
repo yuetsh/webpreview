@@ -22,6 +22,7 @@ import { useMessage } from "naive-ui"
 import { Icon } from "@iconify/vue"
 import { user, authed, roleNormal, roleSuper } from "../store/user"
 import { loginModal } from "../store/modal"
+import { step } from "../store/tutorial"
 import { Account } from "../api"
 import { Role } from "../utils/type"
 import { router } from "../router"
@@ -61,7 +62,7 @@ const menu = computed(() => [
 function clickMenu(name: string) {
   switch (name) {
     case "dashboard":
-      router.push({ name: "tutorial" })
+      router.push({ name: "tutorial", params: { display: step.value } })
       break
     case "admin":
       window.open(ADMIN_URL)

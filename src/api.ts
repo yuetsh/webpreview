@@ -61,7 +61,7 @@ export class Account {
 
 export class Tutorial {
   static async list() {
-    const res = await http.get("/tutorial/")
+    const res = await http.get("/tutorial/list")
     return res.data
   }
 

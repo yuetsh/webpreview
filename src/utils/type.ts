@@ -18,6 +18,10 @@ export interface TutorialSlim {
   is_public: boolean
 }
 
+export interface TutorialReturn extends TutorialSlim {
+  content: string
+}
+
 export interface TutorialIn {
   display: number
   title: string

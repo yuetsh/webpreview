@@ -6,7 +6,11 @@
           v-for="item in list"
           :key="item.display"
           @click="show(item.display)"
-          style="cursor: pointer"
+          class="card"
+          :header-style="{
+            backgroundColor:
+              item.display === tutorial.display ? 'rgba(24, 160, 80, 0.1)' : '',
+          }"
           :embedded="!item.is_public"
         >
           <template #header>
@@ -72,11 +76,14 @@
 <script lang="ts" setup>
 import { marked } from "marked"
 import { computed, onMounted, reactive, ref, watch } from "vue"
+import { useRoute, useRouter } from "vue-router"
 import { Icon } from "@iconify/vue"
 import { Tutorial } from "../api"
 import type { TutorialSlim } from "../utils/type"
 import { useDialog, useMessage } from "naive-ui"
 
+const route = useRoute()
+const router = useRouter()
 const message = useMessage()
 const confirm = useDialog()
 
@@ -90,14 +97,11 @@ const tutorial = reactive({
 })
 
 const canSubmit = computed(
-  () =>
-    tutorial.display && tutorial.title && tutorial.content,
+  () => tutorial.display && tutorial.title && tutorial.content,
 )
 async function getContent() {
-  const res = await Tutorial.list()
-  list.value = res.list
-  const data = tutorial.content || res.first?.content
-  content.value = await marked.parse(data ?? "", { async: true })
+  list.value = await Tutorial.list()
+  show(Number(route.params.display))
 }
 
 function createNew() {
@@ -137,6 +141,7 @@ async function remove(display: number) {
 }
 
 async function show(display: number) {
+  router.push({ name: "tutorial", params: { display } })
   const item = await Tutorial.get(display)
   tutorial.display = item.display
   tutorial.title = item.title
@@ -171,6 +176,10 @@ onMounted(getContent)
 
 .col {
   padding-top: 10px;
+}
+
+.card {
+  cursor: pointer;
 }
 
 .editor {

@@ -6,8 +6,8 @@
       </n-button>
       <n-button
         v-for="item in menu"
-        :type="$route.name === item.name ? 'primary' : 'default'"
-        @click="$router.push({ name: item.name })"
+        :type="$route.name === item.route.name ? 'primary' : 'default'"
+        @click="$router.push(item.route)"
       >
         {{ item.label }}
       </n-button>
@@ -18,9 +18,14 @@
   </n-flex>
 </template>
 <script lang="ts" setup>
+import { step } from "../store/tutorial"
+
 const menu = [
-  { label: "教程", name: "tutorial" },
-  { label: "用户", name: "user-manage" },
+  {
+    label: "教程",
+    route: { name: "tutorial", params: { display: step.value } },
+  },
+  { label: "用户", route: { name: "user-manage" } },
 ]
 </script>
 <style scoped>

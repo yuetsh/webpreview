@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <n-flex align="center" class="title">
+    <n-flex align="center" justify="space-between" class="title">
       <n-flex align="center">
         <Icon icon="twemoji:open-book" :width="20"></Icon>
         <n-text class="preview">教程(测试版)</n-text>
@@ -11,6 +11,13 @@
           <Icon :width="24" icon="pepicons-pencil:arrow-right"></Icon>
         </n-button>
       </n-flex>
+      <n-button
+        v-if="authed && roleSuper"
+        quaternary
+        @click="$router.push({ name: 'tutorial', params: { display: step } })"
+      >
+        修改
+      </n-button>
     </n-flex>
     <div class="markdown-body" v-html="content" ref="$content"></div>
   </div>
@@ -20,11 +27,10 @@ import { Icon } from "@iconify/vue"
 import { html, css, js, tab } from "../store/editors"
 import { computed, onMounted, ref, useTemplateRef, watch } from "vue"
 import { marked } from "marked"
-import { useStorage } from "@vueuse/core"
 import { Tutorial } from "../api"
-import { STORAGE_KEY } from "../utils/const"
+import { step } from "../store/tutorial"
+import { authed, roleSuper } from "../store/user"
 
-const step = useStorage(STORAGE_KEY.STEP, 1)
 const displays = ref<number[]>([])
 const content = ref("")
 const $content = useTemplateRef("$content")

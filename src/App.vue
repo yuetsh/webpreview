@@ -25,7 +25,7 @@ watch(authed, (v) => {
 <template>
   <n-config-provider class="myContainer" :locale="zhCN" :date-locale="dateZhCN">
     <n-modal-provider>
-      <n-message-provider max="1">
+      <n-message-provider :max="1">
         <n-dialog-provider>
           <router-view></router-view>
           <Login />
