@@ -1,7 +1,12 @@
 <template>
-  <n-split :default-size="2 / 5" min="300px" max="800px">
+  <n-split
+    :size="tutorialSize"
+    @update-size="changeSize"
+    min="400px"
+    max="900px"
+  >
     <template #1>
-      <Tutorial />
+      <Tutorial @hide="hide" />
     </template>
     <template #2>
       <n-split direction="vertical" min="200px">
@@ -20,6 +25,7 @@ import { useMagicKeys, whenever } from "@vueuse/core"
 import Editors from "../components/Editors.vue"
 import Preview from "../components/Preview.vue"
 import Tutorial from "../components/Tutorial.vue"
+import { show, tutorialSize } from "../store/tutorial"
 
 const { ctrl_s } = useMagicKeys({
   passive: false,
@@ -34,6 +40,17 @@ const { ctrl_r } = useMagicKeys({
     if (e.ctrlKey && e.key === "r" && e.type === "keydown") e.preventDefault()
   },
 })
+
+function changeSize(n: number) {
+  tutorialSize.value = n
+  if (n > 0) show.value = true
+}
+
+function hide() {
+  tutorialSize.value = 0
+  show.value = false
+}
+
 whenever(ctrl_s, () => {})
 whenever(ctrl_r, () => {})
 </script>

@@ -11,20 +11,23 @@
           <Icon :width="24" icon="pepicons-pencil:arrow-right"></Icon>
         </n-button>
       </n-flex>
-      <n-button
-        v-if="authed && roleSuper"
-        quaternary
-        @click="$router.push({ name: 'tutorial', params: { display: step } })"
-      >
-        修改
-      </n-button>
+      <n-flex>
+        <n-button
+          v-if="authed && roleSuper"
+          quaternary
+          @click="$router.push({ name: 'tutorial', params: { display: step } })"
+        >
+          编辑
+        </n-button>
+        <n-button quaternary @click="$emit('hide')">隐藏</n-button>
+      </n-flex>
     </n-flex>
     <div class="markdown-body" v-html="content" ref="$content"></div>
   </div>
 </template>
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
-import { html, css, js, tab } from "../store/editors"
+import { css, html, js, tab } from "../store/editors"
 import { computed, onMounted, ref, useTemplateRef, watch } from "vue"
 import { marked } from "marked"
 import { Tutorial } from "../api"
@@ -34,6 +37,8 @@ import { authed, roleSuper } from "../store/user"
 const displays = ref<number[]>([])
 const content = ref("")
 const $content = useTemplateRef("$content")
+
+defineEmits(["hide"])
 
 const hideNav = computed(() => displays.value.length <= 1)
 
@@ -58,8 +63,7 @@ function next() {
 }
 
 async function getContent() {
-  const res = await Tutorial.listDisplay()
-  displays.value = res
+  displays.value = await Tutorial.listDisplay()
   if (!displays.value.length) {
     content.value = "暂无教程"
     return

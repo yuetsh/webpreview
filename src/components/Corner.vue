@@ -1,5 +1,6 @@
 <template>
   <n-flex align="center" class="corner">
+    <n-button secondary v-if="!show" @click="showTutorial">教程</n-button>
     <template v-if="user.loaded && authed">
       <n-button type="primary" secondary @click="submit">提交</n-button>
       <n-dropdown :options="menu" @select="clickMenu">
@@ -20,9 +21,9 @@
 import { computed, h } from "vue"
 import { useMessage } from "naive-ui"
 import { Icon } from "@iconify/vue"
-import { user, authed, roleNormal, roleSuper } from "../store/user"
+import { authed, roleNormal, roleSuper, user } from "../store/user"
 import { loginModal } from "../store/modal"
-import { step } from "../store/tutorial"
+import { show, step, tutorialSize } from "../store/tutorial"
 import { Account } from "../api"
 import { Role } from "../utils/type"
 import { router } from "../router"
@@ -58,6 +59,11 @@ const menu = computed(() => [
       }),
   },
 ])
+
+function showTutorial() {
+  show.value = true
+  tutorialSize.value = 2 / 5
+}
 
 function clickMenu(name: string) {
   switch (name) {
