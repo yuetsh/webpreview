@@ -29,23 +29,28 @@
       style="width: 300px"
       :mask-closable="false"
       preset="card"
-      title="批量新建用户"
+      title="批量新建 (前缀 web)"
       v-model:show="showBatch"
     >
       <n-flex vertical>
-        <b>前缀：web</b>
-        <n-input placeholder="班级" />
-        <n-input rows="20" type="textarea" />
-        <n-button type="primary">提交</n-button>
+        <n-input placeholder="班级" v-model:value="classname" />
+        <n-input rows="20" type="textarea" v-model:value="namesStr" />
+        <n-button
+          type="primary"
+          :disabled="!(classname && !!names.length)"
+          @click="batchCreateUsers"
+        >
+          提交
+        </n-button>
       </n-flex>
     </n-modal>
   </n-flex>
 </template>
 <script lang="ts" setup>
-import { onMounted, reactive, ref, h, watch } from "vue"
+import { onMounted, reactive, ref, h, watch, computed } from "vue"
 import { Account } from "../api"
 import { parseTime } from "../utils/helper"
-import type { DataTableColumn } from "naive-ui"
+import { useMessage, type DataTableColumn } from "naive-ui"
 import { getRole, Role, type User } from "../utils/type"
 import { ADMIN_URL } from "../utils/const"
 import UserActions from "../components/dashboard/UserActions.vue"
@@ -56,12 +61,16 @@ const users = ref([])
 const count = ref(0)
 const route = useRoute()
 const router = useRouter()
+const message = useMessage()
 const query = reactive({
   username: "",
   page: Number(route.params.page),
   role: "",
 })
-const showBatch = ref(true)
+const showBatch = ref(false)
+const classname = ref("")
+const namesStr = ref("")
+const names = computed(() => namesStr.value.split("\n").filter((it) => !!it))
 
 const roles = [
   { label: "全部权限", value: "" },
@@ -106,6 +115,20 @@ const columns: DataTableColumn<User>[] = [
 
 function goDjangoUserAdd() {
   window.open(`${ADMIN_URL}/account/user/add/`)
+}
+
+async function batchCreateUsers() {
+  if (!names.value.length) return
+  try {
+    await Account.batchCreate({
+      classname: classname.value,
+      names: names.value,
+    })
+    message.success("批量创建成功")
+    showBatch.value = false
+  } catch (err) {
+    message.error("有些用户已经存在，创建失败")
+  }
 }
 
 async function init() {

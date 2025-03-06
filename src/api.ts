@@ -62,6 +62,10 @@ export const Account = {
     const res = await http.put(`/account/active/${id}`)
     return res.data
   },
+
+  async batchCreate(payload: {classname: string, names: string[]}) {
+    await http.post("/account/batch", payload)
+  }
 }
 
 export const Tutorial = {
