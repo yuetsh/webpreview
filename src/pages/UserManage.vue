@@ -19,7 +19,7 @@
       <n-button @click="showBatch = true">批量新建</n-button>
       <n-pagination
         v-model:page="query.page"
-        :page-size="20"
+        :page-size="10"
         :item-count="count"
         simple
       />
