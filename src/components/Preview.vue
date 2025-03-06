@@ -4,7 +4,10 @@
       <Icon icon="noto:eyes" :width="20"></Icon>
       <n-text class="titleText">预览</n-text>
     </n-flex>
-    <n-button quaternary @click="download" :disabled="!showDL">下载</n-button>
+    <n-flex>
+      <n-button quaternary @click="download" :disabled="!showDL">下载</n-button>
+      <n-button quaternary @click="open">展示</n-button>
+    </n-flex>
   </n-flex>
   <iframe class="iframe" ref="iframe"></iframe>
 </template>
@@ -55,6 +58,14 @@ function download() {
   a.download = "index.html"
   a.click()
   URL.revokeObjectURL(url)
+}
+
+function open() {
+  const newTab = window.open("/usercontent.html")
+  if (!newTab) return
+  newTab.document.open()
+  newTab.document.write(getContent())
+  newTab.document.close()
 }
 
 watchDebounced([html, css, js], preview, { debounce: 500, maxWait: 1000 })
