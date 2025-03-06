@@ -33,11 +33,21 @@
       v-model:show="showBatch"
     >
       <n-flex vertical>
-        <n-input placeholder="班级" v-model:value="classname" />
-        <n-input rows="20" type="textarea" v-model:value="namesStr" />
+        <n-input
+          placeholder="班级"
+          v-model:value="classname"
+          :disabled="batchLoading"
+        />
+        <n-input
+          rows="20"
+          type="textarea"
+          v-model:value="namesStr"
+          :disabled="batchLoading"
+        />
         <n-button
           type="primary"
           :disabled="!(classname && !!names.length)"
+          :loading="batchLoading"
           @click="batchCreateUsers"
         >
           提交
@@ -71,6 +81,8 @@ const showBatch = ref(false)
 const classname = ref("")
 const namesStr = ref("")
 const names = computed(() => namesStr.value.split("\n").filter((it) => !!it))
+
+const batchLoading = ref(false)
 
 const roles = [
   { label: "全部权限", value: "" },
@@ -120,13 +132,16 @@ function goDjangoUserAdd() {
 async function batchCreateUsers() {
   if (!names.value.length) return
   try {
+    batchLoading.value = true
     await Account.batchCreate({
       classname: classname.value,
       names: names.value,
     })
+    batchLoading.value = false
     message.success("批量创建成功")
     showBatch.value = false
   } catch (err) {
+    batchLoading.value = false
     message.error("有些用户已经存在，创建失败")
   }
 }
