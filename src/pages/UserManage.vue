@@ -133,16 +133,19 @@ async function batchCreateUsers() {
   if (!names.value.length) return
   try {
     batchLoading.value = true
-    await Account.batchCreate({
+    const data = await Account.batchCreate({
       classname: classname.value,
       names: names.value,
     })
     batchLoading.value = false
-    message.success("批量创建成功")
+    message.success(data.message)
     showBatch.value = false
-  } catch (err) {
+    query.page = 1
+    query.role = ""
+    init()
+  } catch (err: any) {
     batchLoading.value = false
-    message.error("有些用户已经存在，创建失败")
+    message.error(err.detail??"批量创建失败")
   }
 }
 

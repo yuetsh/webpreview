@@ -64,7 +64,8 @@ export const Account = {
   },
 
   async batchCreate(payload: {classname: string, names: string[]}) {
-    await http.post("/account/batch", payload)
+    const res = await http.post("/account/batch", payload)
+    return res.data
   }
 }
 
