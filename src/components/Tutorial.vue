@@ -27,9 +27,10 @@
 </template>
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
-import { css, html, js, tab } from "../store/editors"
 import { computed, onMounted, ref, useTemplateRef, watch } from "vue"
 import { marked } from "marked"
+import copyFn from "copy-text-to-clipboard"
+import { css, html, js, tab } from "../store/editors"
 import { Tutorial } from "../api"
 import { step } from "../store/tutorial"
 import { authed, roleSuper } from "../store/user"
@@ -85,14 +86,16 @@ function addButton() {
     let copyTimer = 0
     const actions = action.cloneNode() as HTMLDivElement
     pre.insertBefore(actions, pre.children[0])
-    const code = pre.childNodes[1] as HTMLPreElement
-    const match = code.className.match(/-(.*)/)
+    const $code = pre.childNodes[1] as HTMLPreElement
+    const match = $code.className.match(/-(.*)/)
     let lang = "html"
     if (match) lang = match[1].toLowerCase()
     actions.innerHTML = `<span class="lang">${lang.toUpperCase()}</span><div><div class="btn copy">复制</div><div class="btn">替换</div></div>`
     const $copy = actions.children[1].children[0] as HTMLDivElement
     const $replace = actions.children[1].children[1] as HTMLDivElement
     $copy.onclick = () => {
+      const content = pre.children[1].textContent
+      copyFn(content ?? "")
       $copy.innerHTML = "已复制"
       clearTimeout(copyTimer)
       copyTimer = setTimeout(() => {
