@@ -115,6 +115,7 @@ function createNew() {
 async function submit() {
   try {
     await Tutorial.createOrUpdate(tutorial)
+    message.success("提交成功")
     tutorial.display = 0
     tutorial.title = ""
     tutorial.content = ""
