@@ -82,25 +82,34 @@ function addButton() {
   const pres = $content.value?.querySelectorAll("pre") ?? []
   for (const pre of pres) {
     let timer = 0
-    const copy = action.cloneNode() as HTMLDivElement
-    pre.insertBefore(copy, pre.children[0])
+    let copyTimer = 0
+    const actions = action.cloneNode() as HTMLDivElement
+    pre.insertBefore(actions, pre.children[0])
     const code = pre.childNodes[1] as HTMLPreElement
     const match = code.className.match(/-(.*)/)
     let lang = "html"
     if (match) lang = match[1].toLowerCase()
-    copy.innerHTML = `<span class="lang">${lang.toUpperCase()}</span><div class="btn">替换<div>`
-    const btn = copy.children[1] as HTMLDivElement
-    btn.onclick = () => {
+    actions.innerHTML = `<span class="lang">${lang.toUpperCase()}</span><div><div class="btn copy">复制</div><div class="btn">替换</div></div>`
+    const $copy = actions.children[1].children[0] as HTMLDivElement
+    const $replace = actions.children[1].children[1] as HTMLDivElement
+    $copy.onclick = () => {
+      $copy.innerHTML = "已复制"
+      clearTimeout(copyTimer)
+      copyTimer = setTimeout(() => {
+        $copy.innerHTML = "复制"
+      }, 1000)
+    }
+    $replace.onclick = () => {
       tab.value = lang
       const content = pre.children[1].textContent
       if (lang === "html") html.value = content
       if (lang === "css") css.value = content
       if (lang === "js") js.value = content
       // 样式
-      btn.innerHTML = "已替换"
+      $replace.innerHTML = "已替换"
       clearTimeout(timer)
       timer = setTimeout(() => {
-        btn.innerHTML = "替换"
+        $replace.innerHTML = "替换"
       }, 1000)
     }
   }
@@ -184,5 +193,9 @@ watch(step, render)
   cursor: pointer;
   border-radius: 0.4rem;
   font-size: 1rem;
+}
+
+.codeblock-action .btn.copy {
+  right: 60px;
 }
 </style>

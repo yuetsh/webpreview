@@ -24,7 +24,7 @@
         title="登录失败，请检查用户名和密码"
       ></n-alert>
       <n-flex>
-        <n-button block @click="submit" type="primary">登录</n-button>
+        <n-button block :loading="loading" @click="submit" type="primary">登录</n-button>
       </n-flex>
     </n-form>
   </n-modal>
@@ -37,18 +37,21 @@ import { user } from "../store/user"
 
 const name = ref("")
 const password = ref("")
-
+const loading = ref(false)
 const showMeesage = ref(false)
 
 async function submit() {
+  loading.value = true
   try {
     const data = await Account.login(name.value, password.value)
     user.username = data.username
     user.role = data.role
     user.loaded = true
     loginModal.value = false
+    loading.value = false
   } catch (err) {
     showMeesage.value = true
+    loading.value = false
   }
 }
 </script>
