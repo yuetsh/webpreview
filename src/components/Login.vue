@@ -14,7 +14,6 @@
           type="password"
           v-model:value="password"
           name="password"
-          @change="submit"
         ></n-input>
       </n-form-item>
       <n-alert
