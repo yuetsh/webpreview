@@ -34,9 +34,11 @@ import { css, html, js, tab } from "../store/editors"
 import { Tutorial } from "../api"
 import { step } from "../store/tutorial"
 import { authed, roleSuper } from "../store/user"
+import { useStorage } from "@vueuse/core"
+import { STORAGE_KEY } from "../utils/const"
 
 const displays = ref<number[]>([])
-const content = ref("")
+const content = useStorage(STORAGE_KEY.CONTENT, "")
 const $content = useTemplateRef("$content")
 
 defineEmits(["hide"])

@@ -29,6 +29,7 @@ export const alertVariants = [
 export const STORAGE_KEY = {
   LOGIN: "web-isloggedin",
   STEP: "web-turtorial-step",
+  CONTENT: "web-turtorial-content",
   HTML: "web-html",
   CSS: "web-css",
   JS: "web-js",
