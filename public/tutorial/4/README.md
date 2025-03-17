@@ -2,7 +2,7 @@
 
 打开[测试网页](https://web.xuyue.cc/tutorial/2/demo.html)，点击 F12 或者 ctrl+shift+c 打开浏览器开发者工具，在这里可以看到前端的所有代码（HTML+CSS+JS）
 
-![1](./image.png)
+![1](/tutorial/4/image.png)
 
 ### 查看 HTML
 
