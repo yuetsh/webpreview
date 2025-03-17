@@ -90,18 +90,18 @@ export const Tutorial = {
   },
 
   async get(display: number) {
-    // const res = await http.get(`/tutorial/${display}`)
-    // return res.data
-    const res = await fetch(`/tutorial/${display}/README.md`)
-    const content = await res.text()
-    return { content }
+    const res = await http.get(`/tutorial/${display}`)
+    return res.data
+    // const res = await fetch(`/tutorial/${display}/README.md`)
+    // const content = await res.text()
+    // return { content }
   },
 
   async listDisplay() {
-    // const res = await http.get("/tutorial/display")
-    // return res.data
-    const res = await fetch("/tutorial/README.md")
-    const text = await res.text()
-    return text.split("\n").map((item) => Number(item.split(" ")[0]))
+    const res = await http.get("/tutorial/display")
+    return res.data
+    // const res = await fetch("/tutorial/README.md")
+    // const text = await res.text()
+    // return text.split("\n").map((item) => Number(item.split(" ")[0]))
   },
 }

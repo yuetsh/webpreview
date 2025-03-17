@@ -9,7 +9,6 @@
         :key="item.label"
         :type="$route.name === item.route.name ? 'primary' : 'default'"
         @click="$router.push(item.route)"
-        :disabled="item.disabled"
       >
         {{ item.label }}
       </n-button>
@@ -26,7 +25,6 @@ const menu = [
   {
     label: "教程",
     route: { name: "tutorial", params: { display: step.value } },
-    disabled: true
   },
   { label: "用户", route: { name: "user-manage", params: { page: 1 } } },
 ]

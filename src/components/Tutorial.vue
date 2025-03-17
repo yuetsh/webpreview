@@ -13,7 +13,7 @@
       </n-flex>
       <n-flex>
         <n-button
-          v-if="false && authed && roleSuper"
+          v-if="authed && roleSuper"
           quaternary
           @click="$router.push({ name: 'tutorial', params: { display: step } })"
         >
