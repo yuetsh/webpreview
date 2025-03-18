@@ -7,6 +7,16 @@
     <n-flex>
       <n-button quaternary @click="download" :disabled="!showDL">下载</n-button>
       <n-button quaternary @click="open">展示</n-button>
+      <template v-if="!!submission.id">
+        <n-button quaternary @click="emits('showCode')">查看代码</n-button>
+        <n-popover v-if="!submission.score && (roleAdmin || roleSuper)">
+          <template #trigger>
+            <n-button secondary type="primary">手动打分</n-button>
+          </template>
+          <n-rate :size="30" @update:value="updateScore" />
+        </n-popover>
+        <n-button secondary type="info">智能打分</n-button>
+      </template>
     </n-flex>
   </n-flex>
   <iframe class="iframe" ref="iframe"></iframe>
@@ -14,12 +24,26 @@
 
 <script lang="ts" setup>
 import { watchDebounced } from "@vueuse/core"
-import { html, css, js } from "../store/editors"
 import { computed, onMounted, useTemplateRef } from "vue"
 import { Icon } from "@iconify/vue"
+import { Submission } from "../api"
+import { submission } from "../store/submission"
+import { useMessage } from "naive-ui"
+import { roleAdmin, roleSuper } from "../store/user"
+
+interface Props {
+  html: string
+  css: string
+  js: string
+}
+
+const props = defineProps<Props>()
+const emits = defineEmits(["afterScore", "showCode"])
+
+const message = useMessage()
 
 const iframe = useTemplateRef<HTMLIFrameElement>("iframe")
-const showDL = computed(() => html.value || css.value || js.value)
+const showDL = computed(() => props.html || props.css || props.js)
 
 function getContent() {
   return `<!DOCTYPE html>
@@ -28,13 +52,13 @@ function getContent() {
     <meta charset="UTF-8" />
     <title>预览</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>${css.value}</style>
+    <style>${props.css}</style>
     <link rel="stylesheet" href="/normalize.min.css" />
     <script src="/jquery.min.js"><\/script>
   </head>
   <body>
-    ${html.value}
-    <script type="module">${js.value}<\/script>
+    ${props.html}
+    <script type="module">${props.js}<\/script>
   </body>
 </html>`
 }
@@ -68,7 +92,21 @@ function open() {
   newTab.document.close()
 }
 
-watchDebounced([html, css, js], preview, { debounce: 500, maxWait: 1000 })
+async function updateScore(score: number) {
+  try {
+    await Submission.updateScore(submission.value.id, score)
+    message.success("评分成功")
+    submission.value.score = score
+    emits("afterScore")
+  } catch (err: any) {
+    message.error(err.response.data.detail)
+  }
+}
+
+watchDebounced(() => [props.html, props.css, props.js], preview, {
+  debounce: 500,
+  maxWait: 1000,
+})
 onMounted(preview)
 </script>
 <style scoped>

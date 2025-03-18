@@ -24,7 +24,7 @@
         simple
       />
     </n-flex>
-    <n-data-table :columns="columns" :data="users"></n-data-table>
+    <n-data-table striped :columns="columns" :data="users"></n-data-table>
     <n-modal
       style="width: 300px"
       :mask-closable="false"
@@ -145,7 +145,7 @@ async function batchCreateUsers() {
     init()
   } catch (err: any) {
     batchLoading.value = false
-    message.error(err.detail??"批量创建失败")
+    message.error(err.detail ?? "批量创建失败")
   }
 }
 

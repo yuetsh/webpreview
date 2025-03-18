@@ -36,3 +36,28 @@ export interface User {
   role: Role
   is_active: boolean
 }
+
+export interface SubmissionOut {
+  id: string
+  userid: number
+  username: string
+  task_type: string
+  task_title: string
+  score: number
+  created: Date
+  modified: Date
+}
+
+export interface SubmissionAll {
+  id: string
+  userid: number
+  username: string
+  task_type: string
+  task_title: string
+  score: number
+  html: ""
+  css: ""
+  js: ""
+  created: Date
+  modified: Date
+}

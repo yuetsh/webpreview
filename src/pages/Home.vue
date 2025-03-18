@@ -14,7 +14,7 @@
           <Editors />
         </template>
         <template #2>
-          <Preview />
+          <Preview :html="html" :css="css" :js="js" />
         </template>
       </n-split>
     </template>
@@ -26,6 +26,7 @@ import Editors from "../components/Editors.vue"
 import Preview from "../components/Preview.vue"
 import Tutorial from "../components/Tutorial.vue"
 import { show, tutorialSize } from "../store/tutorial"
+import { html, css, js } from "../store/editors"
 
 const { ctrl_s } = useMagicKeys({
   passive: false,

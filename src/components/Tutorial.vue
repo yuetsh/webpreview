@@ -36,6 +36,7 @@ import { step } from "../store/tutorial"
 import { authed, roleSuper } from "../store/user"
 import { useStorage } from "@vueuse/core"
 import { STORAGE_KEY } from "../utils/const"
+import { taskId } from "../store/task"
 
 const displays = ref<number[]>([])
 const content = useStorage(STORAGE_KEY.CONTENT, "")
@@ -75,6 +76,7 @@ async function getContent() {
     step.value = displays.value[0]
   }
   const data = await Tutorial.get(step.value)
+  taskId.value = data.task_ptr
   content.value = await marked.parse(data.content, { async: true })
 }
 

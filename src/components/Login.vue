@@ -23,7 +23,9 @@
         title="登录失败，请检查用户名和密码"
       ></n-alert>
       <n-flex>
-        <n-button block :loading="loading" @click="submit" type="primary">登录</n-button>
+        <n-button block :loading="loading" @click="submit" type="primary"
+          >登录</n-button
+        >
       </n-flex>
     </n-form>
   </n-modal>

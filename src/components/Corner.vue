@@ -1,8 +1,19 @@
 <template>
   <n-flex align="center" class="corner">
     <n-button secondary v-if="!show" @click="showTutorial">教程</n-button>
+    <n-button secondary @click="$router.push({ name: 'submissions' })">
+      查看
+    </n-button>
     <template v-if="user.loaded && authed">
-      <n-button type="primary" secondary @click="submit">提交</n-button>
+      <n-button
+        type="primary"
+        secondary
+        :disabled="submitDisabled"
+        :loading="submitLoading"
+        @click="submit"
+      >
+        提交
+      </n-button>
       <n-dropdown :options="menu" @select="clickMenu">
         <n-button>{{ user.username }}</n-button>
       </n-dropdown>
@@ -18,22 +29,30 @@
   </n-flex>
 </template>
 <script lang="ts" setup>
-import { computed, h } from "vue"
+import { computed, h, ref } from "vue"
 import { useMessage } from "naive-ui"
 import { Icon } from "@iconify/vue"
 import { authed, roleNormal, roleSuper, user } from "../store/user"
 import { loginModal } from "../store/modal"
 import { show, tutorialSize } from "../store/tutorial"
-import { Account } from "../api"
+import { taskId } from "../store/task"
+import { html, css, js } from "../store/editors"
+import { Account, Submission } from "../api"
 import { Role } from "../utils/type"
 import { router } from "../router"
 import { ADMIN_URL } from "../utils/const"
 
 const message = useMessage()
 
+const submitLoading = ref(false)
+
+const submitDisabled = computed(() => {
+  return taskId.value === 0
+})
+
 const menu = computed(() => [
   {
-    label: "后台",
+    label: "后台管理",
     key: "dashboard",
     show: !roleNormal.value,
     icon: () =>
@@ -42,7 +61,7 @@ const menu = computed(() => [
       }),
   },
   {
-    label: "管理",
+    label: "数据管理",
     key: "admin",
     show: roleSuper.value,
     icon: () =>
@@ -51,7 +70,15 @@ const menu = computed(() => [
       }),
   },
   {
-    label: "退出",
+    label: "我的提交",
+    key: "submissions",
+    icon: () =>
+      h(Icon, {
+        icon: "streamline-emojis:bar-chart",
+      }),
+  },
+  {
+    label: "退出账号",
     key: "logout",
     icon: () =>
       h(Icon, {
@@ -73,6 +100,9 @@ function clickMenu(name: string) {
     case "admin":
       window.open(ADMIN_URL)
       break
+    case "submissions":
+      router.push({ name: "submissions" })
+      break
     case "logout":
       handleLogout()
       break
@@ -89,8 +119,20 @@ async function handleLogout() {
   user.role = Role.Normal
 }
 
-function submit() {
-  message.error("未实装")
+async function submit() {
+  try {
+    submitLoading.value = true
+    await Submission.create(taskId.value, {
+      html: html.value,
+      css: css.value,
+      js: js.value,
+    })
+    message.success("提交成功")
+  } catch (err) {
+    message.error("提交失败")
+  } finally {
+    submitLoading.value = false
+  }
 }
 </script>
 <style scoped>

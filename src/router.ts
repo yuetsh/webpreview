@@ -7,6 +7,11 @@ import { STORAGE_KEY } from "./utils/const"
 const routes = [
   { path: "/", name: "home", component: Home },
   {
+    path: "/submissions",
+    name: "submissions",
+    component: () => import("./pages/Submissions.vue"),
+  },
+  {
     path: "/dashboard",
     name: "dashboard",
     component: () => import("./pages/Dashboard.vue"),

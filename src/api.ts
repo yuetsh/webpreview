@@ -105,3 +105,34 @@ export const Tutorial = {
     // return text.split("\n").map((item) => Number(item.split(" ")[0]))
   },
 }
+
+export const Submission = {
+  async create(
+    taskId: number,
+    code: {
+      html?: string
+      css?: string
+      js?: string
+    },
+  ) {
+    const data = { task_id: taskId, ...code }
+    const res = await http.post("/submission/", data)
+    return res.data
+  },
+
+  async list(query: { page: number }) {
+    const res = await http.get("/submission", {
+      params: query,
+    })
+    return res.data
+  },
+
+  async get(id: string) {
+    const res = await http.get("/submission/" + id)
+    return res.data
+  },
+
+  async updateScore(id: string, score: number) {
+    await http.put(`/submission/${id}/score`, { score })
+  },
+}

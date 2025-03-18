@@ -5,6 +5,7 @@ import { onMounted, watch } from "vue"
 import { Account } from "./api"
 import { authed, user } from "./store/user"
 import { STORAGE_KEY } from "./utils/const"
+import hljs from "highlight.js/lib/core"
 
 onMounted(async () => {
   const data = await Account.getMyProfile()
@@ -23,7 +24,12 @@ watch(authed, (v) => {
 </script>
 
 <template>
-  <n-config-provider class="myContainer" :locale="zhCN" :date-locale="dateZhCN">
+  <n-config-provider
+    class="myContainer"
+    :locale="zhCN"
+    :date-locale="dateZhCN"
+    :hljs="hljs"
+  >
     <n-modal-provider>
       <n-message-provider :max="1">
         <n-dialog-provider>
