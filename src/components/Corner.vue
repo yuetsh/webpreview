@@ -1,9 +1,6 @@
 <template>
   <n-flex align="center" class="corner">
     <n-button secondary v-if="!show" @click="showTutorial">教程</n-button>
-    <n-button secondary @click="$router.push({ name: 'submissions' })">
-      查看
-    </n-button>
     <template v-if="user.loaded && authed">
       <n-button
         type="primary"
@@ -70,7 +67,7 @@ const menu = computed(() => [
       }),
   },
   {
-    label: "我的提交",
+    label: "提交列表",
     key: "submissions",
     icon: () =>
       h(Icon, {

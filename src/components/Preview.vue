@@ -15,7 +15,13 @@
           </template>
           <n-rate :size="30" @update:value="updateScore" />
         </n-popover>
-        <n-button secondary type="info">智能打分</n-button>
+        <n-button
+          v-if="!submission.score && (roleAdmin || roleSuper)"
+          secondary
+          type="info"
+        >
+          智能打分
+        </n-button>
       </template>
     </n-flex>
   </n-flex>
