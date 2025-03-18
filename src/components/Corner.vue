@@ -34,7 +34,7 @@ import { useMessage } from "naive-ui"
 import { Icon } from "@iconify/vue"
 import { authed, roleNormal, roleSuper, user } from "../store/user"
 import { loginModal } from "../store/modal"
-import { show, tutorialSize } from "../store/tutorial"
+import { show, tutorialSize, step } from "../store/tutorial"
 import { taskId } from "../store/task"
 import { html, css, js } from "../store/editors"
 import { Account, Submission } from "../api"
@@ -95,7 +95,7 @@ function showTutorial() {
 function clickMenu(name: string) {
   switch (name) {
     case "dashboard":
-      router.push({ name: "user-manage", params: { page: 1 } })
+      router.push({ name: "tutorial", params: { display: step.value } })
       break
     case "admin":
       window.open(ADMIN_URL)
