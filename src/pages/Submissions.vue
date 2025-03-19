@@ -102,7 +102,7 @@ const columns: DataTableColumn<SubmissionOut>[] = [
     title: "平均得分",
     key: "score",
     render: (row) => {
-      if (row.score > 0) return row.score
+      if (row.score > 0) return row.score.toFixed(2)
       else return "-"
     },
   },
@@ -159,5 +159,6 @@ onUnmounted(() => {
 <style scoped>
 .container {
   padding: 10px;
+  box-sizing: border-box;
 }
 </style>
