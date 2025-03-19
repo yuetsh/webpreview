@@ -25,7 +25,7 @@
         :css="css"
         :js="js"
         @after-score="afterScore"
-        @show-code="toggleShowCode"
+        @show-code="codeModal = true"
       />
     </n-gi>
   </n-grid>
@@ -91,7 +91,15 @@ const columns: DataTableColumn<SubmissionOut>[] = [
     render: (submission) => h(TaskTitle, { submission }),
   },
   {
-    title: "得分",
+    title: "我打的分",
+    key: "my_score",
+    render: (row) => {
+      if (row.my_score > 0) return row.my_score
+      else return "-"
+    },
+  },
+  {
+    title: "平均得分",
     key: "score",
     render: (row) => {
       if (row.score > 0) return row.score
@@ -120,14 +128,10 @@ async function getSubmissionByID(id: string) {
   submission.value = await Submission.get(id)
 }
 
-function toggleShowCode() {
-  codeModal.value = true
-}
-
 function afterScore() {
   data.value = data.value.map((d) => {
     if (d.id === submission.value.id) {
-      d.score = submission.value.score
+      d.my_score = submission.value.my_score
     }
     return d
   })
@@ -143,6 +147,7 @@ onUnmounted(() => {
     task_title: "",
     task_type: "tutorial",
     score: 0,
+    my_score: 0,
     html: "",
     css: "",
     js: "",

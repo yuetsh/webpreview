@@ -7,27 +7,20 @@
     <n-flex>
       <n-button quaternary @click="download" :disabled="!showDL">下载</n-button>
       <n-button quaternary @click="open">展示</n-button>
-      <template v-if="!!submission.id">
+      <n-flex v-if="!!submission.id">
         <n-button quaternary @click="emits('showCode')">查看代码</n-button>
-        <n-popover v-if="!submission.score && (roleAdmin || roleSuper)">
+        <n-popover v-if="submission.my_score === 0">
           <template #trigger>
             <n-button secondary type="primary">手动打分</n-button>
           </template>
           <n-rate :size="30" @update:value="updateScore" />
         </n-popover>
-        <n-button
-          v-if="!submission.score && (roleAdmin || roleSuper)"
-          secondary
-          type="info"
-        >
-          智能打分
-        </n-button>
-      </template>
+        <!-- <n-button secondary type="info">智能打分</n-button> -->
+      </n-flex>
     </n-flex>
   </n-flex>
   <iframe class="iframe" ref="iframe"></iframe>
 </template>
-
 <script lang="ts" setup>
 import { watchDebounced } from "@vueuse/core"
 import { computed, onMounted, useTemplateRef } from "vue"
@@ -35,7 +28,6 @@ import { Icon } from "@iconify/vue"
 import { Submission } from "../api"
 import { submission } from "../store/submission"
 import { useMessage } from "naive-ui"
-import { roleAdmin, roleSuper } from "../store/user"
 
 interface Props {
   html: string
@@ -100,9 +92,9 @@ function open() {
 
 async function updateScore(score: number) {
   try {
-    await Submission.updateScore(submission.value.id, score)
-    message.success("评分成功")
-    submission.value.score = score
+    const res = await Submission.updateScore(submission.value.id, score)
+    message.success(res.message)
+    submission.value.my_score = score
     emits("afterScore")
   } catch (err: any) {
     message.error(err.response.data.detail)

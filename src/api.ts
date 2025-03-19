@@ -133,6 +133,7 @@ export const Submission = {
   },
 
   async updateScore(id: string, score: number) {
-    await http.put(`/submission/${id}/score`, { score })
+    const res = await http.put(`/submission/${id}/score`, { score })
+    return res.data
   },
 }

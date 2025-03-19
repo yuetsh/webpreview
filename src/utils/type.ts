@@ -44,6 +44,7 @@ export interface SubmissionOut {
   task_type: string
   task_title: string
   score: number
+  my_score: number
   created: Date
   modified: Date
 }
@@ -55,6 +56,7 @@ export interface SubmissionAll {
   task_type: string
   task_title: string
   score: number
+  my_score: number
   html: ""
   css: ""
   js: ""

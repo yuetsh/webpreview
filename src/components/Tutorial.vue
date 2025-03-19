@@ -40,7 +40,7 @@ import { taskId } from "../store/task"
 
 const displays = ref<number[]>([])
 const content = useStorage(STORAGE_KEY.CONTENT, "")
-const $content = useTemplateRef("$content")
+const $content = useTemplateRef<any>("$content")
 
 defineEmits(["hide"])
 
