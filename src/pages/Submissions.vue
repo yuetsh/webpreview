@@ -43,7 +43,7 @@
         <n-code :code="css" language="css" word-wrap></n-code>
       </n-gi>
       <n-gi :span="1" v-if="js">
-        <n-code :code="js" language="javascript" word-wrap></n-code>
+        <n-code :code="js" language="js" word-wrap></n-code>
       </n-gi>
     </n-grid>
   </n-modal>
