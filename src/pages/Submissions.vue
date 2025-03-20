@@ -65,15 +65,16 @@ import { parseTime } from "../utils/helper"
 import TaskTitle from "../components/submissions/TaskTitle.vue"
 import Preview from "../components/Preview.vue"
 import { submission } from "../store/submission"
-import { useRouter } from "vue-router"
+import { useRouter, useRoute } from "vue-router"
 import { watchDebounced } from "@vueuse/core"
 
+const route = useRoute()
 const router = useRouter()
 
 const data = ref<SubmissionOut[]>([])
 const count = ref(0)
 const query = reactive({
-  page: 1,
+  page: Number(route.params.page),
   username: "",
 })
 
