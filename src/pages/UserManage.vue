@@ -155,8 +155,22 @@ async function init() {
   count.value = data.count
 }
 
-watch(() => [query.page, query.role], init)
-watchDebounced(() => query.username, init, { debounce: 500, maxWait: 1000 })
+watch(() => query.page, init)
+watch(
+  () => query.role,
+  () => {
+    query.page = 1
+    init()
+  },
+)
+watchDebounced(
+  () => query.username,
+  () => {
+    query.page = 1
+    init()
+  },
+  { debounce: 500, maxWait: 1000 },
+)
 watch(
   () => query.page,
   (v) => router.push({ params: { page: v } }),
