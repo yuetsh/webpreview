@@ -155,7 +155,6 @@ async function init() {
   count.value = data.count
 }
 
-watch(() => query.page, init)
 watch(
   () => query.role,
   () => {
@@ -173,7 +172,10 @@ watchDebounced(
 )
 watch(
   () => query.page,
-  (v) => router.push({ params: { page: v } }),
+  (v) => {
+    init()
+    router.push({ params: { page: v } })
+  },
 )
 
 onMounted(init)

@@ -6,14 +6,22 @@
           <n-button quaternary @click="$router.push({ name: 'home' })">
             返回首页
           </n-button>
-          <n-pagination
-            v-model:page="query.page"
-            :page-size="10"
-            :item-count="count"
-            simple
-          >
-            <template #prefix>总共 {{ count }} 条</template>
-          </n-pagination>
+          <n-flex align="center">
+            <div>
+              <n-input
+                style="width: 120px"
+                v-model:value="query.username"
+                clearable
+              />
+            </div>
+            <n-pagination
+              v-model:page="query.page"
+              :page-size="10"
+              :item-count="count"
+              simple
+            >
+            </n-pagination>
+          </n-flex>
         </n-flex>
         <n-data-table striped :columns="columns" :data="data"></n-data-table>
       </n-flex>
@@ -57,11 +65,16 @@ import { parseTime } from "../utils/helper"
 import TaskTitle from "../components/submissions/TaskTitle.vue"
 import Preview from "../components/Preview.vue"
 import { submission } from "../store/submission"
+import { useRouter } from "vue-router"
+import { watchDebounced } from "@vueuse/core"
+
+const router = useRouter()
 
 const data = ref<SubmissionOut[]>([])
 const count = ref(0)
 const query = reactive({
   page: 1,
+  username: "",
 })
 
 const html = computed(() => submission.value.html)
@@ -137,7 +150,21 @@ function afterScore() {
   })
 }
 
-watch(() => query.page, init)
+watch(
+  () => query.page,
+  (v) => {
+    init()
+    router.push({ params: { page: v } })
+  },
+)
+watchDebounced(
+  () => query.username,
+  () => {
+    query.page = 1
+    init()
+  },
+  { debounce: 500, maxWait: 1000 },
+)
 onMounted(init)
 onUnmounted(() => {
   submission.value = {

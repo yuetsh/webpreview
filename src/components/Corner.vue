@@ -98,7 +98,7 @@ function clickMenu(name: string) {
       window.open(ADMIN_URL)
       break
     case "submissions":
-      router.push({ name: "submissions" })
+      router.push({ name: "submissions", params: { page: 1 } })
       break
     case "logout":
       handleLogout()
