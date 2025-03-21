@@ -1,5 +1,5 @@
 <template>
-  <n-grid class="container" x-gap="10" :cols="3">
+  <n-grid class="container" x-gap="10" :cols="2">
     <n-gi :span="1">
       <n-flex vertical>
         <n-flex justify="space-between">
@@ -26,7 +26,7 @@
         <n-data-table striped :columns="columns" :data="data"></n-data-table>
       </n-flex>
     </n-gi>
-    <n-gi :span="2">
+    <n-gi :span="1">
       <Preview
         v-if="submission.id"
         :html="html"
@@ -92,11 +92,13 @@ const columns: DataTableColumn<SubmissionOut>[] = [
   {
     title: "时间",
     key: "created",
+    width: 110,
     render: (row) => parseTime(row.created, "YYYY-MM-DD HH:mm:ss"),
   },
   {
     title: "提交者",
     key: "user",
+    width: 80,
     render: (row) => row.username,
   },
   {
