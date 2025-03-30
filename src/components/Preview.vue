@@ -1,12 +1,9 @@
 <template>
   <n-flex align="center" justify="space-between" class="title">
-    <n-flex align="center">
-      <Icon icon="noto:eyes" :width="20"></Icon>
-      <n-text class="titleText">预览</n-text>
-    </n-flex>
+    <n-text class="titleText">预览</n-text>
     <n-flex>
       <n-button quaternary @click="download" :disabled="!showDL">下载</n-button>
-      <n-button quaternary @click="open">展示</n-button>
+      <n-button quaternary @click="open">全屏</n-button>
       <n-flex v-if="!!submission.id">
         <n-button quaternary @click="emits('showCode')">查看代码</n-button>
         <n-popover v-if="submission.my_score === 0">

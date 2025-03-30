@@ -18,7 +18,7 @@
       </n-form-item>
       <n-alert
         type="error"
-        v-if="showMeesage"
+        v-if="showMessage"
         class="message"
         title="登录失败，请检查用户名和密码"
       ></n-alert>
@@ -39,7 +39,7 @@ import { user } from "../store/user"
 const name = ref("")
 const password = ref("")
 const loading = ref(false)
-const showMeesage = ref(false)
+const showMessage = ref(false)
 
 async function submit() {
   loading.value = true
@@ -51,7 +51,7 @@ async function submit() {
     loginModal.value = false
     loading.value = false
   } catch (err) {
-    showMeesage.value = true
+    showMessage.value = true
     loading.value = false
   }
 }

@@ -3,23 +3,30 @@
     <n-flex align="center" justify="space-between" class="title">
       <n-flex align="center">
         <Icon icon="twemoji:open-book" :width="20"></Icon>
-        <n-text class="preview">教程(测试版)</n-text>
-        <n-button text @click="prev" v-if="!hideNav" :disabled="prevDisabled">
-          <Icon :width="24" icon="pepicons-pencil:arrow-left"></Icon>
-        </n-button>
-        <n-button text @click="next" v-if="!hideNav" :disabled="nextDisabled">
-          <Icon :width="24" icon="pepicons-pencil:arrow-right"></Icon>
-        </n-button>
+        <n-tabs style="width: 140px" type="segment" animated>
+          <n-tab name="tutorial" tab="教程"></n-tab>
+          <n-tab name="challenge" tab="挑战"></n-tab>
+        </n-tabs>
+        <template v-if="!hideNav">
+          <n-button text @click="prev" :disabled="prevDisabled">
+            <Icon :width="24" icon="pepicons-pencil:arrow-left"></Icon>
+          </n-button>
+          <n-button text @click="next" :disabled="nextDisabled">
+            <Icon :width="24" icon="pepicons-pencil:arrow-right"></Icon>
+          </n-button>
+        </template>
       </n-flex>
       <n-flex>
         <n-button
+          text
           v-if="authed && roleSuper"
-          quaternary
           @click="$router.push({ name: 'tutorial', params: { display: step } })"
         >
-          编辑
+          <Icon :width="16" icon="lucide:edit"></Icon>
         </n-button>
-        <n-button quaternary @click="$emit('hide')">隐藏</n-button>
+        <n-button text @click="$emit('hide')">
+          <Icon :width="24" icon="material-symbols:close-rounded"></Icon>
+        </n-button>
       </n-flex>
     </n-flex>
     <div class="markdown-body" v-html="content" ref="$content"></div>
@@ -151,10 +158,6 @@ watch(step, render)
   flex-shrink: 0;
   border-bottom: 1px solid rgb(239, 239, 245);
   box-sizing: border-box;
-}
-
-.preview {
-  font-size: 16px;
 }
 
 .markdown-body {

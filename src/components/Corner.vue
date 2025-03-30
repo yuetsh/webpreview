@@ -1,7 +1,13 @@
 <template>
   <n-flex align="center" class="corner">
-    <n-button secondary v-if="!show" @click="showTutorial">教程</n-button>
+    <n-button quaternary v-if="!show" @click="showTutorial">教程</n-button>
     <template v-if="user.loaded && authed">
+      <n-button
+        quaternary
+        @click="$router.push({ name: 'submissions', params: { page: 1 } })"
+      >
+        所有提交
+      </n-button>
       <n-button
         type="primary"
         secondary
@@ -9,7 +15,7 @@
         :loading="submitLoading"
         @click="submit"
       >
-        提交
+        提交代码
       </n-button>
       <n-dropdown :options="menu" @select="clickMenu">
         <n-button>{{ user.username }}</n-button>
@@ -67,7 +73,7 @@ const menu = computed(() => [
       }),
   },
   {
-    label: "提交列表",
+    label: "我的提交",
     key: "submissions",
     icon: () =>
       h(Icon, {
@@ -98,7 +104,11 @@ function clickMenu(name: string) {
       window.open(ADMIN_URL)
       break
     case "submissions":
-      router.push({ name: "submissions", params: { page: 1 } })
+      router.push({
+        name: "submissions",
+        params: { page: 1 },
+        query: { username: user.username },
+      })
       break
     case "logout":
       handleLogout()

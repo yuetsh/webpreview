@@ -75,7 +75,7 @@ const data = ref<SubmissionOut[]>([])
 const count = ref(0)
 const query = reactive({
   page: Number(route.params.page),
-  username: "",
+  username: route.query.username ?? "",
 })
 
 const html = computed(() => submission.value.html)

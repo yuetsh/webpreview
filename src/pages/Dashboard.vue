@@ -27,6 +27,7 @@ const menu = [
     route: { name: "tutorial", params: { display: step.value } },
   },
   { label: "用户", route: { name: "user-manage", params: { page: 1 } } },
+  { label: "提交", route: { name: "submissions", params: { page: 1 } } },
 ]
 </script>
 <style scoped>
