@@ -4,6 +4,9 @@
     <n-flex>
       <n-button quaternary @click="download" :disabled="!showDL">下载</n-button>
       <n-button quaternary @click="open">全屏</n-button>
+      <n-button quaternary v-if="props.submissionId" @click="copyLink">
+        复制链接
+      </n-button>
       <n-flex v-if="!!submission.id">
         <n-button quaternary @click="emits('showCode')">查看代码</n-button>
         <n-popover v-if="submission.my_score === 0">
@@ -21,21 +24,24 @@
 <script lang="ts" setup>
 import { watchDebounced } from "@vueuse/core"
 import { computed, onMounted, useTemplateRef } from "vue"
-import { Icon } from "@iconify/vue"
+import { useRouter } from "vue-router"
 import { Submission } from "../api"
 import { submission } from "../store/submission"
 import { useMessage } from "naive-ui"
+import copy from "copy-text-to-clipboard"
 
 interface Props {
   html: string
   css: string
   js: string
+  submissionId?: string
 }
 
 const props = defineProps<Props>()
 const emits = defineEmits(["afterScore", "showCode"])
 
 const message = useMessage()
+const router = useRouter()
 
 const iframe = useTemplateRef<HTMLIFrameElement>("iframe")
 const showDL = computed(() => props.html || props.css || props.js)
@@ -80,11 +86,24 @@ function download() {
 }
 
 function open() {
-  const newTab = window.open("/usercontent.html")
-  if (!newTab) return
-  newTab.document.open()
-  newTab.document.write(getContent())
-  newTab.document.close()
+  if (props.submissionId) {
+    const data = router.resolve({
+      name: "submission",
+      params: { id: props.submissionId },
+    })
+    window.open(data.href, "_blank")
+  } else {
+    const newTab = window.open("/usercontent.html")
+    if (!newTab) return
+    newTab.document.open()
+    newTab.document.write(getContent())
+    newTab.document.close()
+  }
+}
+
+function copyLink() {
+  copy(`${document.location.origin}/submission/${props.submissionId}`)
+  message.success("该提交的链接已复制")
 }
 
 async function updateScore(score: number) {

@@ -32,6 +32,7 @@
         :html="html"
         :css="css"
         :js="js"
+        :submission-id="submission.id"
         @after-score="afterScore"
         @show-code="codeModal = true"
       />
@@ -128,7 +129,11 @@ const columns: DataTableColumn<SubmissionOut>[] = [
     render: (row) =>
       h(
         NButton,
-        { quaternary: true, onClick: () => getSubmissionByID(row.id) },
+        {
+          quaternary: submission.value.id !== row.id,
+          type: submission.value.id === row.id ? "primary" : "default",
+          onClick: () => getSubmissionByID(row.id),
+        },
         () => "查看",
       ),
   },
@@ -190,5 +195,6 @@ onUnmounted(() => {
 .container {
   padding: 10px;
   box-sizing: border-box;
+  height: calc(100% - 43px);
 }
 </style>

@@ -12,6 +12,12 @@ const routes = [
     component: () => import("./pages/Submissions.vue"),
   },
   {
+    path: "/submission/:id",
+    name: "submission",
+    component: () => import("./pages/Submission.vue"),
+    props: true
+  },
+  {
     path: "/dashboard",
     name: "dashboard",
     component: () => import("./pages/Dashboard.vue"),
