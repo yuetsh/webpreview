@@ -1,7 +1,7 @@
 <template>
   <n-flex class="container" :wrap="false">
     <n-flex vertical class="menu">
-      <n-button secondary @click="goHome"> 返回 </n-button>
+      <n-button secondary @click="goHome">返回</n-button>
       <n-button
         v-for="item in menu"
         :key="item.label"

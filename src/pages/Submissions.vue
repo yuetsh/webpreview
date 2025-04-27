@@ -3,9 +3,7 @@
     <n-gi :span="1">
       <n-flex vertical>
         <n-flex justify="space-between">
-          <n-button quaternary @click="$router.push({ name: 'home' })">
-            返回首页
-          </n-button>
+          <n-button quaternary @click="goHome">返回首页</n-button>
           <n-flex align="center">
             <div>
               <n-input
@@ -68,6 +66,9 @@ import Preview from "../components/Preview.vue"
 import { submission } from "../store/submission"
 import { useRouter, useRoute } from "vue-router"
 import { watchDebounced } from "@vueuse/core"
+import { taskTab } from "../store/task"
+import { step } from "../store/tutorial"
+import { TASK_TYPE } from "../utils/const"
 
 const route = useRoute()
 const router = useRouter()
@@ -155,6 +156,15 @@ function afterScore() {
       d.my_score = submission.value.my_score
     }
     return d
+  })
+}
+
+function goHome() {
+  const query = { task: taskTab.value } as any
+  if (taskTab.value === TASK_TYPE.Tutorial) query.step = step.value
+  router.push({
+    name: "home",
+    query,
   })
 }
 
