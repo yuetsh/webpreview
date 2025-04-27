@@ -2,7 +2,14 @@
   <div class="container">
     <n-flex align="center" justify="space-between" class="title">
       <n-flex align="center">
-        <Icon icon="twemoji:open-book" :width="20"></Icon>
+        <Icon
+          :icon="
+            taskTab === TASK_TYPE.Tutorial
+              ? 'twemoji:books'
+              : 'twemoji:crossed-swords'
+          "
+          :width="20"
+        ></Icon>
         <n-tabs
           style="width: 140px"
           type="segment"
