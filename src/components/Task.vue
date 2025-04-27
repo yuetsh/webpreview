@@ -120,7 +120,8 @@ async function prepare() {
 async function getContent() {
   const data = await Tutorial.get(step.value)
   taskId.value = data.task_ptr
-  content.value = await marked.parse(data.content, { async: true })
+  const merged = `# #${data.display} ${data.title}\n${data.content}`
+  content.value = await marked.parse(merged, { async: true })
 }
 
 // 用 js 来写的，可以换成 vue 的方式
