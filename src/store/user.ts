@@ -7,6 +7,12 @@ export const user = reactive({
   role: Role.Normal,
 })
 export const authed = computed(() => !!user.username)
-export const roleNormal = computed(() => user.role === Role.Normal)
-export const roleAdmin = computed(() => user.role === Role.Admin)
-export const roleSuper = computed(() => user.role === Role.Super)
+export const roleNormal = computed(
+  () => authed.value && user.role === Role.Normal,
+)
+export const roleAdmin = computed(
+  () => authed.value && user.role === Role.Admin,
+)
+export const roleSuper = computed(
+  () => authed.value && user.role === Role.Super,
+)

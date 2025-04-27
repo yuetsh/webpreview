@@ -23,16 +23,7 @@
         </template>
       </n-flex>
       <n-flex>
-        <n-button
-          text
-          v-if="authed && roleSuper"
-          @click="
-            $router.push({
-              name: taskTab,
-              params: taskTab === TASK_TYPE.Tutorial ? { display: step } : {},
-            })
-          "
-        >
+        <n-button text v-if="roleSuper" @click="edit">
           <Icon :width="16" icon="lucide:edit"></Icon>
         </n-button>
         <n-button text @click="$emit('hide')">
@@ -57,7 +48,7 @@ import copyFn from "copy-text-to-clipboard"
 import { css, html, js, tab } from "../store/editors"
 import { Tutorial } from "../api"
 import { step } from "../store/tutorial"
-import { authed, roleSuper } from "../store/user"
+import { roleSuper } from "../store/user"
 import { taskId, taskTab } from "../store/task"
 import { useRoute, useRouter } from "vue-router"
 import { TASK_TYPE } from "../utils/const"
@@ -95,29 +86,31 @@ const nextDisabled = computed(() => {
 function prev() {
   const i = tutorialIds.value.indexOf(step.value)
   step.value = tutorialIds.value[i - 1]
-  router.push({ query: { task: taskTab.value, step: step.value } })
 }
 
 function next() {
   const i = tutorialIds.value.indexOf(step.value)
   step.value = tutorialIds.value[i + 1]
-  router.push({ query: { task: taskTab.value, step: step.value } })
 }
 
-async function getContent() {
+function edit() {
+  router.push({
+    name: taskTab.value,
+    params: taskTab.value === TASK_TYPE.Tutorial ? { display: step.value } : {},
+  })
+}
+
+async function prepare() {
   tutorialIds.value = await Tutorial.listDisplay()
   if (!tutorialIds.value.length) {
     content.value = "暂无教程"
-    return
-  }
-  if (route.query.step) {
-    step.value = Number(route.query.step)
-  } else {
-    step.value = 1
   }
   if (!tutorialIds.value.includes(step.value)) {
     step.value = tutorialIds.value[0]
   }
+}
+
+async function getContent() {
   const data = await Tutorial.get(step.value)
   taskId.value = data.task_ptr
   content.value = await marked.parse(data.content, { async: true })
@@ -172,15 +165,31 @@ function modifyLink() {
   }
 }
 
-async function init() {
-  taskTab.value = route.query.task as TASK_TYPE
+async function render() {
   await getContent()
   addButton()
   modifyLink()
 }
 
+async function init() {
+  if (route.query.task) {
+    taskTab.value = route.query.task as TASK_TYPE
+  }
+  if (route.query.step) {
+    step.value = Number(route.query.step)
+  }
+  const query = { task: taskTab.value } as any
+  if (taskTab.value === TASK_TYPE.Tutorial) query.step = step.value
+  router.push({ query })
+  await prepare()
+  render()
+}
+
 onMounted(init)
-watch(step, init)
+watch(step, (v) => {
+  router.push({ query: { ...route.query, step: v } })
+  render()
+})
 </script>
 <style scoped>
 .container {
