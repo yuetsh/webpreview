@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, defineProps, useTemplateRef } from "vue"
+import { onMounted, useTemplateRef } from "vue"
 import { Submission } from "../api"
 import type { SubmissionAll } from "../utils/type"
 
