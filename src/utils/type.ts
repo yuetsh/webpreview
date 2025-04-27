@@ -53,6 +53,7 @@ export interface SubmissionAll {
   id: string
   userid: number
   username: string
+  task_id: number
   task_type: string
   task_title: string
   score: number

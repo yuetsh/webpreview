@@ -1,9 +1,7 @@
 <template>
   <n-flex class="container" :wrap="false">
     <n-flex vertical class="menu">
-      <n-button secondary @click="$router.push({ name: 'home' })">
-        返回
-      </n-button>
+      <n-button secondary @click="goHome"> 返回 </n-button>
       <n-button
         v-for="item in menu"
         :key="item.label"
@@ -19,16 +17,31 @@
   </n-flex>
 </template>
 <script lang="ts" setup>
+import { useRouter } from "vue-router"
+import { taskTab } from "../store/task"
 import { step } from "../store/tutorial"
+import { TASK_TYPE } from "../utils/const"
+
+const router = useRouter()
 
 const menu = [
   {
     label: "教程",
     route: { name: "tutorial", params: { display: step.value } },
   },
+  { label: "挑战", route: { name: "challenge" } },
   { label: "用户", route: { name: "user-manage", params: { page: 1 } } },
   { label: "提交", route: { name: "submissions", params: { page: 1 } } },
 ]
+
+function goHome() {
+  const query = { task: taskTab.value } as any
+  if (taskTab.value === TASK_TYPE.Tutorial) query.step = step.value
+  router.push({
+    name: "home",
+    query,
+  })
+}
 </script>
 <style scoped>
 .container {

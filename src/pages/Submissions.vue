@@ -179,6 +179,7 @@ onUnmounted(() => {
     id: "",
     userid: 0,
     username: "",
+    task_id: 0,
     task_title: "",
     task_type: "tutorial",
     score: 0,

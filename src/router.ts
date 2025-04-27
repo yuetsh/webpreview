@@ -15,7 +15,7 @@ const routes = [
     path: "/submission/:id",
     name: "submission",
     component: () => import("./pages/Submission.vue"),
-    props: true
+    props: true,
   },
   {
     path: "/dashboard",
@@ -26,7 +26,12 @@ const routes = [
       {
         path: "tutorial/:display",
         name: "tutorial",
-        component: () => import("./pages/Markdown.vue"),
+        component: () => import("./pages/Tutorial.vue"),
+      },
+      {
+        path: "challenge",
+        name: "challenge",
+        component: () => import("./pages/Challenge.vue"),
       },
       {
         path: "user-manage/:page",

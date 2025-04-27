@@ -3,7 +3,13 @@
     <n-flex align="center" justify="space-between" class="title">
       <n-flex align="center">
         <Icon icon="twemoji:open-book" :width="20"></Icon>
-        <n-tabs style="width: 140px" type="segment" animated>
+        <n-tabs
+          style="width: 140px"
+          type="segment"
+          animated
+          :value="taskTab"
+          @update:value="changeTab"
+        >
           <n-tab name="tutorial" tab="教程"></n-tab>
           <n-tab name="challenge" tab="挑战"></n-tab>
         </n-tabs>
@@ -20,7 +26,12 @@
         <n-button
           text
           v-if="authed && roleSuper"
-          @click="$router.push({ name: 'tutorial', params: { display: step } })"
+          @click="
+            $router.push({
+              name: taskTab,
+              params: taskTab === TASK_TYPE.Tutorial ? { display: step } : {},
+            })
+          "
         >
           <Icon :width="16" icon="lucide:edit"></Icon>
         </n-button>
@@ -29,7 +40,13 @@
         </n-button>
       </n-flex>
     </n-flex>
-    <div class="markdown-body" v-html="content" ref="$content"></div>
+    <div
+      v-if="taskTab === TASK_TYPE.Tutorial"
+      class="markdown-body"
+      v-html="content"
+      ref="$content"
+    />
+    <Challenge v-else />
   </div>
 </template>
 <script lang="ts" setup>
@@ -41,46 +58,65 @@ import { css, html, js, tab } from "../store/editors"
 import { Tutorial } from "../api"
 import { step } from "../store/tutorial"
 import { authed, roleSuper } from "../store/user"
-import { useStorage } from "@vueuse/core"
-import { STORAGE_KEY } from "../utils/const"
-import { taskId } from "../store/task"
+import { taskId, taskTab } from "../store/task"
+import { useRoute, useRouter } from "vue-router"
+import { TASK_TYPE } from "../utils/const"
+import Challenge from "./Challenge.vue"
 
-const displays = ref<number[]>([])
-const content = useStorage(STORAGE_KEY.CONTENT, "")
+const route = useRoute()
+const router = useRouter()
+const tutorialIds = ref<number[]>([])
+const content = ref("")
 const $content = useTemplateRef<any>("$content")
 
 defineEmits(["hide"])
 
-const hideNav = computed(() => displays.value.length <= 1)
+const hideNav = computed(
+  () => taskTab.value === TASK_TYPE.Challenge || tutorialIds.value.length <= 1,
+)
+
+function changeTab(v: TASK_TYPE) {
+  taskTab.value = v
+  const query = { task: v } as any
+  if (v === TASK_TYPE.Tutorial) query.step = step.value
+  router.push({ query })
+}
 
 const prevDisabled = computed(() => {
-  const i = displays.value.indexOf(step.value)
+  const i = tutorialIds.value.indexOf(step.value)
   return i <= 0
 })
 
 const nextDisabled = computed(() => {
-  const i = displays.value.indexOf(step.value)
-  return i === displays.value.length - 1
+  const i = tutorialIds.value.indexOf(step.value)
+  return i === tutorialIds.value.length - 1
 })
 
 function prev() {
-  const i = displays.value.indexOf(step.value)
-  step.value = displays.value[i - 1]
+  const i = tutorialIds.value.indexOf(step.value)
+  step.value = tutorialIds.value[i - 1]
+  router.push({ query: { task: taskTab.value, step: step.value } })
 }
 
 function next() {
-  const i = displays.value.indexOf(step.value)
-  step.value = displays.value[i + 1]
+  const i = tutorialIds.value.indexOf(step.value)
+  step.value = tutorialIds.value[i + 1]
+  router.push({ query: { task: taskTab.value, step: step.value } })
 }
 
 async function getContent() {
-  displays.value = await Tutorial.listDisplay()
-  if (!displays.value.length) {
+  tutorialIds.value = await Tutorial.listDisplay()
+  if (!tutorialIds.value.length) {
     content.value = "暂无教程"
     return
   }
-  if (!displays.value.includes(step.value)) {
-    step.value = displays.value[0]
+  if (route.query.step) {
+    step.value = Number(route.query.step)
+  } else {
+    step.value = 1
+  }
+  if (!tutorialIds.value.includes(step.value)) {
+    step.value = tutorialIds.value[0]
   }
   const data = await Tutorial.get(step.value)
   taskId.value = data.task_ptr
@@ -136,14 +172,15 @@ function modifyLink() {
   }
 }
 
-async function render() {
+async function init() {
+  taskTab.value = route.query.task as TASK_TYPE
   await getContent()
   addButton()
   modifyLink()
 }
 
-onMounted(render)
-watch(step, render)
+onMounted(init)
+watch(step, init)
 </script>
 <style scoped>
 .container {

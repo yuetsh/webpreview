@@ -28,8 +28,6 @@ export const alertVariants = [
 
 export const STORAGE_KEY = {
   LOGIN: "web-isloggedin",
-  STEP: "web-turtorial-step",
-  CONTENT: "web-turtorial-content",
   HTML: "web-html",
   CSS: "web-css",
   JS: "web-js",
@@ -46,3 +44,13 @@ export const BASE_URL =
   import.meta.env.MODE === "development"
     ? "http://localhost:8000/api"
     : "https://web.xuyue.cc/api"
+
+export enum TASK_TYPE {
+  Tutorial = "tutorial",
+  Challenge = "challenge",
+}
+
+export const TASK_LABEL = {
+  [TASK_TYPE.Tutorial]: "教程",
+  [TASK_TYPE.Challenge]: "挑战",
+} as const

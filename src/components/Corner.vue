@@ -1,6 +1,8 @@
 <template>
   <n-flex align="center" class="corner">
-    <n-button quaternary v-if="!show" @click="showTutorial">教程</n-button>
+    <n-button quaternary v-if="!show" @click="showTutorial">
+      打开{{ TASK_LABEL[taskTab] }}
+    </n-button>
     <template v-if="user.loaded && authed">
       <n-button
         quaternary
@@ -38,12 +40,12 @@ import { Icon } from "@iconify/vue"
 import { authed, roleNormal, roleSuper, user } from "../store/user"
 import { loginModal } from "../store/modal"
 import { show, tutorialSize, step } from "../store/tutorial"
-import { taskId } from "../store/task"
+import { taskId, taskTab } from "../store/task"
 import { html, css, js } from "../store/editors"
 import { Account, Submission } from "../api"
 import { Role } from "../utils/type"
 import { router } from "../router"
-import { ADMIN_URL } from "../utils/const"
+import { ADMIN_URL, TASK_LABEL } from "../utils/const"
 
 const message = useMessage()
 

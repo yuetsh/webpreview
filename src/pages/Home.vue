@@ -6,7 +6,7 @@
     max="900px"
   >
     <template #1>
-      <Tutorial @hide="hide" />
+      <Task @hide="hide" />
     </template>
     <template #2>
       <n-split direction="vertical" min="200px">
@@ -24,7 +24,7 @@
 import { useMagicKeys, whenever } from "@vueuse/core"
 import Editors from "../components/Editors.vue"
 import Preview from "../components/Preview.vue"
-import Tutorial from "../components/Tutorial.vue"
+import Task from "../components/Task.vue"
 import { show, tutorialSize } from "../store/tutorial"
 import { html, css, js } from "../store/editors"
 

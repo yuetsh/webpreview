@@ -16,15 +16,25 @@
     >
       挑战
     </n-tag>
-    <n-button text>{{ props.submission.task_title }}</n-button>
+    <n-button text @click="open">{{ props.submission.task_title }}</n-button>
   </n-flex>
 </template>
 <script setup lang="ts">
+import { useRouter } from "vue-router"
 import type { SubmissionOut } from "../../utils/type"
+import { submission } from "../../store/submission"
 
 interface Props {
   submission: SubmissionOut
 }
 
 const props = defineProps<Props>()
+
+const router = useRouter()
+function open() {
+  router.push({
+    name: "home",
+    query: { [submission.value.task_type]: submission.value.task_id },
+  })
+}
 </script>
