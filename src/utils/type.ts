@@ -1,3 +1,5 @@
+import type { TASK_TYPE } from "./const"
+
 export enum Role {
   Super = "super",
   Admin = "admin",
@@ -41,7 +43,8 @@ export interface SubmissionOut {
   id: string
   userid: number
   username: string
-  task_type: string
+  task_display: number
+  task_type: TASK_TYPE
   task_title: string
   score: number
   my_score: number
@@ -54,7 +57,8 @@ export interface SubmissionAll {
   userid: number
   username: string
   task_id: number
-  task_type: string
+  task_display: number
+  task_type: TASK_TYPE
   task_title: string
   score: number
   my_score: number

@@ -3,7 +3,9 @@
     <n-gi :span="1">
       <n-flex vertical>
         <n-flex justify="space-between">
-          <n-button quaternary @click="goHome">返回首页</n-button>
+          <n-button quaternary @click="() => goHome($router, taskTab, step)">
+            返回首页
+          </n-button>
           <n-flex align="center">
             <div>
               <n-input
@@ -36,23 +38,24 @@
       />
     </n-gi>
   </n-grid>
-  <n-modal
-    preset="card"
-    title="前端代码"
-    v-model:show="codeModal"
-    style="max-width: 80%"
-  >
-    <n-grid x-gap="20" :cols="codeCount">
-      <n-gi :span="1" v-if="html">
+  <n-modal preset="card" v-model:show="codeModal" style="max-width: 60%">
+    <template #header>
+      <n-flex align="center">
+        <span>前端代码</span>
+        <n-button tertiary @click="copyToEditor">复制到编辑框</n-button>
+      </n-flex>
+    </template>
+    <n-tabs animated type="segment">
+      <n-tab-pane name="html" tab="html">
         <n-code :code="html" language="html" word-wrap></n-code>
-      </n-gi>
-      <n-gi :span="1" v-if="css">
+      </n-tab-pane>
+      <n-tab-pane name="css" tab="css">
         <n-code :code="css" language="css" word-wrap></n-code>
-      </n-gi>
-      <n-gi :span="1" v-if="js">
+      </n-tab-pane>
+      <n-tab-pane v-if="!!js" name="js" tab="js">
         <n-code :code="js" language="js" word-wrap></n-code>
-      </n-gi>
-    </n-grid>
+      </n-tab-pane>
+    </n-tabs>
   </n-modal>
 </template>
 <script setup lang="ts">
@@ -68,7 +71,9 @@ import { useRouter, useRoute } from "vue-router"
 import { watchDebounced } from "@vueuse/core"
 import { taskTab } from "../store/task"
 import { step } from "../store/tutorial"
+import { html as eHtml, css as eCss, js as eJs } from "../store/editors"
 import { TASK_TYPE } from "../utils/const"
+import { goHome } from "../utils/helper"
 
 const route = useRoute()
 const router = useRouter()
@@ -83,10 +88,6 @@ const query = reactive({
 const html = computed(() => submission.value.html)
 const css = computed(() => submission.value.css)
 const js = computed(() => submission.value.js)
-
-const codeCount = computed(
-  () => [html.value, css.value, js.value].filter((c) => !!c).length,
-)
 
 const codeModal = ref(false)
 
@@ -159,13 +160,11 @@ function afterScore() {
   })
 }
 
-function goHome() {
-  const query = { task: taskTab.value } as any
-  if (taskTab.value === TASK_TYPE.Tutorial) query.step = step.value
-  router.push({
-    name: "home",
-    query,
-  })
+function copyToEditor() {
+  eHtml.value = html.value
+  eCss.value = css.value
+  eJs.value = js.value
+  goHome(router, submission.value.task_type, submission.value.task_display)
 }
 
 watch(
@@ -190,8 +189,9 @@ onUnmounted(() => {
     userid: 0,
     username: "",
     task_id: 0,
+    task_display: 0,
     task_title: "",
-    task_type: "tutorial",
+    task_type: TASK_TYPE.Tutorial,
     score: 0,
     my_score: 0,
     html: "",

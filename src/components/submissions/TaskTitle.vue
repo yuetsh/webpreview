@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router"
 import type { SubmissionOut } from "../../utils/type"
-import { submission } from "../../store/submission"
+import { goHome } from "../../utils/helper"
 
 interface Props {
   submission: SubmissionOut
@@ -32,9 +32,6 @@ const props = defineProps<Props>()
 
 const router = useRouter()
 function open() {
-  router.push({
-    name: "home",
-    query: { [submission.value.task_type]: submission.value.task_id },
-  })
+  goHome(router, props.submission.task_type, props.submission.task_display)
 }
 </script>
