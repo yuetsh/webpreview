@@ -38,49 +38,41 @@
       </n-flex>
     </n-gi>
 
-    <n-gi :span="3" class="col">
-      <n-form>
-        <n-grid x-gap="10" :cols="4">
-          <n-gi :span="1">
-            <n-form-item label="序号">
-              <n-input-number v-model:value="tutorial.display" />
-            </n-form-item>
-          </n-gi>
-          <n-gi :span="2">
-            <n-form-item label="标题">
-              <n-input v-model:value="tutorial.title" />
-            </n-form-item>
-          </n-gi>
-          <n-gi :span="1">
-            <n-form-item label="公开">
-              <n-switch v-model:value="tutorial.is_public" />
-            </n-form-item>
-          </n-gi>
-        </n-grid>
-        <n-form-item label="内容">
-          <n-input
-            v-model:value="tutorial.content"
-            type="textarea"
-            class="editor"
-          />
-        </n-form-item>
-        <n-button block type="primary" @click="submit" :disabled="!canSubmit">
-          提交
-        </n-button>
-      </n-form>
-    </n-gi>
+    <n-gi :span="6" class="col">
+      <n-flex vertical>
+        <n-form inline>
+          <n-form-item label="序号" label-placement="left">
+            <n-input-number v-model:value="tutorial.display" />
+          </n-form-item>
 
-    <n-gi :span="3" class="markdwon-body" v-html="content"></n-gi>
+          <n-form-item label="标题" label-placement="left">
+            <n-input v-model:value="tutorial.title" />
+          </n-form-item>
+
+          <n-form-item label="公开" label-placement="left">
+            <n-switch v-model:value="tutorial.is_public" />
+          </n-form-item>
+          <n-form-item label-placement="left">
+            <n-button type="primary" @click="submit" :disabled="!canSubmit">
+              提交
+            </n-button>
+          </n-form-item>
+        </n-form>
+        <MdEditor style="height: calc(100vh - 90px)" v-model="tutorial.content" />
+      </n-flex>
+    </n-gi>
   </n-grid>
 </template>
 <script lang="ts" setup>
-import { marked } from "marked"
-import { computed, onMounted, reactive, ref, watch } from "vue"
+import { computed, onMounted, reactive, ref } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { Icon } from "@iconify/vue"
 import { Tutorial } from "../api"
 import type { TutorialSlim } from "../utils/type"
 import { useDialog, useMessage } from "naive-ui"
+import { MdEditor } from "md-editor-v3"
+//@ts-ignore
+import "md-editor-v3/lib/style.css"
 
 const route = useRoute()
 const router = useRouter()
@@ -148,7 +140,6 @@ async function show(display: number) {
   tutorial.title = item.title
   tutorial.content = item.content
   tutorial.is_public = item.is_public
-  content.value = await marked.parse(item.content, { async: true })
 }
 
 async function togglePublic(display: number) {
@@ -159,13 +150,6 @@ async function togglePublic(display: number) {
     return item
   })
 }
-
-watch(
-  () => tutorial.content,
-  async (v: string) => {
-    content.value = await marked.parse(v, { async: true })
-  },
-)
 
 onMounted(getContent)
 </script>
@@ -185,11 +169,5 @@ onMounted(getContent)
 
 .editor {
   height: calc(100vh - 200px);
-}
-
-.markdwon-body {
-  box-sizing: border-box;
-  overflow: auto;
-  height: 100vh;
 }
 </style>

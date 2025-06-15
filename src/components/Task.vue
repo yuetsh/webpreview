@@ -60,6 +60,7 @@ import { taskId, taskTab } from "../store/task"
 import { useRoute, useRouter } from "vue-router"
 import { TASK_TYPE } from "../utils/const"
 import Challenge from "./Challenge.vue"
+import { NButton } from 'naive-ui'
 
 const route = useRoute()
 const router = useRouter()
@@ -124,7 +125,6 @@ async function getContent() {
   content.value = await marked.parse(merged, { async: true })
 }
 
-// 用 js 来写的，可以换成 vue 的方式
 function addButton() {
   const action = document.createElement("div")
   action.className = "codeblock-action"
@@ -138,29 +138,48 @@ function addButton() {
     const match = $code.className.match(/-(.*)/)
     let lang = "html"
     if (match) lang = match[1].toLowerCase()
-    actions.innerHTML = `<span class="lang">${lang.toUpperCase()}</span><div><div class="btn copy">复制</div><div class="btn">替换</div></div>`
-    const $copy = actions.children[1].children[0] as HTMLDivElement
-    const $replace = actions.children[1].children[1] as HTMLDivElement
-    $copy.onclick = () => {
+    
+    const langSpan = document.createElement('span')
+    langSpan.className = 'lang'
+    langSpan.textContent = lang.toUpperCase()
+    
+    const btnGroup = document.createElement('div')
+    btnGroup.className = 'btn-group'
+    
+    const copyBtn = document.createElement('button')
+    copyBtn.className = 'action-btn'
+    copyBtn.textContent = '复制'
+    
+    const replaceBtn = document.createElement('button')
+    replaceBtn.className = 'action-btn'
+    replaceBtn.textContent = '替换'
+    
+    btnGroup.appendChild(copyBtn)
+    btnGroup.appendChild(replaceBtn)
+    
+    actions.appendChild(langSpan)
+    actions.appendChild(btnGroup)
+    
+    copyBtn.onclick = () => {
       const content = pre.children[1].textContent
       copyFn(content ?? "")
-      $copy.innerHTML = "已复制"
+      copyBtn.textContent = "已复制"
       clearTimeout(copyTimer)
       copyTimer = setTimeout(() => {
-        $copy.innerHTML = "复制"
+        copyBtn.textContent = "复制"
       }, 1000)
     }
-    $replace.onclick = () => {
+    
+    replaceBtn.onclick = () => {
       tab.value = lang
       const content = pre.children[1].textContent
       if (lang === "html") html.value = content
       if (lang === "css") css.value = content
       if (lang === "js") js.value = content
-      // 样式
-      $replace.innerHTML = "已替换"
+      replaceBtn.textContent = "已替换"
       clearTimeout(timer)
       timer = setTimeout(() => {
-        $replace.innerHTML = "替换"
+        replaceBtn.textContent = "替换"
       }, 1000)
     }
   }
@@ -243,23 +262,35 @@ watch(step, (v) => {
     "Apple Color Emoji",
     "Segoe UI Emoji",
     "Segoe UI Symbol";
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .codeblock-action .lang {
-  font-size: 1.2rem;
+  font-size: 0.9rem;
+  font-weight: bold;
 }
 
-.codeblock-action .btn {
-  position: absolute;
-  top: 2px;
-  right: 0;
-  padding: 1rem;
+.codeblock-action .btn-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.codeblock-action .action-btn {
+  height: 28px;
+  padding: 0 14px;
+  font-size: 14px;
+  border-radius: 3px;
+  border: 1px solid #d9d9d9;
+  background-color: #fff;
+  color: #333;
   cursor: pointer;
-  border-radius: 0.4rem;
-  font-size: 1rem;
+  transition: all 0.2s ease;
 }
 
-.codeblock-action .btn.copy {
-  right: 60px;
+.codeblock-action .action-btn:hover {
+  border-color: #18a058;
+  color: #18a058;
 }
 </style>
