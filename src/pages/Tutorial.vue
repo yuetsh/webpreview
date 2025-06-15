@@ -58,7 +58,10 @@
             </n-button>
           </n-form-item>
         </n-form>
-        <MdEditor style="height: calc(100vh - 90px)" v-model="tutorial.content" />
+        <MarkdownEditor
+          style="height: calc(100vh - 90px)"
+          v-model="tutorial.content"
+        />
       </n-flex>
     </n-gi>
   </n-grid>
@@ -70,9 +73,7 @@ import { Icon } from "@iconify/vue"
 import { Tutorial } from "../api"
 import type { TutorialSlim } from "../utils/type"
 import { useDialog, useMessage } from "naive-ui"
-import { MdEditor } from "md-editor-v3"
-//@ts-ignore
-import "md-editor-v3/lib/style.css"
+import MarkdownEditor from "../components/dashboard/MarkdownEditor.vue"
 
 const route = useRoute()
 const router = useRouter()

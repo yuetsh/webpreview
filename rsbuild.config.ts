@@ -15,7 +15,7 @@ export default defineConfig({
     },
   },
   output: {
-    polyfill: "usage"
+    polyfill: "usage",
   },
   tools: {
     rspack: {
@@ -24,6 +24,14 @@ export default defineConfig({
           resolvers: [NaiveUiResolver()],
         }),
       ],
+    },
+  },
+  server: {
+    proxy: {
+      "/media": {
+        target: process.env.WEB_URL,
+        changeOrigin: true,
+      },
     },
   },
   performance: {

@@ -131,3 +131,14 @@ export const Submission = {
     return res.data
   },
 }
+
+export const Helper = {
+  async upload(file: File) {
+    const form = new window.FormData()
+    form.append("image", file)
+    const res = await http.post("/upload/", form, {
+      headers: { "content-type": "multipart/form-data" },
+    })
+    return !!res.data.url ? res.data.url : ""
+  },
+}

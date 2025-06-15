@@ -13,6 +13,7 @@ declare module 'vue' {
     Editor: typeof import('./src/components/Editor.vue')['default']
     Editors: typeof import('./src/components/Editors.vue')['default']
     Login: typeof import('./src/components/Login.vue')['default']
+    MarkdownEditor: typeof import('./src/components/dashboard/MarkdownEditor.vue')['default']
     NAlert: typeof import('naive-ui')['NAlert']
     NameWithFilter: typeof import('./src/components/submissions/NameWithFilter.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
