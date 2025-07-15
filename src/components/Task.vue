@@ -11,7 +11,7 @@
           :width="20"
         ></Icon>
         <n-tabs
-          style="width: 140px"
+          style="width: 210px"
           type="segment"
           animated
           :value="taskTab"
@@ -19,6 +19,11 @@
         >
           <n-tab name="tutorial" tab="教程"></n-tab>
           <n-tab name="challenge" tab="挑战"></n-tab>
+          <n-tab
+            name="list"
+            tab="列表"
+            @click="$router.push({ name: 'submissions', params: { page: 1 } })"
+          ></n-tab>
         </n-tabs>
         <template v-if="!hideNav">
           <n-button text @click="prev" :disabled="prevDisabled">
@@ -60,7 +65,7 @@ import { taskId, taskTab } from "../store/task"
 import { useRoute, useRouter } from "vue-router"
 import { TASK_TYPE } from "../utils/const"
 import Challenge from "./Challenge.vue"
-import { NButton } from 'naive-ui'
+import { NButton } from "naive-ui"
 
 const route = useRoute()
 const router = useRouter()
@@ -71,10 +76,12 @@ const $content = useTemplateRef<any>("$content")
 defineEmits(["hide"])
 
 const hideNav = computed(
-  () => taskTab.value === TASK_TYPE.Challenge || tutorialIds.value.length <= 1,
+  () => taskTab.value !== TASK_TYPE.Tutorial || tutorialIds.value.length <= 1,
 )
 
-function changeTab(v: TASK_TYPE) {
+function changeTab(v: TASK_TYPE & "list") {
+  // 排除 list
+  if (v === "list") return
   taskTab.value = v
   const query = { task: v } as any
   if (v === TASK_TYPE.Tutorial) query.step = step.value
@@ -138,28 +145,28 @@ function addButton() {
     const match = $code.className.match(/-(.*)/)
     let lang = "html"
     if (match) lang = match[1].toLowerCase()
-    
-    const langSpan = document.createElement('span')
-    langSpan.className = 'lang'
+
+    const langSpan = document.createElement("span")
+    langSpan.className = "lang"
     langSpan.textContent = lang.toUpperCase()
-    
-    const btnGroup = document.createElement('div')
-    btnGroup.className = 'btn-group'
-    
-    const copyBtn = document.createElement('button')
-    copyBtn.className = 'action-btn'
-    copyBtn.textContent = '复制'
-    
-    const replaceBtn = document.createElement('button')
-    replaceBtn.className = 'action-btn'
-    replaceBtn.textContent = '替换'
-    
+
+    const btnGroup = document.createElement("div")
+    btnGroup.className = "btn-group"
+
+    const copyBtn = document.createElement("button")
+    copyBtn.className = "action-btn"
+    copyBtn.textContent = "复制"
+
+    const replaceBtn = document.createElement("button")
+    replaceBtn.className = "action-btn"
+    replaceBtn.textContent = "替换"
+
     btnGroup.appendChild(copyBtn)
     btnGroup.appendChild(replaceBtn)
-    
+
     actions.appendChild(langSpan)
     actions.appendChild(btnGroup)
-    
+
     copyBtn.onclick = () => {
       const content = pre.children[1].textContent
       copyFn(content ?? "")
@@ -169,7 +176,7 @@ function addButton() {
         copyBtn.textContent = "复制"
       }, 1000)
     }
-    
+
     replaceBtn.onclick = () => {
       tab.value = lang
       const content = pre.children[1].textContent

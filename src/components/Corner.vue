@@ -4,12 +4,7 @@
       打开{{ TASK_LABEL[taskTab] }}
     </n-button>
     <template v-if="user.loaded && authed">
-      <n-button
-        quaternary
-        @click="$router.push({ name: 'submissions', params: { page: 1 } })"
-      >
-        所有提交
-      </n-button>
+      <n-button quaternary @click="emit('format')">整理</n-button>
       <n-button
         type="primary"
         secondary
@@ -17,7 +12,7 @@
         :loading="submitLoading"
         @click="submit"
       >
-        提交代码
+        提交
       </n-button>
       <n-dropdown :options="menu" @select="clickMenu">
         <n-button>{{ user.username }}</n-button>
@@ -48,6 +43,7 @@ import { router } from "../router"
 import { ADMIN_URL, TASK_LABEL } from "../utils/const"
 
 const message = useMessage()
+const emit = defineEmits(["format"])
 
 const submitLoading = ref(false)
 

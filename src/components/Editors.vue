@@ -67,15 +67,24 @@
       </n-flex>
     </n-tab-pane>
     <template #suffix>
-      <Corner />
+      <Corner @format="format" />
     </template>
   </n-tabs>
 </template>
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
+import prettier from "prettier/standalone"
+import * as htmlParser from "prettier/parser-html"
+import * as cssParser from "prettier/parser-postcss"
+import * as babelParser from "prettier/parser-babel"
+import * as estreeParser from "prettier/plugins/estree"
 import Editor from "./Editor.vue"
 import Corner from "./Corner.vue"
 import { html, css, js, tab, size, reset } from "../store/editors"
+import { NCode, useDialog } from "naive-ui"
+import { h } from "vue"
+
+const dialog = useDialog()
 
 function changeTab(name: string) {
   tab.value = name
@@ -83,6 +92,39 @@ function changeTab(name: string) {
 
 function changeSize(num: number) {
   size.value = num
+}
+
+async function format() {
+  try {
+    const [htmlFormatted, cssFormatted, jsFormatted] = await Promise.all([
+      prettier.format(html.value, {
+        parser: "html",
+        //@ts-ignore
+        plugins: [htmlParser, babelParser, estreeParser, cssParser],
+        tabWidth: 4,
+      }),
+      prettier.format(css.value, {
+        parser: "css",
+        plugins: [cssParser],
+        tabWidth: 4,
+      }),
+      prettier.format(js.value, {
+        parser: "babel",
+        //@ts-ignore
+        plugins: [babelParser, estreeParser],
+        tabWidth: 2,
+      }),
+    ])
+    html.value = htmlFormatted
+    css.value = cssFormatted
+    js.value = jsFormatted
+  } catch (err: any) {
+    dialog.error({
+      title: "格式化失败",
+      content: () => h(NCode, { code: err.message }),
+      style: { width: "auto" },
+    })
+  }
 }
 </script>
 <style scoped>
