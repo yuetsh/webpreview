@@ -3,7 +3,7 @@
     <n-gi :span="1">
       <n-flex vertical>
         <n-flex justify="space-between">
-          <n-button quaternary @click="() => goHome($router, taskTab, step)">
+          <n-button secondary @click="() => goHome($router, taskTab, step)">
             返回首页
           </n-button>
           <n-flex align="center">
