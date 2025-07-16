@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { EditorView } from "@codemirror/view"
 import { Codemirror } from "vue-codemirror"
-import { githubLight } from "@fsegurai/codemirror-theme-github-light"
 import { css } from "@codemirror/lang-css"
 import { javascript } from "@codemirror/lang-javascript"
 import { html } from "@codemirror/lang-html"
@@ -41,7 +40,7 @@ const lang = computed(() => {
   <Codemirror
     v-model="code"
     indentWithTab
-    :extensions="[styleTheme, lang, githubLight]"
+    :extensions="[styleTheme, lang]"
     :tabSize="4"
     :style="{ height: '100%', fontSize: props.fontSize + 'px' }"
   />
