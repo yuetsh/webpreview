@@ -36,14 +36,14 @@ export default defineConfig({
   },
   performance: {
     chunkSplit: {
-      strategy: "split-by-experience",
-      // strategy: "split-by-module",
-      forceSplitting: {
-        "lib-ui": /node_modules[\\/]naive-ui[\\/]/,
-        "lib-cm": /node_modules[\\/]@codemirror[\\/]/,
-        "lib-marked": /node_modules[\\/]marked[\\/]/,
-        "lib-hljs": /node_modules[\\/]highlight\.js[\\/]/,
-      },
+      // strategy: "split-by-experience",
+      strategy: "split-by-module",
+      // forceSplitting: {
+      //   "lib-ui": /node_modules[\\/]naive-ui[\\/]/,
+      //   "lib-cm": /node_modules[\\/]@codemirror[\\/]/,
+      //   "lib-marked": /node_modules[\\/]marked[\\/]/,
+      //   "lib-hljs": /node_modules[\\/]highlight\.js[\\/]/,
+      // },
     },
   },
 })
