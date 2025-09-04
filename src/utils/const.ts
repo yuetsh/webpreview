@@ -35,15 +35,9 @@ export const STORAGE_KEY = {
   FONTSIZE: "web-fontsize",
 }
 
-export const ADMIN_URL =
-  import.meta.env.MODE === "development"
-    ? "http://localhost:8000/admin"
-    : "https://web.xuyue.cc/admin"
+export const ADMIN_URL = import.meta.env.PUBLIC_ADMIN_URL
 
-export const BASE_URL =
-  import.meta.env.MODE === "development"
-    ? "http://localhost:8000/api"
-    : "https://web.xuyue.cc/api"
+export const BASE_URL = import.meta.env.PUBLIC_BASE_URL
 
 export enum TASK_TYPE {
   Tutorial = "tutorial",

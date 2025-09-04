@@ -29,7 +29,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/media": {
-        target: process.env.WEB_URL,
+        target: process.env.PUBLIC_WEB_URL,
         changeOrigin: true,
       },
     },
