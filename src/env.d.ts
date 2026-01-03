@@ -2,6 +2,7 @@ interface ImportMetaEnv {
   readonly PUBLIC_WEB_URL: string
   readonly PUBLIC_BASE_URL: string
   readonly PUBLIC_ADMIN_URL: string
+  readonly PUBLIC_MAXKB_URL: string
 }
 
 interface ImportMeta {
