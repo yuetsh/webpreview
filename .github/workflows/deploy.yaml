@@ -41,12 +41,3 @@ jobs:
           SOURCE: dist/
           REMOTE_USER: root
           TARGET: /root/WebPreview/build
-
-      - uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.HOST }}
-          username: root
-          port: ${{ matrix.remote_port }}
-          key: ${{ secrets.KEY }}
-          script: |
-            sh ~/WebPreview/backend.sh
