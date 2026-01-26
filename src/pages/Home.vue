@@ -52,6 +52,6 @@ function hide() {
   show.value = false
 }
 
-whenever(ctrl_s, () => {})
-whenever(ctrl_r, () => {})
+whenever(ctrl_s!, () => {})
+whenever(ctrl_r!, () => {})
 </script>
