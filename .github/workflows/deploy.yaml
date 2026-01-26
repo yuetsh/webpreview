@@ -42,7 +42,7 @@ jobs:
           REMOTE_USER: root
           TARGET: /root/WebPreview/build
 
-      - uses: appleboy/ssh-action@main
+      - uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.HOST }}
           username: root
