@@ -5,34 +5,48 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: debian
+            build_command: build
+            remote_port: 22
+          - name: school
+            build_command: build:staging
+            remote_port: 8822
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
-      - run: npm install
-      - run: CI=false npm run build
+      - run: npm ci
+      - run: npm run ${{ matrix.build_command }}
+        env:
+          CI: false
 
       - uses: easingthemes/ssh-deploy@main
         with:
           SSH_PRIVATE_KEY: ${{ secrets.KEY }}
           REMOTE_HOST: ${{ secrets.HOST }}
+          REMOTE_PORT: ${{ matrix.remote_port }}
           ARGS: "-avzr --delete"
           SOURCE: dist/
           REMOTE_USER: root
           TARGET: /root/WebPreview/build
 
-      - uses: appleboy/ssh-action@v1.2.1
+      - uses: appleboy/ssh-action@main
         with:
           host: ${{ secrets.HOST }}
           username: root
+          port: ${{ matrix.remote_port }}
           key: ${{ secrets.KEY }}
           script: |
-            cd ~/WebPreview/api
-            git pull
-            sh ~/WebPreview/run.sh
+            sh ~/WebPreview/backend.sh
