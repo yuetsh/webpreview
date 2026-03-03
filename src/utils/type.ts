@@ -30,6 +30,21 @@ export interface TutorialIn {
   content: string
 }
 
+export interface ChallengeSlim {
+  display: number
+  title: string
+  score: number
+  is_public: boolean
+}
+
+export interface ChallengeIn {
+  display: number
+  title: string
+  content: string
+  score: number
+  is_public: boolean
+}
+
 export interface User {
   id: number
   username: string

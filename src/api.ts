@@ -1,6 +1,6 @@
 import axios from "axios"
 import { router } from "./router"
-import type { TutorialIn } from "./utils/type"
+import type { TutorialIn, ChallengeIn } from "./utils/type"
 import { BASE_URL, STORAGE_KEY } from "./utils/const"
 
 const http = axios.create({
@@ -96,6 +96,37 @@ export const Tutorial = {
 
   async listDisplay() {
     const res = await http.get("/tutorial/display")
+    return res.data
+  },
+}
+
+export const Challenge = {
+  async list() {
+    const res = await http.get("/challenge/list")
+    return res.data
+  },
+
+  async createOrUpdate(payload: ChallengeIn) {
+    const res = await http.post("/challenge/", payload)
+    return res.data
+  },
+
+  async togglePublic(display: number) {
+    const res = await http.put(`/challenge/public/${display}`)
+    return res.data
+  },
+
+  async remove(display: number) {
+    await http.delete(`/challenge/${display}`)
+  },
+
+  async get(display: number) {
+    const res = await http.get(`/challenge/${display}`)
+    return res.data
+  },
+
+  async listDisplay() {
+    const res = await http.get("/challenge/display")
     return res.data
   },
 }

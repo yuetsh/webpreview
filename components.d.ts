@@ -12,13 +12,11 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Challenge: typeof import('./src/components/Challenge.vue')['default']
-    Corner: typeof import('./src/components/Corner.vue')['default']
     Editor: typeof import('./src/components/Editor.vue')['default']
     Editors: typeof import('./src/components/Editors.vue')['default']
     Login: typeof import('./src/components/Login.vue')['default']
     MarkdownEditor: typeof import('./src/components/dashboard/MarkdownEditor.vue')['default']
     NAlert: typeof import('naive-ui')['NAlert']
-    NameWithFilter: typeof import('./src/components/submissions/NameWithFilter.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
     NCard: typeof import('naive-ui')['NCard']
     NCode: typeof import('naive-ui')['NCode']
@@ -53,6 +51,8 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     Task: typeof import('./src/components/Task.vue')['default']
     TaskTitle: typeof import('./src/components/submissions/TaskTitle.vue')['default']
+    Toolbar: typeof import('./src/components/Toolbar.vue')['default']
+    Tutorial: typeof import('./src/components/Tutorial.vue')['default']
     UserActions: typeof import('./src/components/dashboard/UserActions.vue')['default']
   }
 }

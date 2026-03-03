@@ -1,5 +1,5 @@
 <template>
-  <n-grid class="container" x-gap="10" :cols="2">
+  <n-grid class="container" x-gap="10" :cols="3">
     <n-gi :span="1">
       <n-flex vertical>
         <n-flex justify="space-between">
@@ -23,10 +23,16 @@
             </n-pagination>
           </n-flex>
         </n-flex>
-        <n-data-table striped :columns="columns" :data="data"></n-data-table>
+        <n-data-table
+          striped
+          :columns="columns"
+          :data="data"
+          :row-props="rowProps"
+          :row-class-name="rowClassName"
+        ></n-data-table>
       </n-flex>
     </n-gi>
-    <n-gi :span="1">
+    <n-gi :span="2">
       <Preview
         v-if="submission.id"
         :html="html"
@@ -59,7 +65,7 @@
   </n-modal>
 </template>
 <script setup lang="ts">
-import { NButton, type DataTableColumn } from "naive-ui"
+import { type DataTableColumn } from "naive-ui"
 import { computed, h, onMounted, onUnmounted, reactive, ref, watch } from "vue"
 import { Submission } from "../api"
 import type { SubmissionOut } from "../utils/type"
@@ -125,21 +131,18 @@ const columns: DataTableColumn<SubmissionOut>[] = [
       else return "-"
     },
   },
-  {
-    title: "效果",
-    key: "code",
-    render: (row) =>
-      h(
-        NButton,
-        {
-          quaternary: submission.value.id !== row.id,
-          type: submission.value.id === row.id ? "primary" : "default",
-          onClick: () => getSubmissionByID(row.id),
-        },
-        () => "查看",
-      ),
-  },
 ]
+
+function rowProps(row: SubmissionOut) {
+  return {
+    style: { cursor: "pointer" },
+    onClick: () => getSubmissionByID(row.id),
+  }
+}
+
+function rowClassName(row: SubmissionOut) {
+  return submission.value.id === row.id ? "row-active" : ""
+}
 
 async function init() {
   const res = await Submission.list(query)
@@ -207,5 +210,9 @@ onUnmounted(() => {
   padding: 10px;
   box-sizing: border-box;
   height: calc(100% - 43px);
+}
+
+:deep(.row-active td) {
+  background-color: rgba(24, 160, 80, 0.1) !important;
 }
 </style>

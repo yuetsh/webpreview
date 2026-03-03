@@ -26,9 +26,12 @@ import { goHome } from "../utils/helper"
 const menu = [
   {
     label: "教程",
-    route: { name: "tutorial", params: { display: step.value } },
+    route: { name: "tutorial-editor", params: { display: step.value } },
   },
-  { label: "挑战", route: { name: "challenge" } },
+  {
+    label: "挑战",
+    route: { name: "challenge-editor", params: { display: 0 } },
+  },
   { label: "用户", route: { name: "user-manage", params: { page: 1 } } },
   { label: "提交", route: { name: "submissions", params: { page: 1 } } },
 ]

@@ -6,6 +6,10 @@ import { STORAGE_KEY } from "./utils/const"
 
 const routes = [
   { path: "/", name: "home", component: Home },
+  { path: "/tutorial", name: "home-tutorial-list", component: Home },
+  { path: "/tutorial/:display", name: "home-tutorial", component: Home },
+  { path: "/challenge", name: "home-challenge-list", component: Home },
+  { path: "/challenge/:display", name: "home-challenge", component: Home },
   {
     path: "/submissions/:page",
     name: "submissions",
@@ -25,13 +29,13 @@ const routes = [
     children: [
       {
         path: "tutorial/:display",
-        name: "tutorial",
-        component: () => import("./pages/Tutorial.vue"),
+        name: "tutorial-editor",
+        component: () => import("./pages/TutorialEditor.vue"),
       },
       {
-        path: "challenge",
-        name: "challenge",
-        component: () => import("./pages/Challenge.vue"),
+        path: "challenge/:display",
+        name: "challenge-editor",
+        component: () => import("./pages/ChallengeEditor.vue"),
       },
       {
         path: "user-manage/:page",

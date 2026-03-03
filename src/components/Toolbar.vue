@@ -10,7 +10,7 @@
         secondary
         :disabled="submitDisabled"
         :loading="submitLoading"
-        @click="submit"
+        @click="emit('submit')"
       >
         提交
       </n-button>
@@ -29,23 +29,21 @@
   </n-flex>
 </template>
 <script lang="ts" setup>
-import { computed, h, ref } from "vue"
-import { useMessage } from "naive-ui"
+import { computed, h } from "vue"
 import { Icon } from "@iconify/vue"
 import { authed, roleNormal, roleSuper, user } from "../store/user"
 import { loginModal } from "../store/modal"
 import { show, tutorialSize, step } from "../store/tutorial"
 import { taskId, taskTab } from "../store/task"
-import { html, css, js } from "../store/editors"
-import { Account, Submission } from "../api"
+import { Account } from "../api"
 import { Role } from "../utils/type"
 import { router } from "../router"
 import { ADMIN_URL, TASK_LABEL } from "../utils/const"
 
-const message = useMessage()
-const emit = defineEmits(["format"])
-
-const submitLoading = ref(false)
+const props = defineProps<{
+  submitLoading: boolean
+}>()
+const emit = defineEmits(["format", "submit"])
 
 const submitDisabled = computed(() => {
   return taskId.value === 0
@@ -96,7 +94,7 @@ function showTutorial() {
 function clickMenu(name: string) {
   switch (name) {
     case "dashboard":
-      router.push({ name: "tutorial", params: { display: step.value } })
+      router.push({ name: "tutorial-editor", params: { display: step.value } })
       break
     case "admin":
       window.open(ADMIN_URL)
@@ -122,22 +120,6 @@ async function handleLogout() {
   await Account.logout()
   user.username = ""
   user.role = Role.Normal
-}
-
-async function submit() {
-  try {
-    submitLoading.value = true
-    await Submission.create(taskId.value, {
-      html: html.value,
-      css: css.value,
-      js: js.value,
-    })
-    message.success("提交成功")
-  } catch (err) {
-    message.error("提交失败")
-  } finally {
-    submitLoading.value = false
-  }
 }
 </script>
 <style scoped>
