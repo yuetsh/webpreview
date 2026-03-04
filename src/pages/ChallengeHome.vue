@@ -1,0 +1,149 @@
+<template>
+  <n-split :size="leftSize" min="350px" max="700px">
+    <template #1>
+      <div class="left-panel">
+        <n-tabs v-model:value="activeTab" type="line" class="left-tabs">
+          <template #prefix>
+            <n-button text @click="back" style="margin: 0 8px">
+              <Icon :width="20" icon="pepicons-pencil:arrow-left" />
+            </n-button>
+          </template>
+          <n-tab-pane name="desc" tab="挑战描述" display-directive="show">
+            <div class="markdown-body" style="padding: 12px; overflow-y: auto; height: 100%" v-html="challengeContent" />
+          </n-tab-pane>
+          <n-tab-pane name="chat" tab="AI 对话" display-directive="show">
+            <PromptPanel />
+          </n-tab-pane>
+        </n-tabs>
+      </div>
+    </template>
+    <template #2>
+      <div class="right-panel">
+        <Preview :html="html" :css="css" :js="js" />
+        <n-flex class="toolbar" align="center" :size="8">
+          <n-button secondary @click="showCode = true">查看代码</n-button>
+          <n-button
+            type="primary"
+            :disabled="!conversationId"
+            :loading="submitLoading"
+            @click="submit"
+          >
+            提交作品
+          </n-button>
+        </n-flex>
+      </div>
+    </template>
+  </n-split>
+  <n-modal v-model:show="showCode" preset="card" title="代码" style="width: 700px">
+    <n-tabs type="line">
+      <n-tab-pane name="html" tab="HTML">
+        <n-code :code="html" language="html" />
+      </n-tab-pane>
+      <n-tab-pane name="css" tab="CSS">
+        <n-code :code="css" language="css" />
+      </n-tab-pane>
+      <n-tab-pane name="js" tab="JS">
+        <n-code :code="js" language="javascript" />
+      </n-tab-pane>
+    </n-tabs>
+  </n-modal>
+</template>
+
+<script setup lang="ts">
+import { ref, watch, onMounted, onUnmounted } from "vue"
+import { useRoute, useRouter } from "vue-router"
+import { useMessage } from "naive-ui"
+import { Icon } from "@iconify/vue"
+import { marked } from "marked"
+import PromptPanel from "../components/PromptPanel.vue"
+import Preview from "../components/Preview.vue"
+import { Challenge, Submission } from "../api"
+import { html, css, js } from "../store/editors"
+import { taskId } from "../store/task"
+import { connectPrompt, disconnectPrompt, conversationId, streaming } from "../store/prompt"
+
+const route = useRoute()
+const router = useRouter()
+const message = useMessage()
+
+const leftSize = ref(0.4)
+const activeTab = ref("desc")
+const challengeTitle = ref("")
+const challengeContent = ref("")
+const showCode = ref(false)
+const submitLoading = ref(false)
+
+watch(streaming, (val) => {
+  if (val) activeTab.value = "chat"
+})
+
+async function loadChallenge() {
+  const display = Number(route.params.display)
+  const data = await Challenge.get(display)
+  taskId.value = data.task_ptr
+  challengeTitle.value = `#${data.display} ${data.title}`
+  challengeContent.value = await marked.parse(data.content, { async: true })
+  connectPrompt(data.task_ptr)
+}
+
+function back() {
+  disconnectPrompt()
+  router.push({ name: "home-challenge-list" })
+}
+
+async function submit() {
+  if (!conversationId.value) return
+  submitLoading.value = true
+  try {
+    await Submission.create(taskId.value, {
+      html: html.value,
+      css: css.value,
+      js: js.value,
+      conversationId: conversationId.value,
+    })
+    message.success("提交成功")
+  } catch {
+    message.error("提交失败")
+  } finally {
+    submitLoading.value = false
+  }
+}
+
+onMounted(loadChallenge)
+onUnmounted(disconnectPrompt)
+</script>
+
+<style scoped>
+.left-panel {
+  height: 100%;
+  overflow: hidden;
+}
+
+.left-tabs {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.left-tabs :deep(.n-tabs-pane-wrapper) {
+  flex: 1;
+  overflow: hidden;
+}
+
+.left-tabs :deep(.n-tab-pane) {
+  height: 100%;
+  padding: 0;
+}
+
+.right-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar {
+  padding: 8px 12px;
+  border-top: 1px solid #e0e0e0;
+  justify-content: flex-end;
+}
+</style>

@@ -32,6 +32,11 @@ export default defineConfig({
         target: process.env.PUBLIC_WEB_URL,
         changeOrigin: true,
       },
+      "/ws": {
+        target: process.env.PUBLIC_WEB_URL,
+        ws: true,
+        changeOrigin: true,
+      },
     },
   },
   performance: {

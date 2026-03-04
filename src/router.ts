@@ -9,7 +9,11 @@ const routes = [
   { path: "/tutorial", name: "home-tutorial-list", component: Home },
   { path: "/tutorial/:display", name: "home-tutorial", component: Home },
   { path: "/challenge", name: "home-challenge-list", component: Home },
-  { path: "/challenge/:display", name: "home-challenge", component: Home },
+  {
+    path: "/challenge/:display",
+    name: "home-challenge",
+    component: () => import("./pages/ChallengeHome.vue"),
+  },
   {
     path: "/submissions/:page",
     name: "submissions",

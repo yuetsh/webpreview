@@ -63,6 +63,7 @@ export interface SubmissionOut {
   task_title: string
   score: number
   my_score: number
+  conversation_id?: string
   created: Date
   modified: Date
 }

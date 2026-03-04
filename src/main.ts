@@ -25,7 +25,6 @@ hljs.registerLanguage("js", javascript)
 
 marked.use({
   gfm: true,
-  async: true,
 })
 marked.use(
   markedHighlight({

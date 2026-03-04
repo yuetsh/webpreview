@@ -63,11 +63,23 @@
       </n-tab-pane>
     </n-tabs>
   </n-modal>
+  <n-modal v-model:show="chainModal" preset="card" title="Prompt 思维链" style="max-width: 60%; max-height: 80vh">
+    <n-spin :show="chainLoading">
+      <div v-for="msg in chainMessages" :key="msg.id" style="margin-bottom: 16px">
+        <div :style="{ fontWeight: 'bold', fontSize: '12px', marginBottom: '4px', color: msg.role === 'user' ? '#2080f0' : '#18a058' }">
+          {{ msg.role === "user" ? "学生" : "AI" }}
+        </div>
+        <div v-html="renderMarkdown(msg.content)" style="font-size: 14px; line-height: 1.6" />
+      </div>
+      <n-empty v-if="!chainLoading && chainMessages.length === 0" description="暂无对话记录" />
+    </n-spin>
+  </n-modal>
 </template>
 <script setup lang="ts">
-import { type DataTableColumn } from "naive-ui"
+import { NButton, type DataTableColumn } from "naive-ui"
 import { computed, h, onMounted, onUnmounted, reactive, ref, watch } from "vue"
-import { Submission } from "../api"
+import { marked } from "marked"
+import { Submission, Prompt } from "../api"
 import type { SubmissionOut } from "../utils/type"
 import { parseTime } from "../utils/helper"
 import TaskTitle from "../components/submissions/TaskTitle.vue"
@@ -96,6 +108,23 @@ const css = computed(() => submission.value.css)
 const js = computed(() => submission.value.js)
 
 const codeModal = ref(false)
+const chainModal = ref(false)
+const chainMessages = ref<{ id: number; role: string; content: string }[]>([])
+const chainLoading = ref(false)
+
+async function showChain(conversationId: string) {
+  chainLoading.value = true
+  chainModal.value = true
+  try {
+    chainMessages.value = await Prompt.getMessages(conversationId)
+  } finally {
+    chainLoading.value = false
+  }
+}
+
+function renderMarkdown(text: string): string {
+  return marked.parse(text, { async: false }) as string
+}
 
 const columns: DataTableColumn<SubmissionOut>[] = [
   {
@@ -129,6 +158,19 @@ const columns: DataTableColumn<SubmissionOut>[] = [
     render: (row) => {
       if (row.score > 0) return row.score.toFixed(2)
       else return "-"
+    },
+  },
+  {
+    title: "思维链",
+    key: "conversation_id",
+    width: 70,
+    render: (row) => {
+      if (!row.conversation_id) return "-"
+      return h(
+        NButton,
+        { text: true, type: "primary", onClick: () => showChain(row.conversation_id!) },
+        () => "查看",
+      )
     },
   },
 ]

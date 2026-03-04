@@ -138,9 +138,15 @@ export const Submission = {
       html?: string
       css?: string
       js?: string
+      conversationId?: string
     },
   ) {
-    const data = { task_id: taskId, ...code }
+    const { conversationId, ...rest } = code
+    const data = {
+      task_id: taskId,
+      ...rest,
+      conversation_id: conversationId || null,
+    }
     const res = await http.post("/submission/", data)
     return res.data
   },
@@ -160,6 +166,21 @@ export const Submission = {
   async updateScore(id: string, score: number) {
     const res = await http.put(`/submission/${id}/score`, { score })
     return res.data
+  },
+}
+
+export const Prompt = {
+  async listConversations(taskId?: number, userId?: number) {
+    const params: Record<string, number> = {}
+    if (taskId) params.task_id = taskId
+    if (userId) params.user_id = userId
+    return (await http.get("/prompt/conversations/", { params })).data
+  },
+
+  async getMessages(conversationId: string) {
+    return (
+      await http.get(`/prompt/conversations/${conversationId}/messages/`)
+    ).data
   },
 }
 
