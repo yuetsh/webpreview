@@ -23,6 +23,7 @@ import { router } from "./router"
 hljs.registerLanguage("html", xml)
 hljs.registerLanguage("css", css)
 hljs.registerLanguage("js", javascript)
+hljs.registerLanguage("javascript", javascript)
 
 marked.use({
   gfm: true,
