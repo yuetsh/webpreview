@@ -19,18 +19,7 @@
     </template>
     <template #2>
       <div class="right-panel">
-        <Preview :html="html" :css="css" :js="js" />
-        <n-flex class="toolbar" align="center" :size="8">
-          <n-button secondary @click="showCode = true">查看代码</n-button>
-          <n-button
-            type="primary"
-            :disabled="!conversationId"
-            :loading="submitLoading"
-            @click="submit"
-          >
-            提交作品
-          </n-button>
-        </n-flex>
+        <Preview :html="html" :css="css" :js="js" show-code-button clearable @showCode="showCode = true" @clear="clearAll" />
       </div>
     </template>
   </n-split>
@@ -52,7 +41,6 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from "vue"
 import { useRoute, useRouter } from "vue-router"
-import { useMessage } from "naive-ui"
 import { Icon } from "@iconify/vue"
 import { marked } from "marked"
 import PromptPanel from "../components/PromptPanel.vue"
@@ -60,18 +48,16 @@ import Preview from "../components/Preview.vue"
 import { Challenge, Submission } from "../api"
 import { html, css, js } from "../store/editors"
 import { taskId } from "../store/task"
-import { connectPrompt, disconnectPrompt, conversationId, streaming, onCodeComplete } from "../store/prompt"
+import { connectPrompt, disconnectPrompt, conversationId, streaming, setOnCodeComplete } from "../store/prompt"
 
 const route = useRoute()
 const router = useRouter()
-const message = useMessage()
 
 const leftSize = ref(0.4)
 const activeTab = ref("desc")
 const challengeTitle = ref("")
 const challengeContent = ref("")
 const showCode = ref(false)
-const submitLoading = ref(false)
 
 watch(streaming, (val) => {
   if (val) activeTab.value = "chat"
@@ -84,7 +70,7 @@ async function loadChallenge() {
   challengeTitle.value = `#${data.display} ${data.title}`
   challengeContent.value = await marked.parse(data.content, { async: true })
   connectPrompt(data.task_ptr)
-  onCodeComplete = async (code) => {
+  setOnCodeComplete(async (code) => {
     if (!conversationId.value) return
     try {
       await Submission.create(taskId.value, {
@@ -96,30 +82,18 @@ async function loadChallenge() {
     } catch {
       // 静默失败，不打扰用户
     }
-  }
+  })
+}
+
+function clearAll() {
+  html.value = ""
+  css.value = ""
+  js.value = ""
 }
 
 function back() {
   disconnectPrompt()
   router.push({ name: "home-challenge-list" })
-}
-
-async function submit() {
-  if (!conversationId.value) return
-  submitLoading.value = true
-  try {
-    await Submission.create(taskId.value, {
-      html: html.value,
-      css: css.value,
-      js: js.value,
-      conversationId: conversationId.value,
-    })
-    message.success("提交成功")
-  } catch {
-    message.error("提交失败")
-  } finally {
-    submitLoading.value = false
-  }
 }
 
 onMounted(loadChallenge)
@@ -152,11 +126,5 @@ onUnmounted(disconnectPrompt)
   height: 100%;
   display: flex;
   flex-direction: column;
-}
-
-.toolbar {
-  padding: 8px 12px;
-  border-top: 1px solid #e0e0e0;
-  justify-content: flex-end;
 }
 </style>

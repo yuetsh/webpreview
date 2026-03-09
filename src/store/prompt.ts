@@ -14,7 +14,11 @@ export const conversationId = ref<string>("")
 export const connected = ref(false)
 export const streaming = ref(false)
 export const streamingContent = ref("")
-export let onCodeComplete: ((code: { html: string | null; css: string | null; js: string | null }) => void) | null = null
+let _onCodeComplete: ((code: { html: string | null; css: string | null; js: string | null }) => void) | null = null
+
+export function setOnCodeComplete(fn: typeof _onCodeComplete) {
+  _onCodeComplete = fn
+}
 
 let ws: WebSocket | null = null
 
@@ -55,8 +59,8 @@ export function connectPrompt(taskId: number) {
       // Apply code to editors
       if (data.code) {
         applyCode(data.code)
-        if (onCodeComplete) {
-          onCodeComplete(data.code)
+        if (_onCodeComplete) {
+          _onCodeComplete(data.code)
         }
       }
     } else if (data.type === "error") {
@@ -84,7 +88,7 @@ export function disconnectPrompt() {
   connected.value = false
   streaming.value = false
   streamingContent.value = ""
-  onCodeComplete = null
+  _onCodeComplete = null
 }
 
 export function sendPrompt(content: string) {

@@ -63,22 +63,58 @@
       </n-tab-pane>
     </n-tabs>
   </n-modal>
-  <n-modal v-model:show="chainModal" preset="card" title="Prompt 思维链" style="max-width: 60%; max-height: 80vh">
+  <n-modal v-model:show="chainModal" preset="card" title="提示词" style="width: 90vw; max-width: 1400px">
     <n-spin :show="chainLoading">
-      <div v-for="msg in chainMessages" :key="msg.id" style="margin-bottom: 16px">
-        <div :style="{ fontWeight: 'bold', fontSize: '12px', marginBottom: '4px', color: msg.role === 'user' ? '#2080f0' : '#18a058' }">
-          {{ msg.role === "user" ? "学生" : "AI" }}
+      <n-empty v-if="!chainLoading && chainRounds.length === 0" description="暂无对话记录" />
+      <div v-else style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; height: 75vh">
+        <!-- 左侧：学生提问列表 -->
+        <div style="overflow-y: auto; padding-right: 8px; border-right: 1px solid #e0e0e0; display: flex; flex-direction: column; gap: 8px">
+          <div
+            v-for="(round, index) in chainRounds"
+            :key="index"
+            style="display: flex; gap: 10px; align-items: flex-start; cursor: pointer"
+            @click="selectedRound = index"
+          >
+            <div :style="{
+              flexShrink: 0, width: '22px', height: '22px', borderRadius: '50%',
+              background: selectedRound === index ? '#2080f0' : '#c2d5fb',
+              color: '#fff', fontSize: '12px', fontWeight: 'bold',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '2px',
+              transition: 'background 0.2s',
+            }">
+              {{ index + 1 }}
+            </div>
+            <div :style="{
+              flex: 1, padding: '10px 14px', borderRadius: '8px',
+              background: selectedRound === index ? '#e8f0fe' : '#f5f5f5',
+              border: selectedRound === index ? '1px solid #2080f0' : '1px solid #e0e0e0',
+              fontSize: '13px', lineHeight: '1.6', transition: 'all 0.2s',
+            }">
+              {{ round.question }}
+            </div>
+          </div>
         </div>
-        <div v-html="renderMarkdown(msg.content)" style="font-size: 14px; line-height: 1.6" />
+        <!-- 右侧：对应网页预览 -->
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <div style="font-weight: bold; font-size: 13px; color: #555">
+            第 {{ selectedRound + 1 }} 轮网页
+          </div>
+          <iframe
+            v-if="selectedPageHtml"
+            :srcdoc="selectedPageHtml"
+            :key="selectedRound"
+            sandbox="allow-scripts"
+            style="flex: 1; border: 1px solid #e0e0e0; border-radius: 6px; background: #fff"
+          />
+          <n-empty v-else description="该轮无网页代码" style="margin: auto" />
+        </div>
       </div>
-      <n-empty v-if="!chainLoading && chainMessages.length === 0" description="暂无对话记录" />
     </n-spin>
   </n-modal>
 </template>
 <script setup lang="ts">
 import { NButton, type DataTableColumn } from "naive-ui"
 import { computed, h, onMounted, onUnmounted, reactive, ref, watch } from "vue"
-import { marked } from "marked"
 import { Submission, Prompt } from "../api"
 import type { SubmissionOut } from "../utils/type"
 import { parseTime } from "../utils/helper"
@@ -109,21 +145,49 @@ const js = computed(() => submission.value.js)
 
 const codeModal = ref(false)
 const chainModal = ref(false)
-const chainMessages = ref<{ id: number; role: string; content: string }[]>([])
+const chainMessages = ref<{ id: number; role: string; content: string; code_html: string | null; code_css: string | null; code_js: string | null }[]>([])
 const chainLoading = ref(false)
+const selectedRound = ref(0)
+
+const chainRounds = computed(() => {
+  const messages = chainMessages.value
+  const rounds: { question: string; html: string | null; css: string | null; js: string | null }[] = []
+  for (let i = 0; i < messages.length; i++) {
+    if (messages[i].role !== "user") continue
+    let html = null, css = null, js = null
+    for (let j = i + 1; j < messages.length; j++) {
+      if (messages[j].role === "user") break
+      if (messages[j].role === "assistant" && messages[j].code_html) {
+        html = messages[j].code_html
+        css = messages[j].code_css
+        js = messages[j].code_js
+        break
+      }
+    }
+    rounds.push({ question: messages[i].content, html, css, js })
+  }
+  return rounds
+})
+
+const selectedPageHtml = computed(() => {
+  const round = chainRounds.value[selectedRound.value]
+  if (!round?.html) return null
+  const style = round.css ? `<style>${round.css}</style>` : ""
+  const script = round.js ? `<script>${round.js}<\/script>` : ""
+  return `<!DOCTYPE html><html><head><meta charset="utf-8">${style}</head><body>${round.html}${script}</body></html>`
+})
 
 async function showChain(conversationId: string) {
   chainLoading.value = true
   chainModal.value = true
+  selectedRound.value = 0
   try {
     chainMessages.value = await Prompt.getMessages(conversationId)
+    const last = chainRounds.value.length - 1
+    if (last >= 0) selectedRound.value = last
   } finally {
     chainLoading.value = false
   }
-}
-
-function renderMarkdown(text: string): string {
-  return marked.parse(text, { async: false }) as string
 }
 
 const columns: DataTableColumn<SubmissionOut>[] = [
@@ -161,7 +225,7 @@ const columns: DataTableColumn<SubmissionOut>[] = [
     },
   },
   {
-    title: "思维链",
+    title: "提示词",
     key: "conversation_id",
     width: 70,
     render: (row) => {

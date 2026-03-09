@@ -4,6 +4,8 @@
     <n-flex>
       <n-button quaternary @click="download" :disabled="!showDL">下载</n-button>
       <n-button quaternary @click="open">全屏</n-button>
+      <n-button quaternary v-if="props.clearable" @click="clear">清空</n-button>
+      <n-button quaternary v-if="props.showCodeButton" @click="emits('showCode')">查看代码</n-button>
       <n-button quaternary v-if="props.submissionId" @click="copyLink">
         复制链接
       </n-button>
@@ -35,10 +37,12 @@ interface Props {
   css: string
   js: string
   submissionId?: string
+  showCodeButton?: boolean
+  clearable?: boolean
 }
 
 const props = defineProps<Props>()
-const emits = defineEmits(["afterScore", "showCode"])
+const emits = defineEmits(["afterScore", "showCode", "clear"])
 
 const message = useMessage()
 const router = useRouter()
@@ -99,6 +103,10 @@ function open() {
     newTab.document.write(getContent())
     newTab.document.close()
   }
+}
+
+function clear() {
+  emits("clear")
 }
 
 function copyLink() {
