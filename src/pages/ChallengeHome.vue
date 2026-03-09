@@ -41,6 +41,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from "vue"
 import { useRoute, useRouter } from "vue-router"
+import { useMessage } from "naive-ui"
 import { Icon } from "@iconify/vue"
 import { marked } from "marked"
 import PromptPanel from "../components/PromptPanel.vue"
@@ -52,6 +53,7 @@ import { connectPrompt, disconnectPrompt, conversationId, streaming, setOnCodeCo
 
 const route = useRoute()
 const router = useRouter()
+const message = useMessage()
 
 const leftSize = ref(0.4)
 const activeTab = ref("desc")
@@ -79,6 +81,7 @@ async function loadChallenge() {
         js: code.js ?? "",
         conversationId: conversationId.value,
       })
+      message.success("已自动提交本次对话生成的代码")
     } catch {
       // 静默失败，不打扰用户
     }
