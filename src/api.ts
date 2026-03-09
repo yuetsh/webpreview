@@ -1,6 +1,6 @@
 import axios from "axios"
 import { router } from "./router"
-import type { TutorialIn, ChallengeIn } from "./utils/type"
+import type { TutorialIn, ChallengeIn, FlagType } from "./utils/type"
 import { BASE_URL, STORAGE_KEY } from "./utils/const"
 
 const http = axios.create({
@@ -165,6 +165,11 @@ export const Submission = {
 
   async updateScore(id: string, score: number) {
     const res = await http.put(`/submission/${id}/score`, { score })
+    return res.data
+  },
+
+  async updateFlag(id: string, flag: FlagType) {
+    const res = await http.put(`/submission/${id}/flag`, { flag })
     return res.data
   },
 }

@@ -14,6 +14,8 @@ export function getRole(role: Role) {
   }[role]
 }
 
+export type FlagType = "red" | "blue" | "green" | "yellow" | null
+
 export interface TutorialSlim {
   display: number
   title: string
@@ -64,6 +66,7 @@ export interface SubmissionOut {
   score: number
   my_score: number
   conversation_id?: string
+  flag?: FlagType
   created: Date
   modified: Date
 }
@@ -78,6 +81,7 @@ export interface SubmissionAll {
   task_title: string
   score: number
   my_score: number
+  flag?: FlagType
   html: ""
   css: ""
   js: ""
