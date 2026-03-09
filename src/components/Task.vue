@@ -44,6 +44,12 @@
         >
           <Icon :width="16" icon="lucide:list"></Icon>
         </n-button>
+        <n-button text @click="$router.push({ name: 'leaderboard' })">
+          <Icon :width="16" icon="lucide:trophy" />
+        </n-button>
+        <n-button text v-if="isLoggedIn" @click="$router.push({ name: 'my-scores' })">
+          <Icon :width="16" icon="lucide:bar-chart-2" />
+        </n-button>
         <n-button text v-if="roleSuper" @click="edit">
           <Icon :width="16" icon="lucide:edit"></Icon>
         </n-button>
@@ -63,7 +69,7 @@ import { step } from "../store/tutorial"
 import { roleSuper } from "../store/user"
 import { taskTab, challengeDisplay } from "../store/task"
 import { useRoute, useRouter } from "vue-router"
-import { TASK_TYPE } from "../utils/const"
+import { TASK_TYPE, STORAGE_KEY } from "../utils/const"
 import Challenge from "./Challenge.vue"
 import Tutorial from "./Tutorial.vue"
 
@@ -72,6 +78,8 @@ const router = useRouter()
 const tutorialRef = ref<InstanceType<typeof Tutorial>>()
 
 defineEmits(["hide"])
+
+const isLoggedIn = computed(() => localStorage.getItem(STORAGE_KEY.LOGIN) === "true")
 
 const hideNav = computed(
   () =>

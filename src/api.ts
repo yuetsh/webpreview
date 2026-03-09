@@ -67,6 +67,11 @@ export const Account = {
     const res = await http.post("/account/batch", payload)
     return res.data
   },
+
+  async leaderboard() {
+    const res = await http.get("/account/leaderboard")
+    return res.data as { rank: number; username: string; total_score: number }[]
+  },
 }
 
 export const Tutorial = {
@@ -172,6 +177,18 @@ export const Submission = {
     const res = await http.put(`/submission/${id}/flag`, { flag })
     return res.data
   },
+
+  async myScores() {
+    const res = await http.get("/submission/my-scores")
+    return res.data as {
+      task_id: number
+      task_display: number
+      task_title: string
+      score: number
+      created: string
+    }[]
+  },
+
 }
 
 export const Prompt = {

@@ -37,6 +37,7 @@ declare module 'vue' {
     NPagination: typeof import('naive-ui')['NPagination']
     NPopover: typeof import('naive-ui')['NPopover']
     NRate: typeof import('naive-ui')['NRate']
+    NSelect: typeof import('naive-ui')['NSelect']
     NSpin: typeof import('naive-ui')['NSpin']
     NSplit: typeof import('naive-ui')['NSplit']
     NTab: typeof import('naive-ui')['NTab']
