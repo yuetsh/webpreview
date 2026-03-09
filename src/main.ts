@@ -1,6 +1,7 @@
 import { createApp } from "vue"
 import { create } from "naive-ui"
 import App from "./App.vue"
+import { addAPIProvider } from "@iconify/vue"
 
 //@ts-ignore
 import "github-markdown-css/github-markdown-light.css"
@@ -46,3 +47,9 @@ const naive = create()
 app.use(naive)
 app.use(router)
 app.mount("#app")
+
+if (!!import.meta.env.PUBLIC_ICONIFY_URL) {
+  addAPIProvider("", {
+    resources: [import.meta.env.PUBLIC_ICONIFY_URL],
+  })
+}
