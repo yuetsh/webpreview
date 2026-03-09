@@ -7,6 +7,18 @@
             返回首页
           </n-button>
           <n-flex align="center">
+            <n-select
+              v-model:value="query.flag"
+              style="width: 100px"
+              clearable
+              placeholder="标记"
+              :options="[
+                { label: '红旗', value: 'red' },
+                { label: '蓝旗', value: 'blue' },
+                { label: '绿旗', value: 'green' },
+                { label: '黄旗', value: 'yellow' },
+              ]"
+            />
             <div>
               <n-input
                 style="width: 120px"
@@ -139,6 +151,7 @@ const count = ref(0)
 const query = reactive({
   page: Number(route.params.page),
   username: route.query.username ?? "",
+  flag: "" as string,
 })
 
 const html = computed(() => submission.value.html)
@@ -371,6 +384,13 @@ watchDebounced(
     init()
   },
   { debounce: 500, maxWait: 1000 },
+)
+watch(
+  () => query.flag,
+  () => {
+    query.page = 1
+    init()
+  },
 )
 onMounted(init)
 onUnmounted(() => {
