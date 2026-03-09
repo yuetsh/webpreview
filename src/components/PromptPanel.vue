@@ -60,7 +60,7 @@ function send() {
 const renderer = new Renderer()
 renderer.code = function ({ text, lang }: { text: string; lang?: string }) {
   const escape = (s: string) =>
-    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;")
   const label = lang ? `查看代码（${escape(lang)}）` : "查看代码"
   return `<details class="code-block"><summary>${label}</summary><pre><code class="hljs${lang ? ` language-${escape(lang)}` : ""}">${escape(text)}</code></pre></details>`
 }

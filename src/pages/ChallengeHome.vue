@@ -84,13 +84,13 @@ async function loadChallenge() {
   challengeTitle.value = `#${data.display} ${data.title}`
   challengeContent.value = await marked.parse(data.content, { async: true })
   connectPrompt(data.task_ptr)
-  onCodeComplete = async () => {
+  onCodeComplete = async (code) => {
     if (!conversationId.value) return
     try {
       await Submission.create(taskId.value, {
-        html: html.value,
-        css: css.value,
-        js: js.value,
+        html: code.html ?? "",
+        css: code.css ?? "",
+        js: code.js ?? "",
         conversationId: conversationId.value,
       })
     } catch {
