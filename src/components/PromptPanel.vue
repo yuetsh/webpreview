@@ -59,12 +59,10 @@ function send() {
 
 const renderer = new Renderer()
 renderer.code = function ({ text, lang }: { text: string; lang?: string }) {
-  const label = lang ? `查看代码（${lang}）` : "查看代码"
-  const escaped = text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-  return `<details class="code-block"><summary>${label}</summary><pre><code class="hljs${lang ? ` language-${lang}` : ""}">${escaped}</code></pre></details>`
+  const escape = (s: string) =>
+    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+  const label = lang ? `查看代码（${escape(lang)}）` : "查看代码"
+  return `<details class="code-block"><summary>${label}</summary><pre><code class="hljs${lang ? ` language-${escape(lang)}` : ""}">${escape(text)}</code></pre></details>`
 }
 
 function renderMarkdown(text: string): string {
