@@ -60,7 +60,7 @@ import Preview from "../components/Preview.vue"
 import { Challenge, Submission } from "../api"
 import { html, css, js } from "../store/editors"
 import { taskId } from "../store/task"
-import { connectPrompt, disconnectPrompt, conversationId, streaming } from "../store/prompt"
+import { connectPrompt, disconnectPrompt, conversationId, streaming, onCodeComplete } from "../store/prompt"
 
 const route = useRoute()
 const router = useRouter()
@@ -84,6 +84,19 @@ async function loadChallenge() {
   challengeTitle.value = `#${data.display} ${data.title}`
   challengeContent.value = await marked.parse(data.content, { async: true })
   connectPrompt(data.task_ptr)
+  onCodeComplete = async () => {
+    if (!conversationId.value) return
+    try {
+      await Submission.create(taskId.value, {
+        html: html.value,
+        css: css.value,
+        js: js.value,
+        conversationId: conversationId.value,
+      })
+    } catch {
+      // 静默失败，不打扰用户
+    }
+  }
 }
 
 function back() {
