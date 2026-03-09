@@ -151,7 +151,7 @@ const count = ref(0)
 const query = reactive({
   page: Number(route.params.page),
   username: route.query.username ?? "",
-  flag: "" as string,
+  flag: null as string | null,
 })
 
 const html = computed(() => submission.value.html)
@@ -221,7 +221,7 @@ async function showChain(conversationId: string) {
 
 const columns: DataTableColumn<SubmissionOut>[] = [
   {
-    title: "标记",
+    title: "",
     key: "flag",
     width: 50,
     render: (row) => {
@@ -274,6 +274,7 @@ const columns: DataTableColumn<SubmissionOut>[] = [
                     NButton,
                     {
                       text: true,
+                      block: true,
                       type: "error",
                       onClick: () => updateFlag(row, null),
                     },
