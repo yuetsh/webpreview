@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import { ref, watch, nextTick } from "vue"
-import { marked } from "marked"
+import { marked, Renderer } from "marked"
 import {
   messages,
   streaming,
@@ -57,8 +57,18 @@ function send() {
   input.value = ""
 }
 
+const renderer = new Renderer()
+renderer.code = function ({ text, lang }: { text: string; lang?: string }) {
+  const label = lang ? `查看代码（${lang}）` : "查看代码"
+  const escaped = text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+  return `<details class="code-block"><summary>${label}</summary><pre><code class="hljs${lang ? ` language-${lang}` : ""}">${escaped}</code></pre></details>`
+}
+
 function renderMarkdown(text: string): string {
-  return marked.parse(text) as string
+  return marked.parse(text, { renderer }) as string
 }
 
 function renderContent(msg: { role: string; content: string }): string {
@@ -127,5 +137,31 @@ watch(
 .input-area {
   padding: 12px;
   border-top: 1px solid #e0e0e0;
+}
+
+.message-content :deep(details.code-block) {
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin: 6px 0;
+}
+
+.message-content :deep(details.code-block summary) {
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #666;
+  user-select: none;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.message-content :deep(details.code-block[open] summary) {
+  border-bottom: 1px solid #e0e0e0;
+  border-radius: 4px 4px 0 0;
+}
+
+.message-content :deep(details.code-block pre) {
+  margin: 0;
+  border-radius: 0 0 4px 4px;
 }
 </style>
