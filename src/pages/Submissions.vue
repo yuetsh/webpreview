@@ -113,7 +113,7 @@
   </n-modal>
 </template>
 <script setup lang="ts">
-import { NButton, type DataTableColumn } from "naive-ui"
+import { NButton, NPopover, NSpace, type DataTableColumn } from "naive-ui"
 import { computed, h, onMounted, onUnmounted, reactive, ref, watch } from "vue"
 import { Submission, Prompt } from "../api"
 import type { SubmissionOut } from "../utils/type"
@@ -128,6 +128,8 @@ import { step } from "../store/tutorial"
 import { html as eHtml, css as eCss, js as eJs } from "../store/editors"
 import { TASK_TYPE } from "../utils/const"
 import { goHome } from "../utils/helper"
+import { roleAdmin, roleSuper } from "../store/user"
+import type { FlagType } from "../utils/type"
 
 const route = useRoute()
 const router = useRouter()
@@ -148,6 +150,15 @@ const chainModal = ref(false)
 const chainMessages = ref<{ id: number; role: string; content: string; code_html: string | null; code_css: string | null; code_js: string | null }[]>([])
 const chainLoading = ref(false)
 const selectedRound = ref(0)
+
+const FLAG_OPTIONS: { value: FlagType; color: string; label: string }[] = [
+  { value: "red", color: "#e03030", label: "值得展示" },
+  { value: "blue", color: "#2080f0", label: "需要讲解" },
+  { value: "green", color: "#18a058", label: "优秀作品" },
+  { value: "yellow", color: "#f0a020", label: "需要改进" },
+]
+
+const isAdmin = computed(() => roleAdmin.value || roleSuper.value)
 
 const chainRounds = computed(() => {
   const messages = chainMessages.value
@@ -177,6 +188,11 @@ const selectedPageHtml = computed(() => {
   return `<!DOCTYPE html><html><head><meta charset="utf-8">${style}</head><body>${round.html}${script}</body></html>`
 })
 
+async function updateFlag(row: SubmissionOut, flag: FlagType) {
+  await Submission.updateFlag(row.id, flag)
+  row.flag = flag
+}
+
 async function showChain(conversationId: string) {
   chainLoading.value = true
   chainModal.value = true
@@ -191,6 +207,71 @@ async function showChain(conversationId: string) {
 }
 
 const columns: DataTableColumn<SubmissionOut>[] = [
+  {
+    title: "标记",
+    key: "flag",
+    width: 50,
+    render: (row) => {
+      const flagOption = FLAG_OPTIONS.find((f) => f.value === row.flag)
+      const flagIcon = h("span", {
+        style: {
+          display: "inline-block",
+          width: "12px",
+          height: "12px",
+          borderRadius: "50%",
+          backgroundColor: flagOption ? flagOption.color : "transparent",
+          border: flagOption ? "none" : "1px dashed #ccc",
+          cursor: isAdmin.value ? "pointer" : "default",
+        },
+      })
+
+      if (!isAdmin.value) return flagIcon
+
+      return h(
+        NPopover,
+        { trigger: "click" },
+        {
+          trigger: () => flagIcon,
+          default: () =>
+            h(NSpace, { vertical: true, size: "small" }, () => [
+              ...FLAG_OPTIONS.map((opt) =>
+                h(
+                  NButton,
+                  {
+                    text: true,
+                    onClick: () => updateFlag(row, opt.value),
+                  },
+                  () =>
+                    h("span", { style: { display: "flex", alignItems: "center", gap: "6px" } }, [
+                      h("span", {
+                        style: {
+                          display: "inline-block",
+                          width: "10px",
+                          height: "10px",
+                          borderRadius: "50%",
+                          backgroundColor: opt.color,
+                        },
+                      }),
+                      opt.label,
+                    ]),
+                ),
+              ),
+              row.flag
+                ? h(
+                    NButton,
+                    {
+                      text: true,
+                      type: "error",
+                      onClick: () => updateFlag(row, null),
+                    },
+                    () => "清除",
+                  )
+                : null,
+            ]),
+        },
+      )
+    },
+  },
   {
     title: "时间",
     key: "created",
