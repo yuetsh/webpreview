@@ -8,10 +8,14 @@ import { STORAGE_KEY } from "./utils/const"
 import hljs from "highlight.js/lib/core"
 
 onMounted(async () => {
-  const data = await Account.getMyProfile()
-  user.loaded = true
-  user.username = data.username
-  user.role = data.role
+  try {
+    const data = await Account.getMyProfile()
+    user.loaded = true
+    user.username = data.username
+    user.role = data.role
+  } catch {
+    user.loaded = true
+  }
 })
 
 watch(authed, (v) => {

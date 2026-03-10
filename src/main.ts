@@ -16,6 +16,7 @@ import hljs from "highlight.js/lib/core"
 import xml from "highlight.js/lib/languages/xml"
 import css from "highlight.js/lib/languages/css"
 import javascript from "highlight.js/lib/languages/javascript"
+import plaintext from "highlight.js/lib/languages/plaintext"
 //@ts-ignore
 import "highlight.js/styles/github.min.css"
 import { router } from "./router"
@@ -24,6 +25,7 @@ hljs.registerLanguage("html", xml)
 hljs.registerLanguage("css", css)
 hljs.registerLanguage("js", javascript)
 hljs.registerLanguage("javascript", javascript)
+hljs.registerLanguage("plaintext", plaintext)
 
 marked.use({
   gfm: true,
