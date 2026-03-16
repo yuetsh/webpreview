@@ -56,6 +56,9 @@ async function getContent() {
 }
 
 function addButton() {
+  const existing = $content.value?.querySelectorAll(".codeblock-action") ?? []
+  for (const el of existing) el.remove()
+
   const action = document.createElement("div")
   action.className = "codeblock-action"
   const pres = $content.value?.querySelectorAll("pre") ?? []
