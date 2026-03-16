@@ -11,6 +11,27 @@ import { step } from "../store/tutorial"
 import { taskId } from "../store/task"
 import { useRouter } from "vue-router"
 
+marked.use({
+  renderer: {
+    code({ text, lang }) {
+      const language = lang?.toLowerCase() ?? "html"
+      return `<div class="codeblock-wrapper" data-lang="${language}">
+  <div class="codeblock-action">
+    <span class="lang">${language.toUpperCase()}</span>
+    <div class="btn-group">
+      <button class="action-btn" data-action="copy">复制</button>
+      <button class="action-btn" data-action="replace">替换</button>
+    </div>
+  </div>
+  <pre><code class="language-${language}">${text}</code></pre>
+</div>`
+    },
+    link({ href, text }) {
+      return `<a href="${href}" target="_blank">${text}</a>`
+    },
+  },
+})
+
 const router = useRouter()
 const tutorialIds = ref<number[]>([])
 const content = ref("")
@@ -28,12 +49,12 @@ const nextDisabled = () => {
 
 function prev() {
   const i = tutorialIds.value.indexOf(step.value)
-  step.value = tutorialIds.value[i - 1]
+  step.value = tutorialIds.value[i - 1] as number
 }
 
 function next() {
   const i = tutorialIds.value.indexOf(step.value)
-  step.value = tutorialIds.value[i + 1]
+  step.value = tutorialIds.value[i + 1] as number
 }
 
 defineExpose({ tutorialIds, prevDisabled, nextDisabled, prev, next })
@@ -44,91 +65,43 @@ async function prepare() {
     content.value = "暂无教程"
   }
   if (!tutorialIds.value.includes(step.value)) {
-    step.value = tutorialIds.value[0]
+    step.value = tutorialIds.value[0] as number
   }
 }
 
-async function getContent() {
+async function render() {
   const data = await Tutorial.get(step.value)
   taskId.value = data.task_ptr
   const merged = `# #${data.display} ${data.title}\n${data.content}`
   content.value = await marked.parse(merged, { async: true })
 }
 
-function addButton() {
-  const existing = $content.value?.querySelectorAll(".codeblock-action") ?? []
-  for (const el of existing) el.remove()
+function flash(btn: HTMLButtonElement, done: string, original: string) {
+  btn.textContent = done
+  setTimeout(() => {
+    btn.textContent = original
+  }, 1000)
+}
 
-  const action = document.createElement("div")
-  action.className = "codeblock-action"
-  const pres = $content.value?.querySelectorAll("pre") ?? []
-  for (const pre of pres) {
-    let timer = 0
-    let copyTimer = 0
-    const actions = action.cloneNode() as HTMLDivElement
-    pre.insertBefore(actions, pre.children[0])
-    const $code = pre.childNodes[1] as HTMLPreElement
-    const match = $code.className.match(/-(.*)/)
-    let lang = "html"
-    if (match) lang = match[1].toLowerCase()
+function setupCodeActions() {
+  $content.value?.addEventListener("click", (e: MouseEvent) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-action]")
+    if (!btn) return
+    const wrapper = btn.closest<HTMLElement>("[data-lang]")!
+    const lang = wrapper.dataset.lang ?? "html"
+    const code = wrapper.querySelector("code")?.textContent ?? ""
 
-    const langSpan = document.createElement("span")
-    langSpan.className = "lang"
-    langSpan.textContent = lang.toUpperCase()
-
-    const btnGroup = document.createElement("div")
-    btnGroup.className = "btn-group"
-
-    const copyBtn = document.createElement("button")
-    copyBtn.className = "action-btn"
-    copyBtn.textContent = "复制"
-
-    const replaceBtn = document.createElement("button")
-    replaceBtn.className = "action-btn"
-    replaceBtn.textContent = "替换"
-
-    btnGroup.appendChild(copyBtn)
-    btnGroup.appendChild(replaceBtn)
-
-    actions.appendChild(langSpan)
-    actions.appendChild(btnGroup)
-
-    copyBtn.onclick = () => {
-      const content = pre.children[1].textContent
-      copyFn(content ?? "")
-      copyBtn.textContent = "已复制"
-      clearTimeout(copyTimer)
-      copyTimer = setTimeout(() => {
-        copyBtn.textContent = "复制"
-      }, 1000)
-    }
-
-    replaceBtn.onclick = () => {
+    if (btn.dataset.action === "copy") {
+      copyFn(code)
+      flash(btn, "已复制", "复制")
+    } else if (btn.dataset.action === "replace") {
       tab.value = lang
-      const content = pre.children[1].textContent
-      if (lang === "html") html.value = content
-      if (lang === "css") css.value = content
-      if (lang === "js") js.value = content
-      replaceBtn.textContent = "已替换"
-      clearTimeout(timer)
-      timer = setTimeout(() => {
-        replaceBtn.textContent = "替换"
-      }, 1000)
+      if (lang === "html") html.value = code
+      if (lang === "css") css.value = code
+      if (lang === "js") js.value = code
+      flash(btn, "已替换", "替换")
     }
-  }
-}
-
-function modifyLink() {
-  const links = $content.value?.querySelectorAll("a") ?? []
-  for (const link of links) {
-    link.target = "_blank"
-  }
-}
-
-async function render() {
-  await getContent()
-  addButton()
-  modifyLink()
+  })
 }
 
 async function init() {
@@ -136,7 +109,10 @@ async function init() {
   render()
 }
 
-onMounted(init)
+onMounted(() => {
+  setupCodeActions()
+  init()
+})
 watch(step, (v) => {
   router.push({ name: "home-tutorial", params: { display: v } })
   render()
@@ -160,8 +136,24 @@ watch(step, (v) => {
   font-family: Monaco;
 }
 
-.codeblock-action {
+.markdown-body .codeblock-wrapper {
+  padding: 1rem;
+  background-color: #f6f8fa;
+  border-radius: 6px;
   margin-bottom: 1rem;
+  overflow: auto;
+}
+
+.markdown-body .codeblock-wrapper pre {
+  padding: 0;
+  background-color: transparent;
+  border-radius: 0;
+  margin-bottom: 0;
+  overflow: visible;
+}
+
+.codeblock-action {
+  margin-bottom: 0.5rem;
   font-family:
     v-sans,
     system-ui,

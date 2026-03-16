@@ -1,7 +1,7 @@
 <template>
-  <n-grid class="container" x-gap="10" :cols="2">
-    <n-gi :span="1">
-      <n-flex vertical>
+  <n-split class="container" direction="horizontal" :default-size="0.333" :min="0.2" :max="0.8">
+    <template #1>
+      <n-flex vertical style="height: 100%; padding-right: 10px">
         <n-flex justify="space-between">
           <n-button secondary @click="() => goHome($router, taskTab, step)">
             返回首页
@@ -43,19 +43,21 @@
           :row-class-name="rowClassName"
         ></n-data-table>
       </n-flex>
-    </n-gi>
-    <n-gi :span="1">
-      <Preview
-        v-if="submission.id"
-        :html="html"
-        :css="css"
-        :js="js"
-        :submission-id="submission.id"
-        @after-score="afterScore"
-        @show-code="codeModal = true"
-      />
-    </n-gi>
-  </n-grid>
+    </template>
+    <template #2>
+      <div style="height: 100%; padding-left: 10px">
+        <Preview
+          v-if="submission.id"
+          :html="html"
+          :css="css"
+          :js="js"
+          :submission-id="submission.id"
+          @after-score="afterScore"
+          @show-code="codeModal = true"
+        />
+      </div>
+    </template>
+  </n-split>
   <n-modal preset="card" v-model:show="codeModal" style="max-width: 60%">
     <template #header>
       <n-flex align="center">
@@ -304,19 +306,16 @@ const columns: DataTableColumn<SubmissionOut>[] = [
     render: (submission) => h(TaskTitle, { submission }),
   },
   {
-    title: "我打的分",
-    key: "my_score",
-    render: (row) => {
-      if (row.my_score > 0) return row.my_score
-      else return "-"
-    },
-  },
-  {
-    title: "平均得分",
+    title: "得分",
     key: "score",
+    width: 80,
     render: (row) => {
-      if (row.score > 0) return row.score.toFixed(2)
-      else return "-"
+      const myScore = row.my_score > 0 ? String(row.my_score) : "-"
+      const avgScore = row.score > 0 ? row.score.toFixed(2) : "-"
+      return h("div", { style: { display: "flex", gap: "6px", alignItems: "baseline" } }, [
+        h("span", avgScore),
+        h("span", { style: { fontSize: "11px", color: "#999" } }, myScore),
+      ])
     },
   },
   {
@@ -420,6 +419,7 @@ onUnmounted(() => {
   padding: 10px;
   box-sizing: border-box;
   height: calc(100% - 43px);
+  width: 100%;
 }
 
 :deep(.row-active td) {
