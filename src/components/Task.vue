@@ -39,17 +39,18 @@
       </n-flex>
       <n-flex>
         <n-button
+        v-if="authed"
           text
           @click="$router.push({ name: 'submissions', params: { page: 1 } })"
         >
           <Icon :width="16" icon="lucide:list"></Icon>
         </n-button>
-        <n-button text @click="$router.push({ name: 'leaderboard' })">
+        <!-- <n-button text @click="$router.push({ name: 'leaderboard' })">
           <Icon :width="16" icon="lucide:trophy" />
         </n-button>
         <n-button text v-if="isLoggedIn" @click="$router.push({ name: 'my-scores' })">
           <Icon :width="16" icon="lucide:bar-chart-2" />
-        </n-button>
+        </n-button> -->
         <n-button text v-if="roleSuper" @click="edit">
           <Icon :width="16" icon="lucide:edit"></Icon>
         </n-button>
@@ -66,7 +67,7 @@
 import { Icon } from "@iconify/vue"
 import { computed, onMounted, ref } from "vue"
 import { step } from "../store/tutorial"
-import { roleSuper } from "../store/user"
+import { authed, roleSuper } from "../store/user"
 import { taskTab, challengeDisplay } from "../store/task"
 import { useRoute, useRouter } from "vue-router"
 import { TASK_TYPE, STORAGE_KEY } from "../utils/const"
