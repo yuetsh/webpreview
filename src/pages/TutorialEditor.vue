@@ -81,7 +81,6 @@ const message = useMessage()
 const confirm = useDialog()
 
 const list = ref<TutorialSlim[]>([])
-const content = ref("")
 const tutorial = reactive({
   display: 0,
   title: "",
@@ -102,7 +101,6 @@ function createNew() {
   tutorial.title = ""
   tutorial.content = ""
   tutorial.is_public = false
-  content.value = ""
 }
 
 async function submit() {
@@ -114,7 +112,6 @@ async function submit() {
     tutorial.content = ""
     tutorial.is_public = false
     await getContent()
-    content.value = ""
   } catch (error: any) {
     message.error(error.response.data.detail)
   }

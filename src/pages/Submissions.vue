@@ -178,6 +178,7 @@ const columns: DataTableColumn<SubmissionOut>[] = [
         onSelect: (id) => getSubmissionByID(id),
         onDelete: (r, parentId) => handleDelete(r, parentId),
         "onShow-chain": (id) => showChain(id),
+        onNominate: (r) => handleNominateChild(r, row.id),
       }),
   },
   {
@@ -190,25 +191,6 @@ const columns: DataTableColumn<SubmissionOut>[] = [
         isAdmin: isAdmin.value,
         "onUpdate:flag": (flag: FlagType) => updateFlag(row, flag),
       }),
-  },
-  {
-    title: "排名",
-    key: "nominated",
-    width: 60,
-    render: (row) => {
-      if (row.username !== user.username) {
-        return row.nominated ? h("span", { style: { color: "#f0a020" } }, "🏅") : null
-      }
-      return h(
-        NButton,
-        {
-          text: true,
-          title: row.nominated ? "已参与排名（点击可重新提名）" : "参与排名",
-          onClick: (e: Event) => { e.stopPropagation(); handleNominate(row) },
-        },
-        () => (row.nominated ? "🏅" : "☆"),
-      )
-    },
   },
   {
     title: "时间",
@@ -277,7 +259,17 @@ async function handleDelete(row: SubmissionOut, parentId: string) {
 }
 
 function rowProps(row: SubmissionOut) {
-  return { style: { cursor: "pointer" }, onClick: () => getSubmissionByID(row.id) }
+  return {
+    style: { cursor: "pointer" },
+    onClick: () => {
+      getSubmissionByID(row.id)
+      handleExpand(
+        expandedKeys.value.includes(row.id)
+          ? expandedKeys.value.filter((k) => k !== row.id)
+          : [...expandedKeys.value, row.id],
+      )
+    },
+  }
 }
 
 function rowClassName(row: SubmissionOut) {
@@ -296,8 +288,12 @@ async function getSubmissionByID(id: string) {
   submission.value = await Submission.get(id)
 }
 
-async function handleNominate(row: SubmissionOut) {
+async function handleNominateChild(row: SubmissionOut, parentId: string) {
   await Submission.nominate(row.id)
+  const items = expandedData.get(parentId)
+  if (items) {
+    expandedData.set(parentId, items.map((d) => ({ ...d, nominated: d.id === row.id })))
+  }
   data.value = data.value.map((d) => {
     if (d.username === user.username && d.task_id === row.task_id) {
       d.nominated = d.id === row.id

@@ -26,23 +26,6 @@ const routes = [
     props: true,
   },
   {
-    path: "/leaderboard",
-    name: "leaderboard",
-    component: () => import("./pages/Leaderboard.vue"),
-  },
-  {
-    path: "/ranking",
-    name: "ranking",
-    component: () => import("./pages/Ranking.vue"),
-    meta: { auth: true },
-  },
-  {
-    path: "/my-scores",
-    name: "my-scores",
-    component: () => import("./pages/MyScores.vue"),
-    meta: { auth: true },
-  },
-  {
     path: "/dashboard",
     name: "dashboard",
     component: () => import("./pages/Dashboard.vue"),

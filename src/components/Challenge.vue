@@ -19,14 +19,6 @@
             </template>
             <template #header-extra>
               <n-tag type="warning" size="small">{{ item.score }}分</n-tag>
-              <n-tag
-                v-if="myScoreMap.get(item.display)"
-                type="success"
-                size="small"
-                style="margin-left: 4px"
-              >
-                得分 {{ myScoreMap.get(item.display)!.toFixed(1) }}
-              </n-tag>
             </template>
           </n-card>
         </n-gi>
@@ -39,7 +31,7 @@ import { ref, onMounted } from "vue"
 import { Icon } from "@iconify/vue"
 import { marked } from "marked"
 import { useRouter } from "vue-router"
-import { Challenge, Submission } from "../api"
+import { Challenge } from "../api"
 import { taskTab, taskId, challengeDisplay } from "../store/task"
 import { TASK_TYPE } from "../utils/const"
 import type { ChallengeSlim } from "../utils/type"
@@ -48,16 +40,6 @@ const router = useRouter()
 const challenges = ref<ChallengeSlim[]>([])
 const currentChallenge = ref<ChallengeSlim | null>(null)
 const content = ref("")
-const myScoreMap = ref<Map<number, number>>(new Map())
-
-async function loadMyScores() {
-  try {
-    const scores = await Submission.myScores()
-    myScoreMap.value = new Map(scores.map((s) => [s.task_display, s.score]))
-  } catch {
-    // 未登录时忽略
-  }
-}
 
 async function loadList() {
   challenges.value = await Challenge.listDisplay()
@@ -90,10 +72,7 @@ function back() {
   router.push({ name: "home-challenge-list" })
 }
 
-onMounted(async () => {
-  await loadList()
-  await loadMyScores()
-})
+onMounted(loadList)
 </script>
 <style scoped>
 .container {

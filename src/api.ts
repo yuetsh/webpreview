@@ -68,11 +68,6 @@ export const Account = {
     return res.data
   },
 
-  async leaderboard() {
-    const res = await http.get("/account/leaderboard")
-    return res.data as { rank: number; username: string; total_score: number }[]
-  },
-
   async listClasses(): Promise<string[]> {
     const res = await http.get("/account/classes")
     return res.data
@@ -224,17 +219,6 @@ export const Submission = {
   async nominate(id: string) {
     const res = await http.put(`/submission/${id}/nominate`)
     return res.data as { nominated: boolean }
-  },
-
-  async myScores() {
-    const res = await http.get("/submission/my-scores")
-    return res.data as {
-      task_id: number
-      task_display: number
-      task_title: string
-      score: number
-      created: string
-    }[]
   },
 
 }
