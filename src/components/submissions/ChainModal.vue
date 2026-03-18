@@ -7,10 +7,18 @@
     @update:show="$emit('update:show', $event)"
   >
     <n-spin :show="loading">
-      <n-empty v-if="!loading && rounds.length === 0" description="暂无对话记录" />
+      <n-empty
+        v-if="!loading && rounds.length === 0"
+        description="暂无对话记录"
+      />
       <div
         v-else
-        style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; height: 75vh"
+        style="
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+          height: 75vh;
+        "
       >
         <div
           style="
@@ -25,26 +33,46 @@
           <div
             v-for="(round, index) in rounds"
             :key="index"
-            style="display: flex; gap: 10px; align-items: flex-start; cursor: pointer"
+            style="
+              display: flex;
+              gap: 10px;
+              align-items: flex-start;
+              cursor: pointer;
+            "
             @click="selectedRound = index"
           >
             <div
               :style="{
-                flexShrink: 0, width: '22px', height: '22px', borderRadius: '50%',
+                flexShrink: 0,
+                width: '22px',
+                height: '22px',
+                borderRadius: '50%',
                 background: selectedRound === index ? '#2080f0' : '#c2d5fb',
-                color: '#fff', fontSize: '12px', fontWeight: 'bold',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                marginTop: '2px', transition: 'background 0.2s',
+                color: '#fff',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: '2px',
+                transition: 'background 0.2s',
               }"
             >
               {{ index + 1 }}
             </div>
             <div
               :style="{
-                flex: 1, padding: '10px 14px', borderRadius: '8px',
+                flex: 1,
+                padding: '10px 14px',
+                borderRadius: '8px',
                 background: selectedRound === index ? '#e8f0fe' : '#f5f5f5',
-                border: selectedRound === index ? '1px solid #2080f0' : '1px solid #e0e0e0',
-                fontSize: '13px', lineHeight: '1.6', transition: 'all 0.2s',
+                border:
+                  selectedRound === index
+                    ? '1px solid #2080f0'
+                    : '1px solid #e0e0e0',
+                fontSize: '13px',
+                lineHeight: '1.6',
+                transition: 'all 0.2s',
               }"
             >
               {{ round.question }}
@@ -60,7 +88,12 @@
             :srcdoc="selectedPageHtml"
             :key="selectedRound"
             sandbox="allow-scripts"
-            style="flex: 1; border: 1px solid #e0e0e0; border-radius: 6px; background: #fff"
+            style="
+              flex: 1;
+              border: 1px solid #e0e0e0;
+              border-radius: 6px;
+              background: #fff;
+            "
           />
           <n-empty v-else description="该轮无网页代码" style="margin: auto" />
         </div>
@@ -86,10 +119,17 @@ const messages = ref<PromptMessage[]>([])
 const selectedRound = ref(0)
 
 const rounds = computed(() => {
-  const result: { question: string; html: string | null; css: string | null; js: string | null }[] = []
+  const result: {
+    question: string
+    html: string | null
+    css: string | null
+    js: string | null
+  }[] = []
   for (const [i, msg] of messages.value.entries()) {
     if (msg.role !== "user") continue
-    let html: string | null = null, css: string | null = null, js: string | null = null
+    let html: string | null = null,
+      css: string | null = null,
+      js: string | null = null
     for (const reply of messages.value.slice(i + 1)) {
       if (reply.role === "user") break
       if (reply.role === "assistant" && reply.code_html) {

@@ -85,7 +85,9 @@ function flash(btn: HTMLButtonElement, done: string, original: string) {
 
 function setupCodeActions() {
   $content.value?.addEventListener("click", (e: MouseEvent) => {
-    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-action]")
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>(
+      "[data-action]",
+    )
     if (!btn) return
     const wrapper = btn.closest<HTMLElement>("[data-lang]")!
     const lang = wrapper.dataset.lang ?? "html"

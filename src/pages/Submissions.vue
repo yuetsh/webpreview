@@ -7,7 +7,10 @@
     :max="0.8"
   >
     <template #1>
-      <n-flex vertical style="height: 100%; padding-right: 10px; overflow: hidden">
+      <n-flex
+        vertical
+        style="height: 100%; padding-right: 10px; overflow: hidden"
+      >
         <n-flex justify="space-between" style="flex-shrink: 0">
           <n-button secondary @click="() => goHome($router, taskTab, step)">
             返回首页
@@ -21,14 +24,23 @@
               :options="flagFilterOptions"
               @update:value="handleFlagSelect"
             />
-            <n-input style="width: 120px" v-model:value="query.username" clearable />
+            <n-input
+              style="width: 120px"
+              v-model:value="query.username"
+              clearable
+            />
             <n-pagination
               v-model:page="query.page"
               :page-size="10"
               :item-count="count"
               simple
             />
-            <n-button secondary style="padding: 0 10px" title="刷新" @click="init">
+            <n-button
+              secondary
+              style="padding: 0 10px"
+              title="刷新"
+              @click="init"
+            >
               <Icon :width="16" icon="lucide:refresh-cw" />
             </n-button>
           </n-flex>
@@ -109,7 +121,9 @@ const data = ref<SubmissionOut[]>([])
 const count = ref(0)
 const query = reactive({
   page: Number(route.params.page),
-  username: (Array.isArray(route.query.username) ? "" : (route.query.username ?? "")) as string,
+  username: (Array.isArray(route.query.username)
+    ? ""
+    : (route.query.username ?? "")) as string,
   flag: null as string | null,
 })
 
@@ -145,7 +159,10 @@ const flagFilterOptions = computed(() => {
 })
 
 function handleFlagSelect(value: string | null) {
-  if (value === "_clear_all") { clearAllFlags(); return }
+  if (value === "_clear_all") {
+    clearAllFlags()
+    return
+  }
   query.flag = value
 }
 
@@ -216,10 +233,14 @@ const columns: DataTableColumn<SubmissionOut>[] = [
     render: (row) => {
       const myScore = row.my_score > 0 ? String(row.my_score) : "-"
       const avgScore = row.score > 0 ? row.score.toFixed(2) : "-"
-      return h("div", { style: { display: "flex", gap: "6px", alignItems: "baseline" } }, [
-        h("span", avgScore),
-        h("span", { style: { fontSize: "11px", color: "#999" } }, myScore),
-      ])
+      return h(
+        "div",
+        { style: { display: "flex", gap: "6px", alignItems: "baseline" } },
+        [
+          h("span", avgScore),
+          h("span", { style: { fontSize: "11px", color: "#999" } }, myScore),
+        ],
+      )
     },
   },
   {
@@ -251,7 +272,11 @@ async function handleExpand(keys: (string | number)[]) {
 async function handleDelete(row: SubmissionOut, parentId: string) {
   await Submission.delete(row.id)
   const items = expandedData.get(parentId)
-  if (items) expandedData.set(parentId, items.filter((d) => d.id !== row.id))
+  if (items)
+    expandedData.set(
+      parentId,
+      items.filter((d) => d.id !== row.id),
+    )
   if (submission.value.id === row.id) submission.value.id = ""
   const res = await Submission.list(query)
   data.value = res.items
@@ -292,7 +317,10 @@ async function handleNominateChild(row: SubmissionOut, parentId: string) {
   await Submission.nominate(row.id)
   const items = expandedData.get(parentId)
   if (items) {
-    expandedData.set(parentId, items.map((d) => ({ ...d, nominated: d.id === row.id })))
+    expandedData.set(
+      parentId,
+      items.map((d) => ({ ...d, nominated: d.id === row.id })),
+    )
   }
   data.value = data.value.map((d) => {
     if (d.username === user.username && d.task_id === row.task_id) {
@@ -316,18 +344,46 @@ function copyToEditor() {
   goHome(router, submission.value.task_type, submission.value.task_display)
 }
 
-watch(() => query.page, (v) => { init(); router.push({ params: { page: v } }) })
-watchDebounced(() => query.username, () => { query.page = 1; init() }, { debounce: 500, maxWait: 1000 })
-watch(() => query.flag, () => { query.page = 1; init() })
+watch(
+  () => query.page,
+  (v) => {
+    init()
+    router.push({ params: { page: v } })
+  },
+)
+watchDebounced(
+  () => query.username,
+  () => {
+    query.page = 1
+    init()
+  },
+  { debounce: 500, maxWait: 1000 },
+)
+watch(
+  () => query.flag,
+  () => {
+    query.page = 1
+    init()
+  },
+)
 
 onMounted(init)
 onUnmounted(() => {
   submission.value = {
-    id: "", userid: 0, username: "",
-    task_id: 0, task_display: 0, task_title: "",
+    id: "",
+    userid: 0,
+    username: "",
+    task_id: 0,
+    task_display: 0,
+    task_title: "",
     task_type: TASK_TYPE.Tutorial,
-    score: 0, my_score: 0, html: "", css: "", js: "",
-    created: new Date(), modified: new Date(),
+    score: 0,
+    my_score: 0,
+    html: "",
+    css: "",
+    js: "",
+    created: new Date(),
+    modified: new Date(),
   }
 })
 </script>

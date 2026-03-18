@@ -38,15 +38,11 @@
         </template>
       </n-flex>
       <n-flex>
-        <n-button
-          v-if="(roleAdmin || roleSuper) && taskTab === TASK_TYPE.Challenge && taskId > 0"
-          text
-          @click="statsModal = true"
-        >
+        <n-button v-if="roleSuper" text @click="statsModal = true">
           <Icon :width="16" icon="lucide:bar-chart-2"></Icon>
         </n-button>
         <n-button
-        v-if="authed"
+          v-if="authed"
           text
           @click="$router.push({ name: 'submissions', params: { page: 1 } })"
         >

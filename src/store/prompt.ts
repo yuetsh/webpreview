@@ -19,7 +19,13 @@ export const streaming = ref(false)
 export const historyLoading = ref(false)
 let _historyLoadId = 0
 export const streamingContent = ref("")
-let _onCodeComplete: ((code: { html: string | null; css: string | null; js: string | null }) => void) | null = null
+let _onCodeComplete:
+  | ((code: {
+      html: string | null
+      css: string | null
+      js: string | null
+    }) => void)
+  | null = null
 
 export function setOnCodeComplete(fn: typeof _onCodeComplete) {
   _onCodeComplete = fn
@@ -90,8 +96,8 @@ export function connectPrompt(taskId: number) {
 }
 
 export function disconnectPrompt() {
-  _historyLoadId++          // cancel any in-flight loadHistory
-  historyLoading.value = false  // reset here; finally block won't (loadId mismatch)
+  _historyLoadId++ // cancel any in-flight loadHistory
+  historyLoading.value = false // reset here; finally block won't (loadId mismatch)
   if (ws) {
     ws.close()
     ws = null
@@ -109,17 +115,27 @@ export async function loadHistory(taskId: number) {
   historyLoading.value = true
   try {
     const convs = await Prompt.listConversations(taskId)
-    console.log("[loadHistory] convs:", convs.map((c: any) => ({ id: c.id, is_active: c.is_active, message_count: c.message_count, username: c.username })), "user.username:", user.username)
-    if (loadId !== _historyLoadId) return  // navigated away, abort
+    console.log(
+      "[loadHistory] convs:",
+      convs.map((c: any) => ({
+        id: c.id,
+        is_active: c.is_active,
+        message_count: c.message_count,
+        username: c.username,
+      })),
+      "user.username:",
+      user.username,
+    )
+    if (loadId !== _historyLoadId) return // navigated away, abort
     const active = convs.find(
       (c: { is_active: boolean; message_count: number; username: string }) =>
-        c.is_active && c.message_count > 0 && c.username === user.username
+        c.is_active && c.message_count > 0 && c.username === user.username,
     )
     console.log("[loadHistory] active:", active)
     if (!active) return
     const raw: RawMessage[] = await Prompt.getMessages(active.id)
     console.log("[loadHistory] raw messages:", raw.length)
-    if (loadId !== _historyLoadId) return  // navigated away, abort
+    if (loadId !== _historyLoadId) return // navigated away, abort
     // Only apply if nothing has arrived via WebSocket yet
     if (messages.value.length > 0) return
     conversationId.value = active.id
@@ -157,7 +173,11 @@ export function newConversation() {
   ws.send(JSON.stringify({ type: "new_conversation" }))
 }
 
-function applyCode(code: { html: string | null; css: string | null; js: string | null }) {
+function applyCode(code: {
+  html: string | null
+  css: string | null
+  js: string | null
+}) {
   if (code.html !== null) html.value = code.html
   if (code.css !== null) css.value = code.css
   if (code.js !== null) js.value = code.js

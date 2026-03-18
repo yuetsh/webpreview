@@ -1,6 +1,13 @@
 import axios from "axios"
 import { router } from "./router"
-import type { TutorialIn, ChallengeIn, FlagType, SubmissionOut, PromptMessage, TaskStatsOut } from "./utils/type"
+import type {
+  TutorialIn,
+  ChallengeIn,
+  FlagType,
+  SubmissionOut,
+  PromptMessage,
+  TaskStatsOut,
+} from "./utils/type"
 import { BASE_URL, STORAGE_KEY } from "./utils/const"
 
 const http = axios.create({
@@ -227,7 +234,6 @@ export const Submission = {
     const res = await http.get(`/submission/stats/${taskId}`, { params })
     return res.data as TaskStatsOut
   },
-
 }
 
 export const Prompt = {
@@ -240,7 +246,9 @@ export const Prompt = {
 
   async getMessages(conversationId: string): Promise<PromptMessage[]> {
     return (
-      await http.get<PromptMessage[]>(`/prompt/conversations/${conversationId}/messages/`)
+      await http.get<PromptMessage[]>(
+        `/prompt/conversations/${conversationId}/messages/`,
+      )
     ).data
   },
 }

@@ -9,7 +9,11 @@
             </n-button>
           </template>
           <n-tab-pane name="desc" tab="挑战描述" display-directive="show">
-            <div class="markdown-body" style="padding: 12px; overflow-y: auto; height: 100%" v-html="challengeContent" />
+            <div
+              class="markdown-body"
+              style="padding: 12px; overflow-y: auto; height: 100%"
+              v-html="challengeContent"
+            />
           </n-tab-pane>
           <n-tab-pane name="chat" tab="AI 对话" display-directive="show">
             <PromptPanel />
@@ -19,11 +23,24 @@
     </template>
     <template #2>
       <div class="right-panel">
-        <Preview :html="html" :css="css" :js="js" show-code-button clearable @showCode="showCode = true" @clear="clearAll" />
+        <Preview
+          :html="html"
+          :css="css"
+          :js="js"
+          show-code-button
+          clearable
+          @showCode="showCode = true"
+          @clear="clearAll"
+        />
       </div>
     </template>
   </n-split>
-  <n-modal v-model:show="showCode" preset="card" title="代码" style="width: 700px">
+  <n-modal
+    v-model:show="showCode"
+    preset="card"
+    title="代码"
+    style="width: 700px"
+  >
     <n-tabs type="line">
       <n-tab-pane name="html" tab="HTML">
         <n-code :code="html" language="html" />
@@ -49,7 +66,14 @@ import Preview from "../components/Preview.vue"
 import { Challenge, Submission } from "../api"
 import { html, css, js } from "../store/editors"
 import { taskId } from "../store/task"
-import { connectPrompt, disconnectPrompt, conversationId, streaming, setOnCodeComplete, loadHistory } from "../store/prompt"
+import {
+  connectPrompt,
+  disconnectPrompt,
+  conversationId,
+  streaming,
+  setOnCodeComplete,
+  loadHistory,
+} from "../store/prompt"
 
 const route = useRoute()
 const router = useRouter()
@@ -71,7 +95,7 @@ async function loadChallenge() {
   taskId.value = data.task_ptr
   challengeTitle.value = `#${data.display} ${data.title}`
   challengeContent.value = await marked.parse(data.content, { async: true })
-  loadHistory(data.task_ptr)   // HTTP preload — async, non-blocking
+  loadHistory(data.task_ptr) // HTTP preload — async, non-blocking
   connectPrompt(data.task_ptr) // WebSocket — synchronous open
   setOnCodeComplete(async (code) => {
     if (!conversationId.value) return

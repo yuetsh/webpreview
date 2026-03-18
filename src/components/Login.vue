@@ -180,7 +180,10 @@ async function submitStudent() {
   studentLoading.value = true
   showStudentError.value = false
   try {
-    const data = await Account.login(selectedUsername.value, studentPassword.value)
+    const data = await Account.login(
+      selectedUsername.value,
+      studentPassword.value,
+    )
     user.username = data.username
     user.role = data.role
     user.loaded = true

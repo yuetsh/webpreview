@@ -14,7 +14,13 @@
 
 <script setup lang="ts">
 import { computed, h } from "vue"
-import { NButton, NDataTable, NPopconfirm, NSpin, type DataTableColumn } from "naive-ui"
+import {
+  NButton,
+  NDataTable,
+  NPopconfirm,
+  NSpin,
+  type DataTableColumn,
+} from "naive-ui"
 import type { SubmissionOut } from "../../utils/type"
 import { TASK_TYPE } from "../../utils/const"
 import { parseTime } from "../../utils/helper"
@@ -61,10 +67,14 @@ const subColumns = computed((): DataTableColumn<SubmissionOut>[] => [
     render: (r) => {
       const myScore = r.my_score > 0 ? String(r.my_score) : "-"
       const avgScore = r.score > 0 ? r.score.toFixed(2) : "-"
-      return h("div", { style: { display: "flex", gap: "6px", alignItems: "baseline" } }, [
-        h("span", avgScore),
-        h("span", { style: { fontSize: "11px", color: "#999" } }, myScore),
-      ])
+      return h(
+        "div",
+        { style: { display: "flex", gap: "6px", alignItems: "baseline" } },
+        [
+          h("span", avgScore),
+          h("span", { style: { fontSize: "11px", color: "#999" } }, myScore),
+        ],
+      )
     },
   },
   {
@@ -73,55 +83,77 @@ const subColumns = computed((): DataTableColumn<SubmissionOut>[] => [
     width: 60,
     render: (r: SubmissionOut) => {
       if (r.username !== user.username) {
-        return r.nominated ? h("span", { style: { color: "#f0a020" } }, "🏅") : null
+        return r.nominated
+          ? h("span", { style: { color: "#f0a020" } }, "🏅")
+          : null
       }
       return h(
         NButton,
         {
           text: true,
           title: r.nominated ? "已参与排名（点击可重新提名）" : "参与排名",
-          onClick: (e: Event) => { e.stopPropagation(); emit("nominate", r) },
+          onClick: (e: Event) => {
+            e.stopPropagation()
+            emit("nominate", r)
+          },
         },
         () => (r.nominated ? "🏅" : "☆"),
       )
     },
   },
   ...(isChallenge.value
-    ? [{
-        title: "提示词",
-        key: "conversation_id",
-        width: 70,
-        render: (r: SubmissionOut) => {
-          if (!r.conversation_id) return "-"
-          return h(
-            NButton,
-            { text: true, type: "primary", onClick: (e: Event) => { e.stopPropagation(); emit("show-chain", r.conversation_id!) } },
-            () => "查看",
-          )
-        },
-      } as DataTableColumn<SubmissionOut>]
+    ? [
+        {
+          title: "提示词",
+          key: "conversation_id",
+          width: 70,
+          render: (r: SubmissionOut) => {
+            if (!r.conversation_id) return "-"
+            return h(
+              NButton,
+              {
+                text: true,
+                type: "primary",
+                onClick: (e: Event) => {
+                  e.stopPropagation()
+                  emit("show-chain", r.conversation_id!)
+                },
+              },
+              () => "查看",
+            )
+          },
+        } as DataTableColumn<SubmissionOut>,
+      ]
     : []),
   ...(!isChallenge.value
-    ? [{
-        title: "操作",
-        key: "actions",
-        width: 60,
-        render: (r: SubmissionOut) => {
-          if (r.username !== user.username) return null
-          return h(
-            NPopconfirm,
-            { onPositiveClick: () => emit("delete", r, props.row.id) },
-            {
-              trigger: () => h(
-                NButton,
-                { text: true, type: "error", size: "small", onClick: (e: Event) => e.stopPropagation() },
-                () => "删除",
-              ),
-              default: () => "确定删除这次提交？",
-            },
-          )
-        },
-      } as DataTableColumn<SubmissionOut>]
+    ? [
+        {
+          title: "操作",
+          key: "actions",
+          width: 60,
+          render: (r: SubmissionOut) => {
+            if (r.username !== user.username) return null
+            return h(
+              NPopconfirm,
+              { onPositiveClick: () => emit("delete", r, props.row.id) },
+              {
+                trigger: () =>
+                  h(
+                    NButton,
+                    {
+                      text: true,
+                      type: "error",
+                      size: "small",
+                      onClick: (e: Event) => e.stopPropagation(),
+                    },
+                    () => "删除",
+                  ),
+                default: () => "确定删除这次提交？",
+              },
+            )
+          },
+        } as DataTableColumn<SubmissionOut>,
+      ]
     : []),
 ])
 </script>

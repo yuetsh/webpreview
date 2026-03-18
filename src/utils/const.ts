@@ -39,7 +39,8 @@ export const ADMIN_URL = import.meta.env.PUBLIC_ADMIN_URL
 
 export const BASE_URL = import.meta.env.PUBLIC_BASE_URL
 
-export const WS_BASE_URL = import.meta.env.PUBLIC_WS_URL || `ws://${window.location.host}`
+export const WS_BASE_URL =
+  import.meta.env.PUBLIC_WS_URL || `ws://${window.location.host}`
 
 export enum TASK_TYPE {
   Tutorial = "tutorial",

@@ -1,9 +1,16 @@
 <template>
-  <n-modal preset="card" :show="show" style="max-width: 60%" @update:show="$emit('update:show', $event)">
+  <n-modal
+    preset="card"
+    :show="show"
+    style="max-width: 60%"
+    @update:show="$emit('update:show', $event)"
+  >
     <template #header>
       <n-flex align="center">
         <span>前端代码</span>
-        <n-button tertiary @click="$emit('copy-to-editor')">复制到编辑框</n-button>
+        <n-button tertiary @click="$emit('copy-to-editor')"
+          >复制到编辑框</n-button
+        >
       </n-flex>
     </template>
     <n-tabs animated type="segment">
