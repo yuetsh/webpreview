@@ -25,11 +25,11 @@ async function init() {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>${submission.css}</style>
     <link rel="stylesheet" href="/normalize.min.css" />
-    <script src="/jquery.min.js"><\/script>
+    <script src="/tailwindcss.min.js"><\/script>
   </head>
   <body>
     ${submission.html}
-    <script type="module">${submission.js}<\/script>
+    <script>${submission.js}<\/script>
   </body>
 </html>`)
     doc.close()
