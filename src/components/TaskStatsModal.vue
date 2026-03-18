@@ -8,7 +8,8 @@
     :bordered="false"
   >
     <div style="max-height: 75vh; overflow-y: auto">
-      <template v-if="loading">
+      <!-- 初始加载 -->
+      <template v-if="!stats && loading">
         <n-flex justify="center" style="padding: 40px">
           <n-spin size="large" />
         </n-flex>
@@ -37,6 +38,7 @@
           >
         </n-flex>
 
+        <n-spin :show="loading">
         <!-- 关键指标 -->
         <div
           style="
@@ -281,53 +283,6 @@
           </div>
         </div>
 
-        <!-- 分数分布 -->
-        <div style="margin-bottom: 12px">
-          <div
-            style="
-              font-weight: 600;
-              font-size: 13px;
-              margin-bottom: 8px;
-              color: #333;
-            "
-          >
-            分数分布
-            <span style="font-size: 11px; color: #aaa; font-weight: 400"
-              >（1–5 星，已打分提交）</span
-            >
-          </div>
-          <div
-            style="display: flex; align-items: flex-end; gap: 6px; height: 80px"
-          >
-            <div
-              v-for="bar in scoreBars"
-              :key="bar.label"
-              style="
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-              "
-            >
-              <div style="color: #aaa; font-size: 11px; margin-bottom: 3px">
-                {{ bar.value }}
-              </div>
-              <div
-                :style="{
-                  background: bar.color,
-                  width: '100%',
-                  height: bar.height,
-                  borderRadius: '3px 3px 0 0',
-                  minHeight: '3px',
-                }"
-              ></div>
-              <div style="color: #aaa; font-size: 11px; margin-top: 4px">
-                {{ bar.label }}
-              </div>
-            </div>
-          </div>
-        </div>
-
         <!-- 人气提交 Top 5 -->
         <div style="margin-bottom: 12px">
           <div
@@ -438,6 +393,7 @@
             </div>
           </n-flex>
         </div>
+        </n-spin>
       </template>
     </div>
   </n-modal>
