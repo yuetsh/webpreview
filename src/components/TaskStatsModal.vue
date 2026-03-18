@@ -158,7 +158,7 @@
               align-items: center;
               justify-content: space-between;
               cursor: pointer;
-              background: #fff8f8;
+              background: #fffaf5;
             "
             @click="showUnrated = !showUnrated"
           >
@@ -167,12 +167,12 @@
                 style="
                   width: 7px;
                   height: 7px;
-                  background: #d03050;
+                  background: #e07800;
                   border-radius: 50%;
                   display: inline-block;
                 "
               ></span>
-              <span style="font-weight: 600; color: #d03050; font-size: 12px"
+              <span style="font-weight: 600; color: #e07800; font-size: 12px"
                 >未打分（{{ stats.unrated_count }}人）</span
               >
               <span style="font-size: 11px; color: #aaa"
@@ -191,7 +191,7 @@
             v-if="showUnrated"
             style="
               padding: 10px 14px;
-              background: #fff8f8;
+              background: #fffaf5;
               display: flex;
               flex-wrap: wrap;
               gap: 5px;
@@ -202,7 +202,7 @@
               :key="u.username"
               size="small"
               :bordered="true"
-              style="border-color: #ffd0d0; background: #fff"
+              style="border-color: #ffd0a0; background: #fff"
               >{{ displayName(u.username, u.classname) }}</n-tag
             >
             <span
@@ -296,15 +296,15 @@
             <div
               v-for="(sub, i) in stats.top_submissions"
               :key="sub.submission_id"
-              style="
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                padding: 6px 10px;
-                background: #f8f8f8;
-                border-radius: 6px;
-                cursor: pointer;
-              "
+              :style="{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                padding: '6px 10px',
+                background: rankBg(i),
+                borderRadius: '6px',
+                cursor: 'pointer',
+              }"
               @click="viewSubmission(sub.submission_id)"
             >
               <div
@@ -406,8 +406,8 @@ const router = useRouter()
 const stats = ref<TaskStatsOut | null>(null)
 const loading = ref(false)
 const selectedClass = ref<string | null>(null)
-const showUnsubmitted = ref(true)
-const showUnrated = ref(true)
+const showUnsubmitted = ref(false)
+const showUnrated = ref(false)
 
 async function load(classname?: string) {
   loading.value = true
@@ -434,7 +434,11 @@ function viewSubmission(id: string) {
 }
 
 function rankColor(i: number) {
-  return (["#f0a020", "#aaa", "#cd7f32", "#ddd", "#ddd"] as const)[i] ?? "#ddd"
+  return (["#f0a020", "#909090", "#cd7f32", "#8899aa", "#7a8fa0"] as const)[i] ?? "#aaa"
+}
+
+function rankBg(i: number) {
+  return (["#fffbef", "#f8f8f8", "#fdf5ee", "#f2f5f8", "#eef2f5"] as const)[i] ?? "#f8f8f8"
 }
 
 function bucketPct(value: number) {
@@ -463,18 +467,11 @@ const countBuckets = computed(() => {
   const d = stats.value.submission_count_distribution
   return [
     {
-      label: "仅 1 次",
-      value: d.count_1,
-      color: "#888",
-      bg: "#fafafa",
-      borderColor: "#e0e0e0",
-    },
-    {
-      label: "2 次",
-      value: d.count_2,
-      color: "#2080f0",
-      bg: "#f0f7ff",
-      borderColor: "#d0e8ff",
+      label: "4 次+",
+      value: d.count_4_plus,
+      color: "#f0a020",
+      bg: "#fffbf0",
+      borderColor: "#ffe0a0",
     },
     {
       label: "3 次",
@@ -484,11 +481,18 @@ const countBuckets = computed(() => {
       borderColor: "#c8e8d0",
     },
     {
-      label: "4 次+",
-      value: d.count_4_plus,
-      color: "#f0a020",
-      bg: "#fffbf0",
-      borderColor: "#ffe0a0",
+      label: "2 次",
+      value: d.count_2,
+      color: "#2080f0",
+      bg: "#f0f7ff",
+      borderColor: "#d0e8ff",
+    },
+    {
+      label: "仅 1 次",
+      value: d.count_1,
+      color: "#888",
+      bg: "#fafafa",
+      borderColor: "#e0e0e0",
     },
   ]
 })
