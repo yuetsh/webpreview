@@ -132,10 +132,7 @@
               size="small"
               :bordered="true"
               style="border-color: #ffd0d0; background: #fff"
-              >{{ u.username }}
-              <span style="color: #bbb; margin-left: 4px">{{
-                u.classname
-              }}</span></n-tag
+              >{{ displayName(u.username, u.classname) }}</n-tag
             >
             <span
               v-if="!stats.unsubmitted_users.length"
@@ -206,10 +203,7 @@
               size="small"
               :bordered="true"
               style="border-color: #ffd0d0; background: #fff"
-              >{{ u.username }}
-              <span style="color: #bbb; margin-left: 4px">{{
-                u.classname
-              }}</span></n-tag
+              >{{ displayName(u.username, u.classname) }}</n-tag
             >
             <span
               v-if="!stats.unrated_users.length"
@@ -332,11 +326,10 @@
               </div>
               <div style="flex: 1">
                 <div style="font-weight: 500; font-size: 13px">
-                  {{ sub.username }}
+                  {{ displayName(sub.username, sub.classname) }}
                 </div>
                 <div style="color: #aaa; font-size: 11px">
                   {{ sub.score.toFixed(1) }} 分 · {{ sub.rating_count }} 人打分
-                  · {{ sub.classname }}
                 </div>
               </div>
               <div style="color: #2080f0; font-size: 12px">查看 →</div>
@@ -423,6 +416,11 @@ async function load(classname?: string) {
   } finally {
     loading.value = false
   }
+}
+
+function displayName(username: string, classname: string) {
+  const prefix = "web" + classname
+  return username.startsWith(prefix) ? username.slice(prefix.length) : username
 }
 
 function selectClass(c: string | null) {
