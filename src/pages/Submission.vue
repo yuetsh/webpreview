@@ -43,6 +43,8 @@ onMounted(init)
 </template>
 <style scoped>
 .iframe {
+  position: fixed;
+  inset: 0;
   width: 100%;
   height: 100%;
   border: none;

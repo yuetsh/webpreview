@@ -1,6 +1,6 @@
 import axios from "axios"
 import { router } from "./router"
-import type { TutorialIn, ChallengeIn, FlagType, SubmissionOut, PromptMessage } from "./utils/type"
+import type { TutorialIn, ChallengeIn, FlagType, SubmissionOut, PromptMessage, TaskStatsOut } from "./utils/type"
 import { BASE_URL, STORAGE_KEY } from "./utils/const"
 
 const http = axios.create({
@@ -219,6 +219,13 @@ export const Submission = {
   async nominate(id: string) {
     const res = await http.put(`/submission/${id}/nominate`)
     return res.data as { nominated: boolean }
+  },
+
+  async getStats(taskId: number, classname?: string): Promise<TaskStatsOut> {
+    const params: Record<string, string | number> = {}
+    if (classname) params.classname = classname
+    const res = await http.get(`/submission/stats/${taskId}`, { params })
+    return res.data as TaskStatsOut
   },
 
 }

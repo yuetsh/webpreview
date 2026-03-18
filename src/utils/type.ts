@@ -101,3 +101,53 @@ export interface SubmissionAll {
   created: Date
   modified: Date
 }
+
+export interface UserTag {
+  username: string
+  classname: string
+}
+
+export interface TopSubmission {
+  submission_id: string
+  username: string
+  classname: string
+  score: number
+  rating_count: number
+}
+
+export interface SubmissionCountBucket {
+  count_1: number
+  count_2: number
+  count_3: number
+  count_4_plus: number
+}
+
+export interface ScoreBucket {
+  range_1_2: number
+  range_2_3: number
+  range_3_4: number
+  range_4_5: number
+  range_5: number
+}
+
+export interface FlagStats {
+  red: number
+  blue: number
+  green: number
+  yellow: number
+}
+
+export interface TaskStatsOut {
+  submitted_count: number
+  unsubmitted_count: number
+  average_score: number | null
+  unrated_count: number
+  nominated_count: number
+  unsubmitted_users: UserTag[]
+  unrated_users: UserTag[]
+  submission_count_distribution: SubmissionCountBucket
+  score_distribution: ScoreBucket
+  top_submissions: TopSubmission[]
+  flag_stats: FlagStats
+  classes: string[]
+}

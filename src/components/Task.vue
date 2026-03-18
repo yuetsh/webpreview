@@ -39,6 +39,13 @@
       </n-flex>
       <n-flex>
         <n-button
+          v-if="(roleAdmin || roleSuper) && taskTab === TASK_TYPE.Challenge && taskId > 0"
+          text
+          @click="statsModal = true"
+        >
+          <Icon :width="16" icon="lucide:bar-chart-2"></Icon>
+        </n-button>
+        <n-button
         v-if="authed"
           text
           @click="$router.push({ name: 'submissions', params: { page: 1 } })"
@@ -56,21 +63,24 @@
     <Tutorial v-if="taskTab === TASK_TYPE.Tutorial" ref="tutorialRef" />
     <Challenge v-else />
   </div>
+  <TaskStatsModal v-model:show="statsModal" :task-id="taskId" />
 </template>
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
 import { computed, onMounted, ref } from "vue"
 import { step } from "../store/tutorial"
-import { authed, roleSuper } from "../store/user"
-import { taskTab, challengeDisplay } from "../store/task"
+import { authed, roleAdmin, roleSuper } from "../store/user"
+import { taskTab, taskId, challengeDisplay } from "../store/task"
 import { useRoute, useRouter } from "vue-router"
 import { TASK_TYPE } from "../utils/const"
 import Challenge from "./Challenge.vue"
 import Tutorial from "./Tutorial.vue"
+import TaskStatsModal from "./TaskStatsModal.vue"
 
 const route = useRoute()
 const router = useRouter()
 const tutorialRef = ref<InstanceType<typeof Tutorial>>()
+const statsModal = ref(false)
 
 defineEmits(["hide"])
 
