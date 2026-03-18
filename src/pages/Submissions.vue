@@ -1,47 +1,50 @@
 <template>
-  <n-split class="container" direction="horizontal" :default-size="0.333" :min="0.2" :max="0.8">
+  <n-split
+    class="container"
+    direction="horizontal"
+    :default-size="0.5"
+    :min="0.2"
+    :max="0.8"
+  >
     <template #1>
-      <n-flex vertical style="height: 100%; padding-right: 10px">
-        <n-flex justify="space-between">
+      <n-flex vertical style="height: 100%; padding-right: 10px; overflow: hidden">
+        <n-flex justify="space-between" style="flex-shrink: 0">
           <n-button secondary @click="() => goHome($router, taskTab, step)">
             返回首页
           </n-button>
           <n-flex align="center">
             <n-select
-              v-model:value="query.flag"
+              :value="query.flag"
               style="width: 100px"
               clearable
               placeholder="标记"
-              :options="[
-                { label: '红旗', value: 'red' },
-                { label: '蓝旗', value: 'blue' },
-                { label: '绿旗', value: 'green' },
-                { label: '黄旗', value: 'yellow' },
-              ]"
+              :options="flagFilterOptions"
+              @update:value="handleFlagSelect"
             />
-            <div>
-              <n-input
-                style="width: 120px"
-                v-model:value="query.username"
-                clearable
-              />
-            </div>
+            <n-input style="width: 120px" v-model:value="query.username" clearable />
             <n-pagination
               v-model:page="query.page"
               :page-size="10"
               :item-count="count"
               simple
-            >
-            </n-pagination>
+            />
+            <n-button secondary style="padding: 0 10px" title="刷新" @click="init">
+              <Icon :width="16" icon="lucide:refresh-cw" />
+            </n-button>
           </n-flex>
         </n-flex>
         <n-data-table
+          flex-height
           striped
           :columns="columns"
           :data="data"
+          :row-key="(row: SubmissionOut) => row.id"
+          :expanded-row-keys="expandedKeys"
+          @update:expanded-row-keys="handleExpand"
           :row-props="rowProps"
           :row-class-name="rowClassName"
-        ></n-data-table>
+          style="flex: 1; min-height: 0"
+        />
       </n-flex>
     </template>
     <template #2>
@@ -58,233 +61,152 @@
       </div>
     </template>
   </n-split>
-  <n-modal preset="card" v-model:show="codeModal" style="max-width: 60%">
-    <template #header>
-      <n-flex align="center">
-        <span>前端代码</span>
-        <n-button tertiary @click="copyToEditor">复制到编辑框</n-button>
-      </n-flex>
-    </template>
-    <n-tabs animated type="segment">
-      <n-tab-pane name="html" tab="html">
-        <n-code :code="html" language="html" word-wrap></n-code>
-      </n-tab-pane>
-      <n-tab-pane name="css" tab="css">
-        <n-code :code="css" language="css" word-wrap></n-code>
-      </n-tab-pane>
-      <n-tab-pane v-if="!!js" name="js" tab="js">
-        <n-code :code="js" language="js" word-wrap></n-code>
-      </n-tab-pane>
-    </n-tabs>
-  </n-modal>
-  <n-modal v-model:show="chainModal" preset="card" title="提示词" style="width: 90vw; max-width: 1400px">
-    <n-spin :show="chainLoading">
-      <n-empty v-if="!chainLoading && chainRounds.length === 0" description="暂无对话记录" />
-      <div v-else style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; height: 75vh">
-        <!-- 左侧：学生提问列表 -->
-        <div style="overflow-y: auto; padding-right: 8px; border-right: 1px solid #e0e0e0; display: flex; flex-direction: column; gap: 8px">
-          <div
-            v-for="(round, index) in chainRounds"
-            :key="index"
-            style="display: flex; gap: 10px; align-items: flex-start; cursor: pointer"
-            @click="selectedRound = index"
-          >
-            <div :style="{
-              flexShrink: 0, width: '22px', height: '22px', borderRadius: '50%',
-              background: selectedRound === index ? '#2080f0' : '#c2d5fb',
-              color: '#fff', fontSize: '12px', fontWeight: 'bold',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '2px',
-              transition: 'background 0.2s',
-            }">
-              {{ index + 1 }}
-            </div>
-            <div :style="{
-              flex: 1, padding: '10px 14px', borderRadius: '8px',
-              background: selectedRound === index ? '#e8f0fe' : '#f5f5f5',
-              border: selectedRound === index ? '1px solid #2080f0' : '1px solid #e0e0e0',
-              fontSize: '13px', lineHeight: '1.6', transition: 'all 0.2s',
-            }">
-              {{ round.question }}
-            </div>
-          </div>
-        </div>
-        <!-- 右侧：对应网页预览 -->
-        <div style="display: flex; flex-direction: column; gap: 8px">
-          <div style="font-weight: bold; font-size: 13px; color: #555">
-            第 {{ selectedRound + 1 }} 轮网页
-          </div>
-          <iframe
-            v-if="selectedPageHtml"
-            :srcdoc="selectedPageHtml"
-            :key="selectedRound"
-            sandbox="allow-scripts"
-            style="flex: 1; border: 1px solid #e0e0e0; border-radius: 6px; background: #fff"
-          />
-          <n-empty v-else description="该轮无网页代码" style="margin: auto" />
-        </div>
-      </div>
-    </n-spin>
-  </n-modal>
+
+  <CodeModal
+    v-model:show="codeModal"
+    :html="html"
+    :css="css"
+    :js="js"
+    @copy-to-editor="copyToEditor"
+  />
+
+  <ChainModal
+    v-model:show="chainModal"
+    :conversation-id="chainConversationId"
+  />
 </template>
+
 <script setup lang="ts">
-import { NButton, NPopover, NSpace, type DataTableColumn } from "naive-ui"
 import { computed, h, onMounted, onUnmounted, reactive, ref, watch } from "vue"
-import { Submission, Prompt } from "../api"
-import type { SubmissionOut } from "../utils/type"
+import { NButton, NDataTable, type DataTableColumn } from "naive-ui"
+import { Icon } from "@iconify/vue"
+import { Submission } from "../api"
+import type { SubmissionOut, FlagType } from "../utils/type"
 import { parseTime } from "../utils/helper"
-import TaskTitle from "../components/submissions/TaskTitle.vue"
-import Preview from "../components/Preview.vue"
-import { submission } from "../store/submission"
-import { useRouter, useRoute } from "vue-router"
+import { goHome } from "../utils/helper"
+import { TASK_TYPE } from "../utils/const"
 import { watchDebounced } from "@vueuse/core"
+import { useRouter, useRoute } from "vue-router"
+
+import Preview from "../components/Preview.vue"
+import TaskTitle from "../components/submissions/TaskTitle.vue"
+import CodeModal from "../components/submissions/CodeModal.vue"
+import ChainModal from "../components/submissions/ChainModal.vue"
+import FlagCell from "../components/submissions/FlagCell.vue"
+import ExpandedSubTable from "../components/submissions/ExpandedSubTable.vue"
+
+import { submission } from "../store/submission"
 import { taskTab } from "../store/task"
 import { step } from "../store/tutorial"
 import { html as eHtml, css as eCss, js as eJs } from "../store/editors"
-import { TASK_TYPE } from "../utils/const"
-import { goHome } from "../utils/helper"
-import { roleAdmin, roleSuper } from "../store/user"
-import type { FlagType } from "../utils/type"
+import { roleAdmin, roleSuper, user } from "../store/user"
 
 const route = useRoute()
 const router = useRouter()
 
+// 列表数据
 const data = ref<SubmissionOut[]>([])
 const count = ref(0)
 const query = reactive({
   page: Number(route.params.page),
-  username: route.query.username ?? "",
+  username: (Array.isArray(route.query.username) ? "" : (route.query.username ?? "")) as string,
   flag: null as string | null,
 })
 
+// 当前选中提交的代码
 const html = computed(() => submission.value.html)
 const css = computed(() => submission.value.css)
 const js = computed(() => submission.value.js)
 
+// Modal 状态
 const codeModal = ref(false)
 const chainModal = ref(false)
-const chainMessages = ref<{ id: number; role: string; content: string; code_html: string | null; code_css: string | null; code_js: string | null }[]>([])
-const chainLoading = ref(false)
-const selectedRound = ref(0)
+const chainConversationId = ref<string | undefined>()
 
-const FLAG_OPTIONS: { value: FlagType; color: string; label: string }[] = [
-  { value: "red", color: "#e03030", label: "值得展示" },
-  { value: "blue", color: "#2080f0", label: "需要讲解" },
-  { value: "green", color: "#18a058", label: "优秀作品" },
-  { value: "yellow", color: "#f0a020", label: "需要改进" },
-]
+// 展开行
+const expandedKeys = ref<string[]>([])
+const expandedData = reactive(new Map<string, SubmissionOut[]>())
+const expandedLoading = reactive(new Set<string>())
 
+// 管理员判断
 const isAdmin = computed(() => roleAdmin.value || roleSuper.value)
 
-const chainRounds = computed(() => {
-  const messages = chainMessages.value
-  const rounds: { question: string; html: string | null; css: string | null; js: string | null }[] = []
-  for (let i = 0; i < messages.length; i++) {
-    if (messages[i].role !== "user") continue
-    let html = null, css = null, js = null
-    for (let j = i + 1; j < messages.length; j++) {
-      if (messages[j].role === "user") break
-      if (messages[j].role === "assistant" && messages[j].code_html) {
-        html = messages[j].code_html
-        css = messages[j].code_css
-        js = messages[j].code_js
-        break
-      }
-    }
-    rounds.push({ question: messages[i].content, html, css, js })
-  }
-  return rounds
+// Flag 过滤选项
+const flagFilterOptions = computed(() => {
+  const opts = [
+    { label: "红旗", value: "red" },
+    { label: "蓝旗", value: "blue" },
+    { label: "绿旗", value: "green" },
+    { label: "黄旗", value: "yellow" },
+    { label: "全部", value: "any" },
+  ]
+  if (isAdmin.value) opts.push({ label: "清除", value: "_clear_all" })
+  return opts
 })
 
-const selectedPageHtml = computed(() => {
-  const round = chainRounds.value[selectedRound.value]
-  if (!round?.html) return null
-  const style = round.css ? `<style>${round.css}</style>` : ""
-  const script = round.js ? `<script>${round.js}<\/script>` : ""
-  return `<!DOCTYPE html><html><head><meta charset="utf-8">${style}</head><body>${round.html}${script}</body></html>`
-})
+function handleFlagSelect(value: string | null) {
+  if (value === "_clear_all") { clearAllFlags(); return }
+  query.flag = value
+}
 
 async function updateFlag(row: SubmissionOut, flag: FlagType) {
   await Submission.updateFlag(row.id, flag)
   row.flag = flag
 }
 
-async function showChain(conversationId: string) {
-  chainLoading.value = true
-  chainModal.value = true
-  selectedRound.value = 0
-  try {
-    chainMessages.value = await Prompt.getMessages(conversationId)
-    const last = chainRounds.value.length - 1
-    if (last >= 0) selectedRound.value = last
-  } finally {
-    chainLoading.value = false
-  }
+async function clearAllFlags() {
+  await Submission.clearAllFlags()
+  data.value = data.value.map((d) => ({ ...d, flag: null }))
+  query.flag = null
 }
 
+function showChain(conversationId: string) {
+  chainConversationId.value = conversationId
+  chainModal.value = true
+}
+
+// 表格列定义
 const columns: DataTableColumn<SubmissionOut>[] = [
+  {
+    type: "expand",
+    expandable: () => true,
+    renderExpand: (row) =>
+      h(ExpandedSubTable, {
+        row,
+        items: expandedData.get(row.id),
+        loading: expandedLoading.has(row.id),
+        onSelect: (id) => getSubmissionByID(id),
+        onDelete: (r, parentId) => handleDelete(r, parentId),
+        "onShow-chain": (id) => showChain(id),
+      }),
+  },
   {
     title: "",
     key: "flag",
     width: 50,
+    render: (row) =>
+      h(FlagCell, {
+        flag: row.flag ?? null,
+        isAdmin: isAdmin.value,
+        "onUpdate:flag": (flag: FlagType) => updateFlag(row, flag),
+      }),
+  },
+  {
+    title: "排名",
+    key: "nominated",
+    width: 60,
     render: (row) => {
-      const flagOption = FLAG_OPTIONS.find((f) => f.value === row.flag)
-      const flagIcon = h("span", {
-        style: {
-          display: "inline-block",
-          width: "12px",
-          height: "12px",
-          borderRadius: "50%",
-          backgroundColor: flagOption ? flagOption.color : "transparent",
-          border: flagOption ? "none" : "1px dashed #ccc",
-          cursor: isAdmin.value ? "pointer" : "default",
-        },
-      })
-
-      if (!isAdmin.value) return flagIcon
-
+      if (row.username !== user.username) {
+        return row.nominated ? h("span", { style: { color: "#f0a020" } }, "🏅") : null
+      }
       return h(
-        NPopover,
-        { trigger: "click" },
+        NButton,
         {
-          trigger: () => flagIcon,
-          default: () =>
-            h(NSpace, { vertical: true, size: "small" }, () => [
-              ...FLAG_OPTIONS.map((opt) =>
-                h(
-                  NButton,
-                  {
-                    text: true,
-                    onClick: () => updateFlag(row, opt.value),
-                  },
-                  () =>
-                    h("span", { style: { display: "flex", alignItems: "center", gap: "6px" } }, [
-                      h("span", {
-                        style: {
-                          display: "inline-block",
-                          width: "10px",
-                          height: "10px",
-                          borderRadius: "50%",
-                          backgroundColor: opt.color,
-                        },
-                      }),
-                      opt.label,
-                    ]),
-                ),
-              ),
-              row.flag
-                ? h(
-                    NButton,
-                    {
-                      text: true,
-                      block: true,
-                      type: "error",
-                      onClick: () => updateFlag(row, null),
-                    },
-                    () => "清除",
-                  )
-                : null,
-            ]),
+          text: true,
+          title: row.nominated ? "已参与排名（点击可重新提名）" : "参与排名",
+          onClick: (e: Event) => { e.stopPropagation(); handleNominate(row) },
         },
+        () => (row.nominated ? "🏅" : "☆"),
       )
     },
   },
@@ -303,12 +225,12 @@ const columns: DataTableColumn<SubmissionOut>[] = [
   {
     title: "任务",
     key: "task_title",
-    render: (submission) => h(TaskTitle, { submission }),
+    render: (row) => h(TaskTitle, { submission: row }),
   },
   {
     title: "得分",
     key: "score",
-    width: 80,
+    width: 70,
     render: (row) => {
       const myScore = row.my_score > 0 ? String(row.my_score) : "-"
       const avgScore = row.score > 0 ? row.score.toFixed(2) : "-"
@@ -319,25 +241,43 @@ const columns: DataTableColumn<SubmissionOut>[] = [
     },
   },
   {
-    title: "提示词",
-    key: "conversation_id",
-    width: 70,
-    render: (row) => {
-      if (!row.conversation_id) return "-"
-      return h(
-        NButton,
-        { text: true, type: "primary", onClick: () => showChain(row.conversation_id!) },
-        () => "查看",
-      )
-    },
+    title: "次数",
+    key: "submit_count",
+    width: 60,
+    render: (row) => row.submit_count || "-",
   },
 ]
 
-function rowProps(row: SubmissionOut) {
-  return {
-    style: { cursor: "pointer" },
-    onClick: () => getSubmissionByID(row.id),
+async function handleExpand(keys: (string | number)[]) {
+  const strKeys = keys.map(String)
+  const newKey = strKeys.find((k) => !expandedKeys.value.includes(k))
+  expandedKeys.value = strKeys
+  if (newKey) {
+    const row = data.value.find((d) => d.id === newKey)
+    if (row && !expandedData.has(newKey)) {
+      expandedLoading.add(newKey)
+      try {
+        const items = await Submission.listByUserTask(row.userid, row.task_id)
+        expandedData.set(newKey, items)
+      } finally {
+        expandedLoading.delete(newKey)
+      }
+    }
   }
+}
+
+async function handleDelete(row: SubmissionOut, parentId: string) {
+  await Submission.delete(row.id)
+  const items = expandedData.get(parentId)
+  if (items) expandedData.set(parentId, items.filter((d) => d.id !== row.id))
+  if (submission.value.id === row.id) submission.value.id = ""
+  const res = await Submission.list(query)
+  data.value = res.items
+  count.value = res.count
+}
+
+function rowProps(row: SubmissionOut) {
+  return { style: { cursor: "pointer" }, onClick: () => getSubmissionByID(row.id) }
 }
 
 function rowClassName(row: SubmissionOut) {
@@ -345,6 +285,8 @@ function rowClassName(row: SubmissionOut) {
 }
 
 async function init() {
+  expandedKeys.value = []
+  expandedData.clear()
   const res = await Submission.list(query)
   data.value = res.items
   count.value = res.count
@@ -354,11 +296,19 @@ async function getSubmissionByID(id: string) {
   submission.value = await Submission.get(id)
 }
 
+async function handleNominate(row: SubmissionOut) {
+  await Submission.nominate(row.id)
+  data.value = data.value.map((d) => {
+    if (d.username === user.username && d.task_id === row.task_id) {
+      d.nominated = d.id === row.id
+    }
+    return d
+  })
+}
+
 function afterScore() {
   data.value = data.value.map((d) => {
-    if (d.id === submission.value.id) {
-      d.my_score = submission.value.my_score
-    }
+    if (d.id === submission.value.id) d.my_score = submission.value.my_score
     return d
   })
 }
@@ -370,55 +320,26 @@ function copyToEditor() {
   goHome(router, submission.value.task_type, submission.value.task_display)
 }
 
-watch(
-  () => query.page,
-  (v) => {
-    init()
-    router.push({ params: { page: v } })
-  },
-)
-watchDebounced(
-  () => query.username,
-  () => {
-    query.page = 1
-    init()
-  },
-  { debounce: 500, maxWait: 1000 },
-)
-watch(
-  () => query.flag,
-  () => {
-    query.page = 1
-    init()
-  },
-)
-
+watch(() => query.page, (v) => { init(); router.push({ params: { page: v } }) })
+watchDebounced(() => query.username, () => { query.page = 1; init() }, { debounce: 500, maxWait: 1000 })
+watch(() => query.flag, () => { query.page = 1; init() })
 
 onMounted(init)
 onUnmounted(() => {
   submission.value = {
-    id: "",
-    userid: 0,
-    username: "",
-    task_id: 0,
-    task_display: 0,
-    task_title: "",
+    id: "", userid: 0, username: "",
+    task_id: 0, task_display: 0, task_title: "",
     task_type: TASK_TYPE.Tutorial,
-    score: 0,
-    my_score: 0,
-    html: "",
-    css: "",
-    js: "",
-    created: new Date(),
-    modified: new Date(),
+    score: 0, my_score: 0, html: "", css: "", js: "",
+    created: new Date(), modified: new Date(),
   }
 })
 </script>
+
 <style scoped>
 .container {
   padding: 10px;
   box-sizing: border-box;
-  height: calc(100% - 43px);
   width: 100%;
 }
 

@@ -7,7 +7,7 @@
       <n-button quaternary v-if="props.clearable" @click="clear">清空</n-button>
       <n-button quaternary v-if="props.showCodeButton" @click="emits('showCode')">代码</n-button>
       <n-button quaternary v-if="props.submissionId" @click="copyLink">
-        复制链接
+        链接
       </n-button>
       <n-flex v-if="!!submission.id">
         <n-button quaternary @click="emits('showCode')">代码</n-button>

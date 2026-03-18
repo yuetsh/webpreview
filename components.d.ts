@@ -11,9 +11,13 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    ChainModal: typeof import('./src/components/submissions/ChainModal.vue')['default']
     Challenge: typeof import('./src/components/Challenge.vue')['default']
+    CodeModal: typeof import('./src/components/submissions/CodeModal.vue')['default']
     Editor: typeof import('./src/components/Editor.vue')['default']
     Editors: typeof import('./src/components/Editors.vue')['default']
+    ExpandedSubTable: typeof import('./src/components/submissions/ExpandedSubTable.vue')['default']
+    FlagCell: typeof import('./src/components/submissions/FlagCell.vue')['default']
     Login: typeof import('./src/components/Login.vue')['default']
     MarkdownEditor: typeof import('./src/components/dashboard/MarkdownEditor.vue')['default']
     NAlert: typeof import('naive-ui')['NAlert']
@@ -21,7 +25,6 @@ declare module 'vue' {
     NCard: typeof import('naive-ui')['NCard']
     NCode: typeof import('naive-ui')['NCode']
     NConfigProvider: typeof import('naive-ui')['NConfigProvider']
-    NDataTable: typeof import('naive-ui')['NDataTable']
     NDialogProvider: typeof import('naive-ui')['NDialogProvider']
     NDropdown: typeof import('naive-ui')['NDropdown']
     NEmpty: typeof import('naive-ui')['NEmpty']
@@ -34,7 +37,6 @@ declare module 'vue' {
     NMessageProvider: typeof import('naive-ui')['NMessageProvider']
     NModal: typeof import('naive-ui')['NModal']
     NModalProvider: typeof import('naive-ui')['NModalProvider']
-    NPagination: typeof import('naive-ui')['NPagination']
     NPopover: typeof import('naive-ui')['NPopover']
     NRate: typeof import('naive-ui')['NRate']
     NSelect: typeof import('naive-ui')['NSelect']

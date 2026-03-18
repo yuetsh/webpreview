@@ -1,6 +1,6 @@
 import axios from "axios"
 import { router } from "./router"
-import type { TutorialIn, ChallengeIn, FlagType } from "./utils/type"
+import type { TutorialIn, ChallengeIn, FlagType, SubmissionOut, PromptMessage } from "./utils/type"
 import { BASE_URL, STORAGE_KEY } from "./utils/const"
 
 const http = axios.create({
@@ -71,6 +71,18 @@ export const Account = {
   async leaderboard() {
     const res = await http.get("/account/leaderboard")
     return res.data as { rank: number; username: string; total_score: number }[]
+  },
+
+  async listClasses(): Promise<string[]> {
+    const res = await http.get("/account/classes")
+    return res.data
+  },
+
+  async listNamesByClass(
+    classname: string,
+  ): Promise<{ name: string; username: string }[]> {
+    const res = await http.get("/account/names", { params: { classname } })
+    return res.data
   },
 }
 
@@ -156,15 +168,41 @@ export const Submission = {
     return res.data
   },
 
-  async list(query: { page: number }) {
+  async list(query: {
+    page: number
+    page_size?: number
+    username?: string
+    user_id?: number
+    flag?: string | null
+    task_id?: number
+    task_type?: string
+    score_min?: number
+    score_max_exclusive?: number
+    score_lt_threshold?: number
+    nominated?: boolean
+    ordering?: string
+    grouped?: boolean
+  }) {
     const res = await http.get("/submission", {
       params: query,
     })
     return res.data
   },
 
+  async listByUserTask(userId: number, taskId: number) {
+    const res = await http.get("/submission/by-user-task", {
+      params: { user_id: userId, task_id: taskId },
+    })
+    return res.data as SubmissionOut[]
+  },
+
   async get(id: string) {
     const res = await http.get("/submission/" + id)
+    return res.data
+  },
+
+  async delete(id: string) {
+    const res = await http.delete("/submission/" + id)
     return res.data
   },
 
@@ -176,6 +214,16 @@ export const Submission = {
   async updateFlag(id: string, flag: FlagType) {
     const res = await http.put(`/submission/${id}/flag`, { flag })
     return res.data
+  },
+
+  async clearAllFlags() {
+    const res = await http.delete(`/submission/flags`)
+    return res.data as { cleared: number }
+  },
+
+  async nominate(id: string) {
+    const res = await http.put(`/submission/${id}/nominate`)
+    return res.data as { nominated: boolean }
   },
 
   async myScores() {
@@ -199,9 +247,9 @@ export const Prompt = {
     return (await http.get("/prompt/conversations/", { params })).data
   },
 
-  async getMessages(conversationId: string) {
+  async getMessages(conversationId: string): Promise<PromptMessage[]> {
     return (
-      await http.get(`/prompt/conversations/${conversationId}/messages/`)
+      await http.get<PromptMessage[]>(`/prompt/conversations/${conversationId}/messages/`)
     ).data
   },
 }

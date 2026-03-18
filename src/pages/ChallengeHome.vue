@@ -49,7 +49,7 @@ import Preview from "../components/Preview.vue"
 import { Challenge, Submission } from "../api"
 import { html, css, js } from "../store/editors"
 import { taskId } from "../store/task"
-import { connectPrompt, disconnectPrompt, conversationId, streaming, setOnCodeComplete } from "../store/prompt"
+import { connectPrompt, disconnectPrompt, conversationId, streaming, setOnCodeComplete, loadHistory } from "../store/prompt"
 
 const route = useRoute()
 const router = useRouter()
@@ -71,7 +71,8 @@ async function loadChallenge() {
   taskId.value = data.task_ptr
   challengeTitle.value = `#${data.display} ${data.title}`
   challengeContent.value = await marked.parse(data.content, { async: true })
-  connectPrompt(data.task_ptr)
+  loadHistory(data.task_ptr)   // HTTP preload — async, non-blocking
+  connectPrompt(data.task_ptr) // WebSocket — synchronous open
   setOnCodeComplete(async (code) => {
     if (!conversationId.value) return
     try {

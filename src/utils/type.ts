@@ -1,5 +1,15 @@
 import type { TASK_TYPE } from "./const"
 
+export interface PromptMessage {
+  id: number
+  role: string
+  content: string
+  code_html: string | null
+  code_css: string | null
+  code_js: string | null
+  created: string
+}
+
 export enum Role {
   Super = "super",
   Admin = "admin",
@@ -60,6 +70,7 @@ export interface SubmissionOut {
   id: string
   userid: number
   username: string
+  task_id: number
   task_display: number
   task_type: TASK_TYPE
   task_title: string
@@ -67,6 +78,8 @@ export interface SubmissionOut {
   my_score: number
   conversation_id?: string
   flag?: FlagType
+  nominated: boolean
+  submit_count: number
   created: Date
   modified: Date
 }
