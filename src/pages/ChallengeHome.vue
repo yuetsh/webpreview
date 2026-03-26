@@ -1,6 +1,6 @@
 <template>
-  <n-layout has-sider style="height: 100vh">
-    <n-layout-sider width="40%" bordered content-style="height: 100%; overflow: hidden;">
+  <div class="challenge-layout">
+    <div class="challenge-sider">
       <n-tabs v-model:value="activeTab" type="line" class="left-tabs">
         <template #prefix>
           <n-button text @click="back" style="margin: 0 8px">
@@ -18,8 +18,8 @@
           <PromptPanel />
         </n-tab-pane>
       </n-tabs>
-    </n-layout-sider>
-    <n-layout-content content-style="height: 100%; overflow: hidden;">
+    </div>
+    <div class="challenge-content">
       <Preview
         :html="html"
         :css="css"
@@ -29,8 +29,8 @@
         @showCode="showCode = true"
         @clear="clearAll"
       />
-    </n-layout-content>
-  </n-layout>
+    </div>
+  </div>
   <n-modal
     v-model:show="showCode"
     preset="card"
@@ -124,6 +124,26 @@ onUnmounted(disconnectPrompt)
 </script>
 
 <style scoped>
+.challenge-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.challenge-sider {
+  width: 40%;
+  height: 100%;
+  overflow: hidden;
+  border-right: 1px solid var(--n-border-color, #efeff5);
+  flex-shrink: 0;
+}
+
+.challenge-content {
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
+}
+
 .left-tabs {
   height: 100%;
   display: flex;
@@ -139,5 +159,4 @@ onUnmounted(disconnectPrompt)
   height: 100%;
   padding: 0;
 }
-
 </style>
