@@ -64,7 +64,6 @@ function getContent() {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>${props.css}</style>
     <link rel="stylesheet" href="/normalize.min.css" />
-    <script src="/tailwindcss.min.js"><\/script>
   </head>
   <body>
     ${props.html}

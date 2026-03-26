@@ -63,6 +63,7 @@ async function prepare() {
   tutorialIds.value = await Tutorial.listDisplay()
   if (!tutorialIds.value.length) {
     content.value = "暂无教程"
+    return
   }
   if (!tutorialIds.value.includes(step.value)) {
     step.value = tutorialIds.value[0] as number

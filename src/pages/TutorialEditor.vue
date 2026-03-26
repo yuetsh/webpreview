@@ -93,7 +93,13 @@ const canSubmit = computed(
 )
 async function getContent() {
   list.value = await Tutorial.list()
-  show(Number(route.params.display))
+  const display = Number(route.params.display)
+  const target = list.value.find((item) => item.display === display)
+  if (target) {
+    show(display)
+  } else if (list.value.length > 0) {
+    show(list.value[0].display)
+  }
 }
 
 function createNew() {

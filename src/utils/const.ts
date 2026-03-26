@@ -47,8 +47,3 @@ export enum TASK_TYPE {
   Tutorial = "tutorial",
   Challenge = "challenge",
 }
-
-export const TASK_LABEL = {
-  [TASK_TYPE.Tutorial]: "教程",
-  [TASK_TYPE.Challenge]: "挑战",
-} as const

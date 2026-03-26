@@ -1,11 +1,8 @@
 import { useStorage } from "@vueuse/core"
 import { STORAGE_KEY } from "../utils/const"
 
-const defaultHTML = `<div class="welcome">黄岩一职</div>`
-const defaultCSS = `.welcome {
-    color: red;
-    font-size: 24px;
-}`
+const defaultHTML = ``
+const defaultCSS = ``
 
 export const html = useStorage(STORAGE_KEY.HTML, defaultHTML)
 export const css = useStorage(STORAGE_KEY.CSS, defaultCSS)

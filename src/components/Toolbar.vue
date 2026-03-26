@@ -1,8 +1,6 @@
 <template>
   <n-flex align="center" class="corner">
-    <n-button quaternary v-if="!show" @click="showTutorial">
-      打开{{ TASK_LABEL[taskTab] }}
-    </n-button>
+    <n-button quaternary v-if="!show" @click="showTutorial"> 教程 </n-button>
     <template v-if="user.loaded && authed">
       <n-button quaternary @click="emit('format')">整理</n-button>
       <n-button
@@ -38,7 +36,7 @@ import { taskId, taskTab } from "../store/task"
 import { Account } from "../api"
 import { Role } from "../utils/type"
 import { router } from "../router"
-import { ADMIN_URL, TASK_LABEL } from "../utils/const"
+import { ADMIN_URL } from "../utils/const"
 
 const props = defineProps<{
   submitLoading: boolean

@@ -25,7 +25,6 @@ async function init() {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>${submission.css}</style>
     <link rel="stylesheet" href="/normalize.min.css" />
-    <script src="/tailwindcss.min.js"><\/script>
   </head>
   <body>
     ${submission.html}

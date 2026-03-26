@@ -62,7 +62,6 @@
         <n-flex align="center">
           <span class="label">预加载</span>
           <n-tag type="success">Normalize.css</n-tag>
-          <n-tag type="success">Tailwind CSS</n-tag>
         </n-flex>
       </n-flex>
     </n-tab-pane>

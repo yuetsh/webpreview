@@ -1,40 +1,36 @@
 <template>
-  <n-split :size="leftSize" min="350px" max="700px">
-    <template #1>
-      <div class="left-panel">
-        <n-tabs v-model:value="activeTab" type="line" class="left-tabs">
-          <template #prefix>
-            <n-button text @click="back" style="margin: 0 8px">
-              <Icon :width="20" icon="pepicons-pencil:arrow-left" />
-            </n-button>
-          </template>
-          <n-tab-pane name="desc" tab="挑战描述" display-directive="show">
-            <div
-              class="markdown-body"
-              style="padding: 12px; overflow-y: auto; height: 100%"
-              v-html="challengeContent"
-            />
-          </n-tab-pane>
-          <n-tab-pane name="chat" tab="AI 对话" display-directive="show">
-            <PromptPanel />
-          </n-tab-pane>
-        </n-tabs>
-      </div>
-    </template>
-    <template #2>
-      <div class="right-panel">
-        <Preview
-          :html="html"
-          :css="css"
-          :js="js"
-          show-code-button
-          clearable
-          @showCode="showCode = true"
-          @clear="clearAll"
-        />
-      </div>
-    </template>
-  </n-split>
+  <n-layout has-sider style="height: 100vh">
+    <n-layout-sider width="40%" bordered content-style="height: 100%; overflow: hidden;">
+      <n-tabs v-model:value="activeTab" type="line" class="left-tabs">
+        <template #prefix>
+          <n-button text @click="back" style="margin: 0 8px">
+            <Icon :width="20" icon="pepicons-pencil:arrow-left" />
+          </n-button>
+        </template>
+        <n-tab-pane name="desc" tab="挑战描述" display-directive="show">
+          <div
+            class="markdown-body"
+            style="padding: 12px; overflow-y: auto; height: 100%"
+            v-html="challengeContent"
+          />
+        </n-tab-pane>
+        <n-tab-pane name="chat" tab="AI 对话" display-directive="show">
+          <PromptPanel />
+        </n-tab-pane>
+      </n-tabs>
+    </n-layout-sider>
+    <n-layout-content content-style="height: 100%; overflow: hidden;">
+      <Preview
+        :html="html"
+        :css="css"
+        :js="js"
+        show-code-button
+        clearable
+        @showCode="showCode = true"
+        @clear="clearAll"
+      />
+    </n-layout-content>
+  </n-layout>
   <n-modal
     v-model:show="showCode"
     preset="card"
@@ -66,6 +62,7 @@ import Preview from "../components/Preview.vue"
 import { Challenge, Submission } from "../api"
 import { html, css, js } from "../store/editors"
 import { taskId } from "../store/task"
+import { authed } from "../store/user"
 import {
   connectPrompt,
   disconnectPrompt,
@@ -79,9 +76,7 @@ const route = useRoute()
 const router = useRouter()
 const message = useMessage()
 
-const leftSize = ref(0.4)
 const activeTab = ref("desc")
-const challengeTitle = ref("")
 const challengeContent = ref("")
 const showCode = ref(false)
 
@@ -93,8 +88,8 @@ async function loadChallenge() {
   const display = Number(route.params.display)
   const data = await Challenge.get(display)
   taskId.value = data.task_ptr
-  challengeTitle.value = `#${data.display} ${data.title}`
   challengeContent.value = await marked.parse(data.content, { async: true })
+  if (!authed.value) return
   loadHistory(data.task_ptr) // HTTP preload — async, non-blocking
   connectPrompt(data.task_ptr) // WebSocket — synchronous open
   setOnCodeComplete(async (code) => {
@@ -129,11 +124,6 @@ onUnmounted(disconnectPrompt)
 </script>
 
 <style scoped>
-.left-panel {
-  height: 100%;
-  overflow: hidden;
-}
-
 .left-tabs {
   height: 100%;
   display: flex;
@@ -150,9 +140,4 @@ onUnmounted(disconnectPrompt)
   padding: 0;
 }
 
-.right-panel {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
 </style>

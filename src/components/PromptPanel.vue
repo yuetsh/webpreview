@@ -83,11 +83,11 @@ renderer.code = function ({ lang }: { text: string; lang?: string }) {
     { bg: string; fg: string; dot: string; border: string; shimmer: string }
   > = {
     html: {
-      bg: "#fff5f0",
-      fg: "#e05020",
-      dot: "#e05020",
-      border: "#f0d0c0",
-      shimmer: "#fff5f0, #ffeee5, #fff5f0",
+      bg: "#f0fff4",
+      fg: "#18a058",
+      dot: "#18a058",
+      border: "#b8e8cc",
+      shimmer: "#f0fff4, #e0f7ea, #f0fff4",
     },
     css: {
       bg: "#f0f0ff",
@@ -118,7 +118,7 @@ renderer.code = function ({ lang }: { text: string; lang?: string }) {
     border: "#e0eaf5",
     shimmer: "#f0f7ff, #e8f4f8, #f0f7ff",
   }
-  return `<div class="code-placeholder" style="background: linear-gradient(90deg, ${c.shimmer}); background-size: 200% 100%; border-color: ${c.border}"><span class="code-placeholder-dot" style="background: ${c.dot}"></span><span class="code-placeholder-label" style="color: ${c.fg}; background: ${c.fg}18">${label}</span><span class="code-placeholder-text">代码已自动应用到预览区</span></div>`
+  return `<div class="code-placeholder" style="background: linear-gradient(90deg, ${c.shimmer}); background-size: 200% 100%; border-color: ${c.border}"><span class="code-placeholder-dot" style="background: ${c.dot}"></span><span class="code-placeholder-label" style="color: ${c.fg}; background: ${c.fg}18">${label}</span><span class="code-placeholder-text">代码正在生成中，结束后会自动应用到预览区</span></div>`
 }
 
 function renderMarkdown(text: string): string {
@@ -149,6 +149,7 @@ watch([() => messages.value.length, streamingContent], () => {
 
 .messages {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   padding: 12px;
 }
