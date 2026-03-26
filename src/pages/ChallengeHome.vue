@@ -7,6 +7,20 @@
             <Icon :width="20" icon="pepicons-pencil:arrow-left" />
           </n-button>
         </template>
+        <template #suffix>
+          <n-flex style="margin: 0 8px">
+            <n-button
+              v-if="authed"
+              text
+              @click="$router.push({ name: 'submissions', params: { page: 1 } })"
+            >
+              <Icon :width="16" icon="lucide:list" />
+            </n-button>
+            <n-button v-if="roleSuper" text @click="edit">
+              <Icon :width="16" icon="lucide:edit" />
+            </n-button>
+          </n-flex>
+        </template>
         <n-tab-pane name="desc" tab="挑战描述" display-directive="show">
           <div
             class="markdown-body"
@@ -62,7 +76,7 @@ import Preview from "../components/Preview.vue"
 import { Challenge, Submission } from "../api"
 import { html, css, js } from "../store/editors"
 import { taskId } from "../store/task"
-import { authed } from "../store/user"
+import { authed, roleSuper } from "../store/user"
 import {
   connectPrompt,
   disconnectPrompt,
@@ -105,6 +119,13 @@ async function loadChallenge() {
     } catch {
       // 静默失败，不打扰用户
     }
+  })
+}
+
+function edit() {
+  router.push({
+    name: "challenge-editor",
+    params: { display: route.params.display },
   })
 }
 
