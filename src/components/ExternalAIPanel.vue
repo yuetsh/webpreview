@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, watch } from "vue"
 import { useMessage } from "naive-ui"
 import { html, css, js } from "../store/editors"
 import { Submission } from "../api"
@@ -43,6 +43,10 @@ const promptText = ref("")
 const rawCode = ref("")
 const splitResult = ref<{ html: string; css: string; js: string } | null>(null)
 const submitting = ref(false)
+
+watch(rawCode, () => {
+  splitResult.value = null
+})
 
 function splitHtml(raw: string): { html: string; css: string; js: string } {
   let result = raw
@@ -90,7 +94,7 @@ async function submit() {
     rawCode.value = ""
     splitResult.value = null
   } catch {
-    // 静默失败，保留表单内容以便重试
+    message.error("提交失败，请重试")
   } finally {
     submitting.value = false
   }
