@@ -181,7 +181,6 @@ export const Submission = {
     score_min?: number
     score_max_exclusive?: number
     score_lt_threshold?: number
-    nominated?: boolean
     ordering?: string
     grouped?: boolean
   }) {
@@ -221,11 +220,6 @@ export const Submission = {
   async clearAllFlags() {
     const res = await http.delete(`/submission/flags`)
     return res.data as { cleared: number }
-  },
-
-  async nominate(id: string) {
-    const res = await http.put(`/submission/${id}/nominate`)
-    return res.data as { nominated: boolean }
   },
 
   async getStats(taskId: number, classname?: string): Promise<TaskStatsOut> {

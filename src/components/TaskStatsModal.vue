@@ -279,72 +279,6 @@
             </div>
           </div>
 
-          <!-- 人气提交 Top 5 -->
-          <div style="margin-bottom: 12px">
-            <div
-              style="
-                font-weight: 600;
-                font-size: 13px;
-                margin-bottom: 8px;
-                color: #333;
-              "
-            >
-              人气提交 Top 5
-              <span style="font-size: 11px; color: #aaa; font-weight: 400"
-                >（按打分人数）</span
-              >
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 5px">
-              <div
-                v-for="(sub, i) in stats.top_submissions"
-                :key="sub.submission_id"
-                :style="{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  padding: '6px 10px',
-                  background: rankBg(i),
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                }"
-                @click="viewSubmission(sub.submission_id)"
-              >
-                <div
-                  :style="{
-                    width: '20px',
-                    height: '20px',
-                    background: rankColor(i),
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#fff',
-                    fontWeight: '700',
-                    fontSize: '11px',
-                    flexShrink: 0,
-                  }"
-                >
-                  {{ i + 1 }}
-                </div>
-                <div style="flex: 1">
-                  <div style="font-weight: 500; font-size: 13px">
-                    {{ displayName(sub.username, sub.classname) }}
-                  </div>
-                  <div style="color: #aaa; font-size: 11px">
-                    {{ sub.score.toFixed(1) }} 分 ·
-                    {{ sub.rating_count }} 人打分
-                  </div>
-                </div>
-                <div style="color: #2080f0; font-size: 12px">查看 →</div>
-              </div>
-              <span
-                v-if="!stats.top_submissions.length"
-                style="color: #aaa; font-size: 12px"
-                >暂无打分记录</span
-              >
-            </div>
-          </div>
-
           <!-- 标记统计 -->
           <div>
             <div
@@ -436,20 +370,6 @@ function viewSubmission(id: string) {
   window.open(href, "_blank")
 }
 
-function rankColor(i: number) {
-  return (
-    (["#f0a020", "#909090", "#cd7f32", "#8899aa", "#7a8fa0"] as const)[i] ??
-    "#aaa"
-  )
-}
-
-function rankBg(i: number) {
-  return (
-    (["#fffbef", "#f8f8f8", "#fdf5ee", "#f2f5f8", "#eef2f5"] as const)[i] ??
-    "#f8f8f8"
-  )
-}
-
 function bucketPct(value: number) {
   const total = stats.value?.submitted_count ?? 0
   if (!total) return "0%"
@@ -467,7 +387,6 @@ const metrics = computed(() => {
       color: "#2080f0",
     },
     { label: "未打分", value: stats.value.unrated_count, color: "#d03050" },
-    { label: "参与排名", value: stats.value.nominated_count, color: "#f0a020" },
   ]
 })
 

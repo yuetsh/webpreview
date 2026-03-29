@@ -78,7 +78,6 @@ export interface SubmissionOut {
   my_score: number
   conversation_id?: string
   flag?: FlagType
-  nominated: boolean
   submit_count: number
   created: Date
   modified: Date
@@ -105,14 +104,6 @@ export interface SubmissionAll {
 export interface UserTag {
   username: string
   classname: string
-}
-
-export interface TopSubmission {
-  submission_id: string
-  username: string
-  classname: string
-  score: number
-  rating_count: number
 }
 
 export interface SubmissionCountBucket {
@@ -142,12 +133,10 @@ export interface TaskStatsOut {
   unsubmitted_count: number
   average_score: number | null
   unrated_count: number
-  nominated_count: number
   unsubmitted_users: UserTag[]
   unrated_users: UserTag[]
   submission_count_distribution: SubmissionCountBucket
   score_distribution: ScoreBucket
-  top_submissions: TopSubmission[]
   flag_stats: FlagStats
   classes: string[]
 }

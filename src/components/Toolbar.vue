@@ -78,15 +78,6 @@ const menu = computed(() => [
       }),
   },
   {
-    label: "排名榜",
-    key: "ranking",
-    icon: () =>
-      h(Icon, {
-        icon: "streamline-emojis:sunglasses",
-        width: 20,
-      }),
-  },
-  {
     label: "退出账号",
     key: "logout",
     icon: () =>
@@ -116,9 +107,6 @@ function clickMenu(name: string) {
         params: { page: 1 },
         query: { username: user.username },
       })
-      break
-    case "ranking":
-      router.push({ name: "ranking" })
       break
     case "logout":
       handleLogout()

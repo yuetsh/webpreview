@@ -195,7 +195,6 @@ const columns: DataTableColumn<SubmissionOut>[] = [
         onSelect: (id) => getSubmissionByID(id),
         onDelete: (r, parentId) => handleDelete(r, parentId),
         "onShow-chain": (id) => showChain(id),
-        onNominate: (r) => handleNominateChild(r, row.id),
       }),
   },
   {
@@ -311,23 +310,6 @@ async function init() {
 
 async function getSubmissionByID(id: string) {
   submission.value = await Submission.get(id)
-}
-
-async function handleNominateChild(row: SubmissionOut, parentId: string) {
-  await Submission.nominate(row.id)
-  const items = expandedData.get(parentId)
-  if (items) {
-    expandedData.set(
-      parentId,
-      items.map((d) => ({ ...d, nominated: d.id === row.id })),
-    )
-  }
-  data.value = data.value.map((d) => {
-    if (d.username === user.username && d.task_id === row.task_id) {
-      d.nominated = d.id === row.id
-    }
-    return d
-  })
 }
 
 function afterScore() {

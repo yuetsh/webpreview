@@ -37,7 +37,6 @@ const emit = defineEmits<{
   select: [id: string]
   delete: [row: SubmissionOut, parentId: string]
   "show-chain": [conversationId: string]
-  nominate: [row: SubmissionOut]
 }>()
 
 const isChallenge = computed(() => props.row.task_type === TASK_TYPE.Challenge)
@@ -74,30 +73,6 @@ const subColumns = computed((): DataTableColumn<SubmissionOut>[] => [
           h("span", avgScore),
           h("span", { style: { fontSize: "11px", color: "#999" } }, myScore),
         ],
-      )
-    },
-  },
-  {
-    title: "排名",
-    key: "nominated",
-    width: 60,
-    render: (r: SubmissionOut) => {
-      if (r.username !== user.username) {
-        return r.nominated
-          ? h("span", { style: { color: "#f0a020" } }, "🏅")
-          : null
-      }
-      return h(
-        NButton,
-        {
-          text: true,
-          title: r.nominated ? "已参与排名（点击可重新提名）" : "参与排名",
-          onClick: (e: Event) => {
-            e.stopPropagation()
-            emit("nominate", r)
-          },
-        },
-        () => (r.nominated ? "🏅" : "☆"),
       )
     },
   },
