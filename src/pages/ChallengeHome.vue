@@ -31,6 +31,9 @@
         <n-tab-pane name="chat" tab="AI 对话" display-directive="show">
           <PromptPanel />
         </n-tab-pane>
+        <n-tab-pane name="external" tab="外部AI" display-directive="show">
+          <ExternalAIPanel :task-id="taskId" />
+        </n-tab-pane>
       </n-tabs>
     </div>
     <div class="challenge-content">
@@ -72,6 +75,7 @@ import { useMessage } from "naive-ui"
 import { Icon } from "@iconify/vue"
 import { marked } from "marked"
 import PromptPanel from "../components/PromptPanel.vue"
+import ExternalAIPanel from "../components/ExternalAIPanel.vue"
 import Preview from "../components/Preview.vue"
 import { Challenge, Submission } from "../api"
 import { html, css, js } from "../store/editors"
