@@ -31,7 +31,7 @@
         <n-tab-pane name="chat" tab="AI 对话" display-directive="show">
           <PromptPanel />
         </n-tab-pane>
-        <n-tab-pane name="external" tab="外部AI" display-directive="show">
+        <n-tab-pane name="external" tab="手动提交" display-directive="show">
           <ExternalAIPanel :task-id="taskId" />
         </n-tab-pane>
       </n-tabs>
