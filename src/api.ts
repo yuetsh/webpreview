@@ -176,6 +176,7 @@ export const Submission = {
     username?: string
     user_id?: number
     flag?: string | null
+    zone?: string
     task_id?: number
     task_type?: string
     score_min?: number

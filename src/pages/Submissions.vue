@@ -24,6 +24,17 @@
               :options="flagFilterOptions"
               @update:value="handleFlagSelect"
             />
+            <n-select
+              v-model:value="query.zone"
+              style="width: 100px"
+              clearable
+              placeholder="分区"
+              :options="[
+                { label: '夯', value: 'featured' },
+                { label: 'NPC', value: 'pending' },
+                { label: '拉', value: 'low' },
+              ]"
+            />
             <n-input
               style="width: 120px"
               v-model:value="query.username"
@@ -90,7 +101,7 @@
 
 <script setup lang="ts">
 import { computed, h, onMounted, onUnmounted, reactive, ref, watch } from "vue"
-import { NButton, NDataTable, type DataTableColumn } from "naive-ui"
+import { NButton, NDataTable, NTag, type DataTableColumn } from "naive-ui"
 import { Icon } from "@iconify/vue"
 import { Submission } from "../api"
 import type { SubmissionOut, FlagType } from "../utils/type"
@@ -125,6 +136,7 @@ const query = reactive({
     ? ""
     : (route.query.username ?? "")) as string,
   flag: null as string | null,
+  zone: null as string | null,
 })
 
 // 当前选中提交的代码
@@ -207,6 +219,21 @@ const columns: DataTableColumn<SubmissionOut>[] = [
         isAdmin: isAdmin.value,
         "onUpdate:flag": (flag: FlagType) => updateFlag(row, flag),
       }),
+  },
+  {
+    title: "",
+    key: "zone",
+    width: 42,
+    render: (row) => {
+      const map: Record<string, { label: string; type: "success" | "default" | "warning" }> = {
+        featured: { label: "精", type: "success" },
+        pending:  { label: "评", type: "default" },
+        low:      { label: "改", type: "warning" },
+      }
+      if (!row.zone || !map[row.zone]) return null
+      const { label, type } = map[row.zone]
+      return h(NTag, { size: "small", round: true, type }, () => label)
+    },
   },
   {
     title: "时间",
@@ -343,6 +370,13 @@ watchDebounced(
 )
 watch(
   () => query.flag,
+  () => {
+    query.page = 1
+    init()
+  },
+)
+watch(
+  () => query.zone,
   () => {
     query.page = 1
     init()
