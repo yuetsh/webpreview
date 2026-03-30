@@ -75,7 +75,19 @@
                 transition: 'all 0.2s',
               }"
             >
-              {{ round.question }}
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px">
+                <span>{{ round.question }}</span>
+                <span
+                  v-if="round.prompt_level"
+                  :style="{
+                    flexShrink: 0,
+                    fontSize: '11px',
+                    fontWeight: 'bold',
+                    color: levelColors[round.prompt_level],
+                    marginTop: '2px',
+                  }"
+                >L{{ round.prompt_level }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -121,6 +133,7 @@ const selectedRound = ref(0)
 const rounds = computed(() => {
   const result: {
     question: string
+    prompt_level: number | null
     html: string | null
     css: string | null
     js: string | null
@@ -139,10 +152,19 @@ const rounds = computed(() => {
         break
       }
     }
-    result.push({ question: msg.content, html, css, js })
+    result.push({ question: msg.content, prompt_level: msg.prompt_level ?? null, html, css, js })
   }
   return result
 })
+
+const levelColors: Record<number, string> = {
+  1: "#aaa",
+  2: "#6aab9c",
+  3: "#4a9ade",
+  4: "#c47ab8",
+  5: "#e0a040",
+  6: "#e05c5c",
+}
 
 const selectedPageHtml = computed(() => {
   const round = rounds.value[selectedRound.value]

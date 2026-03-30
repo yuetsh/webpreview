@@ -7,6 +7,7 @@ export interface PromptMessage {
   code_html: string | null
   code_css: string | null
   code_js: string | null
+  prompt_level?: number | null
   created: string
 }
 
