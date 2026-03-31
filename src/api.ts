@@ -233,7 +233,6 @@ export const Submission = {
     const res = await http.get(`/submission/stats/${taskId}`, { params })
     return res.data as TaskStatsOut
   },
-
 }
 
 export const Prompt = {

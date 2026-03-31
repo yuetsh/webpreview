@@ -75,7 +75,14 @@
                 transition: 'all 0.2s',
               }"
             >
-              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: flex-start;
+                  gap: 8px;
+                "
+              >
                 <span>{{ round.question }}</span>
                 <span
                   v-if="round.prompt_level"
@@ -86,7 +93,8 @@
                     color: levelColors[round.prompt_level],
                     marginTop: '2px',
                   }"
-                >L{{ round.prompt_level }}</span>
+                  >L{{ round.prompt_level }}</span
+                >
               </div>
             </div>
           </div>
@@ -152,7 +160,13 @@ const rounds = computed(() => {
         break
       }
     }
-    result.push({ question: msg.content, prompt_level: msg.prompt_level ?? null, html, css, js })
+    result.push({
+      question: msg.content,
+      prompt_level: msg.prompt_level ?? null,
+      html,
+      css,
+      js,
+    })
   }
   return result
 })

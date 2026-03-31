@@ -12,7 +12,9 @@
             <n-button
               v-if="authed"
               text
-              @click="$router.push({ name: 'submissions', params: { page: 1 } })"
+              @click="
+                $router.push({ name: 'submissions', params: { page: 1 } })
+              "
             >
               <Icon :width="16" icon="lucide:list" />
             </n-button>
@@ -24,7 +26,12 @@
         <n-tab-pane name="desc" tab="挑战描述" display-directive="show">
           <div
             class="markdown-body"
-            style="padding: 12px; overflow-y: auto; height: 100%"
+            style="
+              padding: 12px;
+              overflow-y: auto;
+              height: calc(100% - 45px);
+              box-sizing: border-box;
+            "
             v-html="challengeContent"
           />
         </n-tab-pane>

@@ -16,14 +16,27 @@
         placeholder="粘贴外部 AI 返回的完整 HTML 代码..."
       />
       <div v-if="splitResult" class="split-result">
-        <n-tag size="small" type="success">HTML · {{ splitResult.html.length }} 字符</n-tag>
-        <n-tag size="small" type="info">CSS · {{ splitResult.css.length }} 字符</n-tag>
-        <n-tag size="small" type="warning">JS · {{ splitResult.js.length }} 字符</n-tag>
+        <n-tag size="small" type="success"
+          >HTML · {{ splitResult.html.length }} 字符</n-tag
+        >
+        <n-tag size="small" type="info"
+          >CSS · {{ splitResult.css.length }} 字符</n-tag
+        >
+        <n-tag size="small" type="warning"
+          >JS · {{ splitResult.js.length }} 字符</n-tag
+        >
       </div>
     </div>
     <div class="action-bar">
-      <n-button :disabled="!rawCode.trim()" @click="applyPreview">应用预览</n-button>
-      <n-button type="primary" :disabled="!splitResult" :loading="submitting" @click="submit">
+      <n-button :disabled="!rawCode.trim()" @click="applyPreview"
+        >应用预览</n-button
+      >
+      <n-button
+        type="primary"
+        :disabled="!splitResult"
+        :loading="submitting"
+        @click="submit"
+      >
         提交
       </n-button>
     </div>

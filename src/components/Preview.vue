@@ -2,7 +2,9 @@
   <n-flex align="center" justify="space-between" class="title">
     <div>
       <n-text class="titleText">预览</n-text>
-      <n-text v-if="!!submission.id" depth="3">({{ submission.view_count || 0 }})</n-text>
+      <n-text v-if="!!submission.id" depth="3"
+        >({{ submission.view_count || 0 }})</n-text
+      >
     </div>
     <n-flex>
       <n-button quaternary @click="download" :disabled="!showDL">下载</n-button>
