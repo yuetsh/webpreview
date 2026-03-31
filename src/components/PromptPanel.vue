@@ -28,6 +28,12 @@
         @keydown.enter.exact.prevent="send"
       />
       <n-flex justify="flex-end" align="center" style="margin-top: 8px">
+        <n-select
+          v-model:value="selectedModel"
+          :options="modelOptions"
+          style="width: 120px"
+          :disabled="streaming"
+        />
         <n-button
           type="primary"
           :loading="streaming"
@@ -43,6 +49,7 @@
 
 <script setup lang="ts">
 import { ref, watch, nextTick } from "vue"
+import { useStorage } from "@vueuse/core"
 import { marked, Renderer } from "marked"
 import {
   messages,
@@ -54,10 +61,16 @@ import {
 const input = ref("")
 const messagesRef = ref<HTMLElement>()
 
+const modelOptions = [
+  { label: "豆包", value: "doubao-seed-2-0-mini-260215" },
+  { label: "DeepSeek", value: "deepseek-chat" },
+]
+const selectedModel = useStorage("prompt-model", "deepseek-chat")
+
 function send() {
   const text = input.value.trim()
   if (!text || streaming.value) return
-  sendPrompt(text)
+  sendPrompt(text, selectedModel.value)
   input.value = ""
 }
 

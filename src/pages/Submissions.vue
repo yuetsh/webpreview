@@ -13,7 +13,7 @@
       >
         <n-flex justify="space-between" style="flex-shrink: 0">
           <n-button secondary @click="() => goHome($router, taskTab, step)">
-            返回首页
+            首页
           </n-button>
           <n-flex align="center">
             <n-select
@@ -28,11 +28,11 @@
               v-model:value="query.zone"
               style="width: 100px"
               clearable
-              placeholder="分区"
+              placeholder="从夯到拉"
               :options="[
-                { label: '夯', value: 'featured' },
+                { label: '夯爆了', value: 'featured' },
                 { label: 'NPC', value: 'pending' },
-                { label: '拉', value: 'low' },
+                { label: '拉完了', value: 'low' },
               ]"
             />
             <n-input

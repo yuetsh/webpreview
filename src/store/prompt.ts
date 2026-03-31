@@ -103,10 +103,10 @@ export function disconnectPrompt() {
   _onCodeComplete = null
 }
 
-export function sendPrompt(content: string) {
+export function sendPrompt(content: string, model: string = "") {
   if (!ws || ws.readyState !== WebSocket.OPEN) return
   messages.value.push({ role: "user", content })
-  ws.send(JSON.stringify({ type: "message", content }))
+  ws.send(JSON.stringify({ type: "message", content, model }))
 }
 
 function applyCode(code: {
