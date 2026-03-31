@@ -6,14 +6,20 @@
         v-for="item in challenges"
         :key="item.display"
         hoverable
-        class="challenge-card"
+        :class="['challenge-card', { submitted: item.submitted }]"
         @click="select(item)"
       >
         <template #header>
-          {{ item.title }}
+          <n-flex align="center" :size="6">
+            <span v-if="item.submitted" class="check-icon">✓</span>
+            <span :class="{ 'submitted-title': item.submitted }">{{ item.title }}</span>
+          </n-flex>
         </template>
         <template #header-extra>
-          <n-tag type="warning" size="small">{{ item.score }}分</n-tag>
+          <n-flex :size="6">
+            <n-tag type="warning" size="small">{{ item.score }} 分</n-tag>
+            <n-tag v-if="item.pass_score != null" size="small">及格 {{ item.pass_score }} 分</n-tag>
+          </n-flex>
         </template>
       </n-card>
     </n-flex>
@@ -46,5 +52,20 @@ onMounted(async () => {
 
 .challenge-card {
   cursor: pointer;
+}
+
+.challenge-card.submitted {
+  background-color: #f6ffed;
+  border-color: #b7eb8f;
+}
+
+.check-icon {
+  color: #52c41a;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.submitted-title {
+  color: #888;
 }
 </style>

@@ -47,6 +47,8 @@ export interface ChallengeSlim {
   display: number
   title: string
   score: number
+  pass_score: number | null
+  submitted: boolean
   is_public: boolean
 }
 

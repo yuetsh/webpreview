@@ -7,7 +7,7 @@ import { marked } from "marked"
 import copyFn from "copy-text-to-clipboard"
 import { css, html, js, tab } from "../store/editors"
 import { Tutorial } from "../api"
-import { step } from "../store/tutorial"
+import { step, tutorialIds } from "../store/tutorial"
 import { taskId } from "../store/task"
 import { useRouter } from "vue-router"
 
@@ -33,31 +33,8 @@ marked.use({
 })
 
 const router = useRouter()
-const tutorialIds = ref<number[]>([])
 const content = ref("")
 const $content = useTemplateRef<any>("$content")
-
-const prevDisabled = () => {
-  const i = tutorialIds.value.indexOf(step.value)
-  return i <= 0
-}
-
-const nextDisabled = () => {
-  const i = tutorialIds.value.indexOf(step.value)
-  return i === tutorialIds.value.length - 1
-}
-
-function prev() {
-  const i = tutorialIds.value.indexOf(step.value)
-  step.value = tutorialIds.value[i - 1] as number
-}
-
-function next() {
-  const i = tutorialIds.value.indexOf(step.value)
-  step.value = tutorialIds.value[i + 1] as number
-}
-
-defineExpose({ tutorialIds, prevDisabled, nextDisabled, prev, next })
 
 async function prepare() {
   tutorialIds.value = await Tutorial.listDisplay()
@@ -73,7 +50,7 @@ async function prepare() {
 async function render() {
   const data = await Tutorial.get(step.value)
   taskId.value = data.task_ptr
-  const merged = `# #${data.display} ${data.title}\n${data.content}`
+  const merged = `# ${data.display}. ${data.title}\n${data.content}`
   content.value = await marked.parse(merged, { async: true })
 }
 

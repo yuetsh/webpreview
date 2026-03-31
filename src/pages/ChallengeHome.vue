@@ -134,6 +134,7 @@ function clearAll() {
 
 function back() {
   disconnectPrompt()
+  taskId.value = 0
   router.push({ name: "home-challenge-list" })
 }
 

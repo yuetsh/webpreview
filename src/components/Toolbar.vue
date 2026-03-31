@@ -31,8 +31,9 @@ import { computed, h } from "vue"
 import { Icon } from "@iconify/vue"
 import { authed, roleNormal, roleSuper, user } from "../store/user"
 import { loginModal } from "../store/modal"
-import { show, tutorialSize, step } from "../store/tutorial"
-import { taskId, taskTab } from "../store/task"
+import { show, panelSize } from "../store/panel"
+import { step } from "../store/tutorial"
+import { taskId } from "../store/task"
 import { Account } from "../api"
 import { Role } from "../utils/type"
 import { router } from "../router"
@@ -90,7 +91,7 @@ const menu = computed(() => [
 
 function showTutorial() {
   show.value = true
-  tutorialSize.value = 2 / 5
+  panelSize.value = 2 / 5
 }
 
 function clickMenu(name: string) {

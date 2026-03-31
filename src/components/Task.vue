@@ -21,18 +21,11 @@
           <n-tab name="challenge" tab="挑战"></n-tab>
         </n-tabs>
         <template v-if="!hideNav">
-          <n-button
-            text
-            @click="tutorialRef?.prev()"
-            :disabled="tutorialRef?.prevDisabled()"
-          >
+          <n-button text @click="prev()" :disabled="prevDisabled()">
             <Icon :width="24" icon="pepicons-pencil:arrow-left"></Icon>
           </n-button>
-          <n-button
-            text
-            @click="tutorialRef?.next()"
-            :disabled="tutorialRef?.nextDisabled()"
-          >
+          <span v-if="progressText" class="progress-text">{{ progressText }}</span>
+          <n-button text @click="next()" :disabled="nextDisabled()">
             <Icon :width="24" icon="pepicons-pencil:arrow-right"></Icon>
           </n-button>
         </template>
@@ -56,16 +49,16 @@
         </n-button>
       </n-flex>
     </n-flex>
-    <Tutorial v-if="taskTab === TASK_TYPE.Tutorial" ref="tutorialRef" />
+    <Tutorial v-if="taskTab === TASK_TYPE.Tutorial" />
     <Challenge v-else />
   </div>
   <TaskStatsModal v-model:show="statsModal" :task-id="taskId" />
 </template>
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
-import { computed, onMounted, ref } from "vue"
-import { step } from "../store/tutorial"
-import { authed, roleAdmin, roleSuper } from "../store/user"
+import { computed, ref } from "vue"
+import { step, tutorialIds, prev, next, prevDisabled, nextDisabled } from "../store/tutorial"
+import { authed, roleSuper } from "../store/user"
 import { taskTab, taskId, challengeDisplay } from "../store/task"
 import { useRoute, useRouter } from "vue-router"
 import { TASK_TYPE } from "../utils/const"
@@ -75,18 +68,35 @@ import TaskStatsModal from "./TaskStatsModal.vue"
 
 const route = useRoute()
 const router = useRouter()
-const tutorialRef = ref<InstanceType<typeof Tutorial>>()
 const statsModal = ref(false)
+
+// 路由同步：在 setup 阶段立即执行，不等 onMounted
+const routeName = route.name as string
+if (routeName.startsWith("home-tutorial")) {
+  taskTab.value = TASK_TYPE.Tutorial
+  if (route.params.display) step.value = Number(route.params.display)
+} else if (routeName.startsWith("home-challenge")) {
+  taskTab.value = TASK_TYPE.Challenge
+  if (route.params.display)
+    challengeDisplay.value = Number(route.params.display)
+}
 
 defineEmits(["hide"])
 
 const hideNav = computed(
   () =>
-    taskTab.value !== TASK_TYPE.Tutorial ||
-    (tutorialRef.value?.tutorialIds?.length ?? 0) <= 1,
+    taskTab.value !== TASK_TYPE.Tutorial || tutorialIds.value.length <= 1,
 )
 
+const progressText = computed(() => {
+  const ids = tutorialIds.value
+  if (!ids.length) return ""
+  const i = ids.indexOf(step.value)
+  return i === -1 ? "" : `${i + 1} / ${ids.length}`
+})
+
 function changeTab(v: TASK_TYPE) {
+  taskId.value = 0
   taskTab.value = v
   if (v === TASK_TYPE.Tutorial) {
     router.push(
@@ -109,20 +119,6 @@ function edit() {
     taskTab.value === TASK_TYPE.Tutorial ? step.value : challengeDisplay.value
   router.push({ name, params: { display } })
 }
-
-function init() {
-  const name = route.name as string
-  if (name.startsWith("home-tutorial")) {
-    taskTab.value = TASK_TYPE.Tutorial
-    if (route.params.display) step.value = Number(route.params.display)
-  } else if (name.startsWith("home-challenge")) {
-    taskTab.value = TASK_TYPE.Challenge
-    if (route.params.display)
-      challengeDisplay.value = Number(route.params.display)
-  }
-}
-
-onMounted(init)
 </script>
 <style scoped>
 .container {
@@ -137,5 +133,13 @@ onMounted(init)
   flex-shrink: 0;
   border-bottom: 1px solid rgb(239, 239, 245);
   box-sizing: border-box;
+}
+
+.progress-text {
+  font-size: 12px;
+  color: #999;
+  min-width: 36px;
+  text-align: center;
+  user-select: none;
 }
 </style>

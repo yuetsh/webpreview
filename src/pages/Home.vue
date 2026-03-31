@@ -1,6 +1,6 @@
 <template>
   <n-split
-    :size="tutorialSize"
+    :size="panelSize"
     @update-size="changeSize"
     min="400px"
     max="900px"
@@ -25,7 +25,7 @@ import { useMagicKeys, whenever } from "@vueuse/core"
 import Editors from "../components/Editors.vue"
 import Preview from "../components/Preview.vue"
 import Task from "../components/Task.vue"
-import { show, tutorialSize } from "../store/tutorial"
+import { show, panelSize } from "../store/panel"
 import { html, css, js } from "../store/editors"
 
 const { ctrl_s } = useMagicKeys({
@@ -43,12 +43,12 @@ const { ctrl_r } = useMagicKeys({
 })
 
 function changeSize(n: number) {
-  tutorialSize.value = n
+  panelSize.value = n
   if (n > 0) show.value = true
 }
 
 function hide() {
-  tutorialSize.value = 0
+  panelSize.value = 0
   show.value = false
 }
 
