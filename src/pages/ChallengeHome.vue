@@ -31,6 +31,7 @@
               overflow-y: auto;
               height: calc(100% - 45px);
               box-sizing: border-box;
+              user-select: none;
             "
             v-html="challengeContent"
           />
