@@ -24,17 +24,7 @@
           </n-flex>
         </template>
         <n-tab-pane name="desc" tab="挑战描述" display-directive="show">
-          <div
-            class="markdown-body"
-            style="
-              padding: 12px;
-              overflow-y: auto;
-              height: calc(100% - 45px);
-              box-sizing: border-box;
-              user-select: none;
-            "
-            v-html="challengeContent"
-          />
+          <div class="markdown-body content" v-html="challengeContent" />
         </n-tab-pane>
         <n-tab-pane name="chat" tab="AI 对话" display-directive="show">
           <PromptPanel />
@@ -191,5 +181,13 @@ onUnmounted(disconnectPrompt)
 .left-tabs :deep(.n-tab-pane) {
   height: 100%;
   padding: 0;
+}
+
+.content {
+  padding: 12px;
+  overflow-y: auto;
+  height: calc(100% - 45px);
+  box-sizing: border-box;
+  user-select: none;
 }
 </style>
