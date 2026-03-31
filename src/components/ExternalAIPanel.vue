@@ -101,6 +101,7 @@ async function submit() {
       html: splitResult.value.html,
       css: splitResult.value.css,
       js: splitResult.value.js,
+      prompt: promptText.value.trim() || undefined,
     })
     message.success("提交成功")
     promptText.value = ""

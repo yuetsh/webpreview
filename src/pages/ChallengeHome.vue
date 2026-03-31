@@ -82,10 +82,8 @@ import { authed, roleSuper } from "../store/user"
 import {
   connectPrompt,
   disconnectPrompt,
-  conversationId,
   streaming,
   setOnCodeComplete,
-  loadHistory,
 } from "../store/prompt"
 
 const route = useRoute()
@@ -106,16 +104,13 @@ async function loadChallenge() {
   taskId.value = data.task_ptr
   challengeContent.value = await marked.parse(data.content, { async: true })
   if (!authed.value) return
-  loadHistory(data.task_ptr) // HTTP preload — async, non-blocking
-  connectPrompt(data.task_ptr) // WebSocket — synchronous open
+  connectPrompt(data.task_ptr)
   setOnCodeComplete(async (code) => {
-    if (!conversationId.value) return
     try {
       await Submission.create(taskId.value, {
         html: code.html ?? "",
         css: code.css ?? "",
         js: code.js ?? "",
-        conversationId: conversationId.value,
       })
       message.success("已自动提交本次对话生成的代码")
     } catch {

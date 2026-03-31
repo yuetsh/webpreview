@@ -1,10 +1,6 @@
 <template>
   <div class="prompt-panel">
     <div class="messages" ref="messagesRef">
-      <div v-if="historyLoading" class="history-loading">
-        <n-spin size="small" />
-        <span>加载历史记录…</span>
-      </div>
       <div v-for="(msg, i) in messages" :key="i" :class="['message', msg.role]">
         <div class="message-role">{{ msg.role === "user" ? "我" : "AI" }}</div>
         <div class="message-content" v-html="renderContent(msg)"></div>
@@ -31,15 +27,7 @@
         :disabled="streaming"
         @keydown.enter.exact.prevent="send"
       />
-      <n-flex justify="space-between" align="center" style="margin-top: 8px">
-        <n-button
-          text
-          size="small"
-          @click="newConversation"
-          :disabled="streaming"
-        >
-          新对话
-        </n-button>
+      <n-flex justify="flex-end" align="center" style="margin-top: 8px">
         <n-button
           type="primary"
           :loading="streaming"
@@ -61,8 +49,6 @@ import {
   streaming,
   streamingContent,
   sendPrompt,
-  newConversation,
-  historyLoading,
 } from "../store/prompt"
 
 const input = ref("")
@@ -285,13 +271,4 @@ watch([() => messages.value.length, streamingContent], () => {
   border-top: 1px solid #e0e0e0;
 }
 
-.history-loading {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px;
-  color: #aaa;
-  font-size: 13px;
-  justify-content: center;
-}
 </style>

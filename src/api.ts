@@ -157,14 +157,14 @@ export const Submission = {
       html?: string
       css?: string
       js?: string
-      conversationId?: string
+      prompt?: string
     },
   ) {
-    const { conversationId, ...rest } = code
+    const { prompt, ...rest } = code
     const data = {
       task_id: taskId,
       ...rest,
-      conversation_id: conversationId || null,
+      prompt: prompt || null,
     }
     const res = await http.post("/submission/", data)
     return res.data
@@ -249,6 +249,15 @@ export const Prompt = {
         `/prompt/conversations/${conversationId}/messages/`,
       )
     ).data
+  },
+
+  async getMessagesByUserTask(
+    taskId: number,
+    userId: number,
+  ): Promise<PromptMessage[]> {
+    const convs = await this.listConversations(taskId, userId)
+    if (!convs.length) return []
+    return this.getMessages(convs[0].id)
   },
 }
 

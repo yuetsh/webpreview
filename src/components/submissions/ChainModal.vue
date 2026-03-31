@@ -129,7 +129,8 @@ import type { PromptMessage } from "../../utils/type"
 
 const props = defineProps<{
   show: boolean
-  conversationId?: string
+  userId: number
+  taskId: number
 }>()
 
 defineEmits<{ "update:show": [value: boolean] }>()
@@ -188,37 +189,22 @@ const selectedPageHtml = computed(() => {
   return `<!DOCTYPE html><html><head><meta charset="utf-8">${style}</head><body>${round.html}${script}</body></html>`
 })
 
-watch(
-  () => props.conversationId,
-  async (id) => {
-    if (!id || !props.show) return
-    loading.value = true
-    messages.value = []
-    selectedRound.value = 0
-    try {
-      messages.value = await Prompt.getMessages(id)
-      const last = rounds.value.length - 1
-      if (last >= 0) selectedRound.value = last
-    } finally {
-      loading.value = false
-    }
-  },
-)
+async function loadMessages() {
+  if (!props.userId || !props.taskId) return
+  loading.value = true
+  messages.value = []
+  selectedRound.value = 0
+  try {
+    messages.value = await Prompt.getMessagesByUserTask(props.taskId, props.userId)
+    const last = rounds.value.length - 1
+    if (last >= 0) selectedRound.value = last
+  } finally {
+    loading.value = false
+  }
+}
 
 watch(
-  () => props.show,
-  async (visible) => {
-    if (!visible || !props.conversationId) return
-    loading.value = true
-    messages.value = []
-    selectedRound.value = 0
-    try {
-      messages.value = await Prompt.getMessages(props.conversationId)
-      const last = rounds.value.length - 1
-      if (last >= 0) selectedRound.value = last
-    } finally {
-      loading.value = false
-    }
-  },
+  () => [props.show, props.userId, props.taskId] as const,
+  ([visible]) => { if (visible) loadMessages() },
 )
 </script>

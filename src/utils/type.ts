@@ -77,7 +77,6 @@ export interface SubmissionOut {
   task_title: string
   score: number
   my_score: number
-  conversation_id?: string
   flag?: FlagType
   zone?: "featured" | "low" | "pending" | null
   submit_count: number
