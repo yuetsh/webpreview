@@ -109,7 +109,6 @@ export function sendPrompt(content: string) {
   ws.send(JSON.stringify({ type: "message", content }))
 }
 
-
 function applyCode(code: {
   html: string | null
   css: string | null

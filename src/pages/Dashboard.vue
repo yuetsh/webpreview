@@ -19,22 +19,36 @@
   </n-flex>
 </template>
 <script lang="ts" setup>
+import { computed } from "vue"
 import { taskTab } from "../store/task"
 import { step } from "../store/tutorial"
+import { roleAdmin, roleSuper } from "../store/user"
 import { goHome } from "../utils/helper"
 
-const menu = [
-  {
-    label: "教程",
-    route: { name: "tutorial-editor", params: { display: step.value } },
-  },
-  {
-    label: "挑战",
-    route: { name: "challenge-editor", params: { display: 0 } },
-  },
-  { label: "用户", route: { name: "user-manage", params: { page: 1 } } },
-  { label: "提交", route: { name: "submissions", params: { page: 1 } } },
-]
+const menu = computed(() =>
+  [
+    {
+      label: "教程",
+      route: { name: "tutorial-editor", params: { display: step.value } },
+      show: roleSuper.value,
+    },
+    {
+      label: "挑战",
+      route: { name: "challenge-editor", params: { display: 0 } },
+      show: roleAdmin.value || roleSuper.value,
+    },
+    {
+      label: "用户",
+      route: { name: "user-manage", params: { page: 1 } },
+      show: roleSuper.value,
+    },
+    {
+      label: "提交",
+      route: { name: "submissions", params: { page: 1 } },
+      show: roleAdmin.value || roleSuper.value,
+    },
+  ].filter((item) => item.show),
+)
 </script>
 <style scoped>
 .container {

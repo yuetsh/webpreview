@@ -45,7 +45,10 @@
       <n-flex vertical>
         <n-form inline>
           <n-form-item label="序号" label-placement="left">
-            <n-input-number v-model:value="challenge.display" />
+            <n-input-number
+              style="width: 100px"
+              v-model:value="challenge.display"
+            />
           </n-form-item>
 
           <n-form-item label="标题" label-placement="left">
@@ -53,7 +56,11 @@
           </n-form-item>
 
           <n-form-item label="分数" label-placement="left">
-            <n-input-number v-model:value="challenge.score" :min="0" />
+            <n-input-number
+              style="width: 100px"
+              v-model:value="challenge.score"
+              :min="0"
+            />
           </n-form-item>
 
           <n-form-item label="公开" label-placement="left">

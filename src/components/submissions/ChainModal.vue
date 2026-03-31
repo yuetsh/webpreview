@@ -195,7 +195,10 @@ async function loadMessages() {
   messages.value = []
   selectedRound.value = 0
   try {
-    messages.value = await Prompt.getMessagesByUserTask(props.taskId, props.userId)
+    messages.value = await Prompt.getMessagesByUserTask(
+      props.taskId,
+      props.userId,
+    )
     const last = rounds.value.length - 1
     if (last >= 0) selectedRound.value = last
   } finally {
@@ -205,6 +208,8 @@ async function loadMessages() {
 
 watch(
   () => [props.show, props.userId, props.taskId] as const,
-  ([visible]) => { if (visible) loadMessages() },
+  ([visible]) => {
+    if (visible) loadMessages()
+  },
 )
 </script>

@@ -270,5 +270,4 @@ watch([() => messages.value.length, streamingContent], () => {
   padding: 12px;
   border-top: 1px solid #e0e0e0;
 }
-
 </style>
