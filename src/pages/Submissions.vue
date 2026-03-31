@@ -226,9 +226,9 @@ const columns: DataTableColumn<SubmissionOut>[] = [
     width: 42,
     render: (row) => {
       const map: Record<string, { label: string; type: "success" | "default" | "warning" }> = {
-        featured: { label: "精", type: "success" },
-        pending:  { label: "评", type: "default" },
-        low:      { label: "改", type: "warning" },
+        featured: { label: "夯", type: "success" },
+        pending:  { label: "N", type: "default" },
+        low:      { label: "拉", type: "warning" },
       }
       if (!row.zone || !map[row.zone]) return null
       const { label, type } = map[row.zone]
