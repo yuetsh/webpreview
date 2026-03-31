@@ -275,6 +275,12 @@ const columns: DataTableColumn<SubmissionOut>[] = [
     width: 60,
     render: (row) => row.submit_count || "-",
   },
+  {
+    title: "浏览",
+    key: "view_count",
+    width: 60,
+    render: (row) => row.view_count || "-",
+  },
 ]
 
 async function handleExpand(keys: (string | number)[]) {
@@ -398,6 +404,8 @@ onUnmounted(() => {
     html: "",
     css: "",
     js: "",
+    submit_count: 0,
+    view_count: 0,
     created: new Date(),
     modified: new Date(),
   }

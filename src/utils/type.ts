@@ -81,6 +81,7 @@ export interface SubmissionOut {
   flag?: FlagType
   zone?: "featured" | "low" | "pending" | null
   submit_count: number
+  view_count: number
   created: Date
   modified: Date
 }
@@ -99,6 +100,8 @@ export interface SubmissionAll {
   html: ""
   css: ""
   js: ""
+  submit_count: number
+  view_count: number
   created: Date
   modified: Date
 }

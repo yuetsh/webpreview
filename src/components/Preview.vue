@@ -1,6 +1,9 @@
 <template>
   <n-flex align="center" justify="space-between" class="title">
-    <n-text class="titleText">预览</n-text>
+    <div>
+      <n-text class="titleText">预览</n-text>
+      <n-text v-if="!!submission.id" depth="3">({{ submission.view_count || 0 }})</n-text>
+    </div>
     <n-flex>
       <n-button quaternary @click="download" :disabled="!showDL">下载</n-button>
       <n-button quaternary @click="open">全屏</n-button>
@@ -14,7 +17,7 @@
       <n-button quaternary v-if="props.submissionId" @click="copyLink">
         链接
       </n-button>
-      <n-flex v-if="!!submission.id">
+      <n-flex v-if="!!submission.id" align="center">
         <n-button quaternary @click="emits('showCode')">代码</n-button>
         <n-popover v-if="submission.my_score === 0">
           <template #trigger>
@@ -22,7 +25,6 @@
           </template>
           <n-rate :size="30" @update:value="updateScore" />
         </n-popover>
-        <!-- <n-button secondary type="info">智能打分</n-button> -->
       </n-flex>
     </n-flex>
   </n-flex>
