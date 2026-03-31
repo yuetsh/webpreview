@@ -208,6 +208,10 @@ export const Submission = {
     return res.data
   },
 
+  async incrementView(id: string) {
+    await http.post(`/submission/${id}/view`)
+  },
+
   async updateScore(id: string, score: number) {
     const res = await http.put(`/submission/${id}/score`, { score })
     return res.data

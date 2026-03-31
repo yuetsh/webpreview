@@ -12,6 +12,7 @@ const iframe = useTemplateRef<HTMLIFrameElement>("iframe")
 
 async function init() {
   const submission: SubmissionAll = await Submission.get(props.id)
+  Submission.incrementView(props.id)
 
   if (!iframe.value) return
   const doc = iframe.value.contentDocument
