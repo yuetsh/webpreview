@@ -2,10 +2,57 @@
   <n-modal
     :show="show"
     preset="card"
-    title="提示词"
     style="width: 90vw; max-width: 1400px"
     @update:show="$emit('update:show', $event)"
   >
+    <template #header>
+      <n-flex justify="start" align="center">
+        <span>提示词</span>
+        <n-tooltip placement="bottom-start">
+          <template #trigger>
+            <Icon icon="lucide:info" :width="20" style="color: #aaa" />
+          </template>
+          <div style="line-height: 2">
+            <div>
+              <span :style="{ color: levelColors[1], fontWeight: 'bold' }">
+                L1
+              </span>
+              — 记忆：复述或识别知识点
+            </div>
+            <div>
+              <span :style="{ color: levelColors[2], fontWeight: 'bold' }">
+                L2
+              </span>
+              — 理解：用自己的话解释概念
+            </div>
+            <div>
+              <span :style="{ color: levelColors[3], fontWeight: 'bold' }">
+                L3
+              </span>
+              — 应用：将知识用于新情境
+            </div>
+            <div>
+              <span :style="{ color: levelColors[4], fontWeight: 'bold' }">
+                L4
+              </span>
+              — 分析：拆解结构、找出规律
+            </div>
+            <div>
+              <span :style="{ color: levelColors[5], fontWeight: 'bold' }">
+                L5
+              </span>
+              — 评价：基于标准作出判断
+            </div>
+            <div>
+              <span :style="{ color: levelColors[6], fontWeight: 'bold' }">
+                L6
+              </span>
+              — 创造：整合信息产出新成果
+            </div>
+          </div>
+        </n-tooltip>
+      </n-flex>
+    </template>
     <n-spin :show="loading">
       <n-empty
         v-if="!loading && rounds.length === 0"
@@ -124,6 +171,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from "vue"
+import { Icon } from "@iconify/vue"
 import { Prompt } from "../../api"
 import type { PromptMessage } from "../../utils/type"
 
