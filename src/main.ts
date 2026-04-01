@@ -1,6 +1,7 @@
 import { createApp } from "vue"
 import { create } from "naive-ui"
 import App from "./App.vue"
+import "./global.css"
 import { addAPIProvider } from "@iconify/vue"
 
 //@ts-ignore

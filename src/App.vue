@@ -1,11 +1,22 @@
 <script setup lang="ts">
 import { dateZhCN, zhCN } from "naive-ui"
+import type { GlobalThemeOverrides } from "naive-ui"
 import Login from "./components/Login.vue"
 import { onMounted, watch } from "vue"
 import { Account } from "./api"
 import { authed, user } from "./store/user"
 import { STORAGE_KEY } from "./utils/const"
 import hljs from "highlight.js/lib/core"
+
+const themeOverrides: GlobalThemeOverrides = {
+  common: {
+    borderRadius: "6px",
+    borderRadiusSmall: "4px",
+  },
+  Card: {
+    borderRadius: "8px",
+  },
+}
 
 onMounted(async () => {
   try {
@@ -33,6 +44,7 @@ watch(authed, (v) => {
     :locale="zhCN"
     :date-locale="dateZhCN"
     :hljs="hljs"
+    :theme-overrides="themeOverrides"
   >
     <n-modal-provider>
       <n-message-provider :max="1">

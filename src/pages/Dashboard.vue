@@ -1,21 +1,25 @@
 <template>
   <n-flex class="container" :wrap="false">
-    <n-flex vertical class="menu">
-      <n-button secondary @click="() => goHome($router, taskTab, step)">
-        返回
-      </n-button>
-      <n-button
+    <div class="sidebar">
+      <div
+        class="back-btn"
+        @click="() => goHome($router, taskTab, step)"
+      >
+        ← 返回
+      </div>
+      <n-divider style="margin: 8px 0" />
+      <div
         v-for="item in menu"
         :key="item.label"
-        :type="$route.name === item.route.name ? 'primary' : 'default'"
+        :class="['nav-item', { active: $route.name === item.route.name }]"
         @click="$router.push(item.route)"
       >
         {{ item.label }}
-      </n-button>
-    </n-flex>
-    <n-flex class="content">
+      </div>
+    </div>
+    <div class="content">
       <router-view></router-view>
-    </n-flex>
+    </div>
   </n-flex>
 </template>
 <script lang="ts" setup>
@@ -56,13 +60,56 @@ const menu = computed(() =>
   width: 100vw;
   box-sizing: border-box;
 }
-.menu {
-  width: 100px;
-  padding: 10px 0 10px 10px;
+
+.sidebar {
+  width: 110px;
+  min-width: 110px;
+  padding: 12px 8px;
+  border-right: 1px solid #efeff5;
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
+
+.back-btn {
+  padding: 7px 10px;
+  font-size: 13px;
+  color: #888;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.15s, color 0.15s;
+  user-select: none;
+}
+
+.back-btn:hover {
+  background-color: #f0f0f0;
+  color: #444;
+}
+
+.nav-item {
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #444;
+  transition: background-color 0.15s, color 0.15s;
+  user-select: none;
+}
+
+.nav-item:hover {
+  background-color: #f0f0f0;
+}
+
+.nav-item.active {
+  background-color: #e8f8f0;
+  color: #18a058;
+  font-weight: 500;
+}
+
 .content {
+  flex: 1;
   box-sizing: border-box;
-  width: calc(100vw - 100px);
   overflow: hidden;
 }
 </style>
