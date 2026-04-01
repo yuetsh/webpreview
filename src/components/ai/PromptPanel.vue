@@ -56,7 +56,7 @@ import {
   streaming,
   streamingContent,
   sendPrompt,
-} from "../store/prompt"
+} from "../../store/prompt"
 
 const input = ref("")
 const messagesRef = ref<HTMLElement>()

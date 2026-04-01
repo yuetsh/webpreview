@@ -1,18 +1,18 @@
 import { createWebHistory, createRouter } from "vue-router"
 import { loginModal } from "./store/modal"
 
-import Home from "./pages/Home.vue"
+import Workspace from "./pages/Workspace.vue"
 import { STORAGE_KEY } from "./utils/const"
 
 const routes = [
-  { path: "/", name: "home", component: Home },
-  { path: "/tutorial", name: "home-tutorial-list", component: Home },
-  { path: "/tutorial/:display", name: "home-tutorial", component: Home },
-  { path: "/challenge", name: "home-challenge-list", component: Home },
+  { path: "/", name: "home", component: Workspace },
+  { path: "/tutorial", name: "home-tutorial-list", component: Workspace },
+  { path: "/tutorial/:display", name: "home-tutorial", component: Workspace },
+  { path: "/challenge", name: "home-challenge-list", component: Workspace },
   {
     path: "/challenge/:display",
     name: "home-challenge",
-    component: () => import("./pages/ChallengeHome.vue"),
+    component: () => import("./pages/ChallengeDetail.vue"),
   },
   {
     path: "/submissions/:page",

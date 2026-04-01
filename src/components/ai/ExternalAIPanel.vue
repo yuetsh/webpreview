@@ -46,8 +46,8 @@
 <script setup lang="ts">
 import { ref, watch } from "vue"
 import { useMessage } from "naive-ui"
-import { html, css, js } from "../store/editors"
-import { Submission } from "../api"
+import { html, css, js } from "../../store/editors"
+import { Submission } from "../../api"
 
 const props = defineProps<{ taskId: number }>()
 const message = useMessage()
