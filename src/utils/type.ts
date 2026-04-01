@@ -134,6 +134,13 @@ export interface FlagStats {
   yellow: number
 }
 
+export interface TopViewedItem {
+  username: string
+  classname: string
+  view_count: number
+  submission_id: string
+}
+
 export interface TaskStatsOut {
   submitted_count: number
   unsubmitted_count: number
@@ -145,4 +152,5 @@ export interface TaskStatsOut {
   score_distribution: ScoreBucket
   flag_stats: FlagStats
   classes: string[]
+  top_viewed: TopViewedItem[]
 }
