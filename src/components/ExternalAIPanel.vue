@@ -33,7 +33,7 @@
       >
       <n-button
         type="primary"
-        :disabled="!splitResult"
+        :disabled="!splitResult || !promptText.trim()"
         :loading="submitting"
         @click="submit"
       >
@@ -101,7 +101,7 @@ async function submit() {
       html: splitResult.value.html,
       css: splitResult.value.css,
       js: splitResult.value.js,
-      prompt: promptText.value.trim() || undefined,
+      prompt: promptText.value.trim(),
     })
     message.success("提交成功")
     promptText.value = ""
