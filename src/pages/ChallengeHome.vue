@@ -18,6 +18,9 @@
             >
               <Icon :width="16" icon="lucide:list" />
             </n-button>
+            <n-button v-if="roleAdmin || roleSuper" text @click="showStats = true">
+              <Icon :width="16" icon="lucide:bar-chart-2" />
+            </n-button>
             <n-button v-if="roleSuper" text @click="edit">
               <Icon :width="16" icon="lucide:edit" />
             </n-button>
@@ -46,6 +49,7 @@
       />
     </div>
   </div>
+  <TaskStatsModal v-model:show="showStats" :task-id="taskId" />
   <n-modal
     v-model:show="showCode"
     preset="card"
@@ -75,10 +79,11 @@ import { marked } from "marked"
 import PromptPanel from "../components/PromptPanel.vue"
 import ExternalAIPanel from "../components/ExternalAIPanel.vue"
 import Preview from "../components/Preview.vue"
+import TaskStatsModal from "../components/TaskStatsModal.vue"
 import { Challenge, Submission } from "../api"
 import { html, css, js } from "../store/editors"
 import { taskId } from "../store/task"
-import { authed, roleSuper } from "../store/user"
+import { authed, roleAdmin, roleSuper } from "../store/user"
 import {
   connectPrompt,
   disconnectPrompt,
@@ -93,6 +98,7 @@ const message = useMessage()
 const activeTab = ref("desc")
 const challengeContent = ref("")
 const showCode = ref(false)
+const showStats = ref(false)
 
 watch(streaming, (val) => {
   if (val) activeTab.value = "chat"
