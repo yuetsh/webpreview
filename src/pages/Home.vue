@@ -6,7 +6,7 @@
     max="900px"
   >
     <template #1>
-      <Task @hide="hide" />
+      <TaskPanel @hide="hide" />
     </template>
     <template #2>
       <n-split direction="vertical" min="200px">
@@ -24,7 +24,7 @@
 import { useMagicKeys, whenever } from "@vueuse/core"
 import Editors from "../components/editor/Editors.vue"
 import Preview from "../components/editor/Preview.vue"
-import Task from "../components/Task.vue"
+import TaskPanel from "../components/task/TaskPanel.vue"
 import { show, panelSize } from "../store/panel"
 import { html, css, js } from "../store/editors"
 

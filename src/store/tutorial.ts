@@ -1,9 +1,7 @@
+import { useStorage } from "@vueuse/core"
 import { ref } from "vue"
 
-const urlParams = new URLSearchParams(window.location.search)
-const currentStep = urlParams.get("step") ?? "1"
-
-export const step = ref(Number(currentStep))
+export const step = useStorage("tutorial-step", 1)
 export const tutorialIds = ref<number[]>([])
 
 export function prevDisabled(): boolean {

@@ -10,7 +10,8 @@ export function goHome(router: any, type: TASK_TYPE, display: number) {
   if (type === TASK_TYPE.Tutorial) {
     router.push({ name: "home-tutorial", params: { display } })
   } else if (type === TASK_TYPE.Challenge) {
-    router.push({ name: "home-challenge", params: { display } })
+    if (display) router.push({ name: "home-challenge", params: { display } })
+    else router.push({ name: "home-challenge-list" })
   } else {
     router.push({ name: "home" })
   }

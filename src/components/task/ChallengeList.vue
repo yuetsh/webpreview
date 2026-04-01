@@ -28,10 +28,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue"
 import { useRouter } from "vue-router"
-import { Challenge } from "../api"
-import { taskTab } from "../store/task"
-import { TASK_TYPE } from "../utils/const"
-import type { ChallengeSlim } from "../utils/type"
+import { Challenge } from "../../api"
+import { taskTab } from "../../store/task"
+import { TASK_TYPE } from "../../utils/const"
+import type { ChallengeSlim } from "../../utils/type"
 
 const router = useRouter()
 const challenges = ref<ChallengeSlim[]>([])

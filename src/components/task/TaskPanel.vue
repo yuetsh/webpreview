@@ -49,37 +49,39 @@
         </n-button>
       </n-flex>
     </n-flex>
-    <Tutorial v-if="taskTab === TASK_TYPE.Tutorial" />
-    <Challenge v-else />
+    <TutorialContent v-if="taskTab === TASK_TYPE.Tutorial" />
+    <ChallengeList v-else />
   </div>
   <TaskStatsModal v-model:show="statsModal" :task-id="taskId" />
 </template>
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
-import { computed, ref } from "vue"
-import { step, tutorialIds, prev, next, prevDisabled, nextDisabled } from "../store/tutorial"
-import { authed, roleSuper } from "../store/user"
-import { taskTab, taskId, challengeDisplay } from "../store/task"
+import { computed, ref, watch } from "vue"
+import { step, tutorialIds, prev, next, prevDisabled, nextDisabled } from "../../store/tutorial"
+import { authed, roleSuper } from "../../store/user"
+import { taskTab, taskId, challengeDisplay } from "../../store/task"
 import { useRoute, useRouter } from "vue-router"
-import { TASK_TYPE } from "../utils/const"
-import Challenge from "./Challenge.vue"
-import Tutorial from "./Tutorial.vue"
+import { TASK_TYPE } from "../../utils/const"
+import ChallengeList from "./ChallengeList.vue"
+import TutorialContent from "./TutorialContent.vue"
 import TaskStatsModal from "./TaskStatsModal.vue"
 
 const route = useRoute()
 const router = useRouter()
 const statsModal = ref(false)
 
-// 路由同步：在 setup 阶段立即执行，不等 onMounted
-const routeName = route.name as string
-if (routeName.startsWith("home-tutorial")) {
-  taskTab.value = TASK_TYPE.Tutorial
-  if (route.params.display) step.value = Number(route.params.display)
-} else if (routeName.startsWith("home-challenge")) {
-  taskTab.value = TASK_TYPE.Challenge
-  if (route.params.display)
-    challengeDisplay.value = Number(route.params.display)
+// 路由同步：初始执行 + watch 响应 SPA 内部导航
+function syncRoute(routeName: string) {
+  if (routeName.startsWith("home-tutorial")) {
+    taskTab.value = TASK_TYPE.Tutorial
+    if (route.params.display) step.value = Number(route.params.display)
+  } else if (routeName.startsWith("home-challenge")) {
+    taskTab.value = TASK_TYPE.Challenge
+    if (route.params.display) challengeDisplay.value = Number(route.params.display)
+  }
 }
+syncRoute(route.name as string)
+watch(() => route.name as string, syncRoute)
 
 defineEmits(["hide"])
 
@@ -105,7 +107,6 @@ function changeTab(v: TASK_TYPE) {
         : { name: "home-tutorial-list" },
     )
   } else if (v === TASK_TYPE.Challenge) {
-    challengeDisplay.value = 0
     router.push({ name: "home-challenge-list" })
   }
 }

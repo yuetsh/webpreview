@@ -392,8 +392,8 @@
 import { ref, computed, watch } from "vue"
 import { Icon } from "@iconify/vue"
 import { useRouter } from "vue-router"
-import { Submission } from "../api"
-import type { TaskStatsOut } from "../utils/type"
+import { Submission } from "../../api"
+import type { TaskStatsOut } from "../../utils/type"
 
 const props = defineProps<{ taskId: number; show: boolean }>()
 const emit = defineEmits<{ (e: "update:show", v: boolean): void }>()

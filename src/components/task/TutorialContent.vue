@@ -5,10 +5,10 @@
 import { onMounted, ref, useTemplateRef, watch } from "vue"
 import { marked } from "marked"
 import copyFn from "copy-text-to-clipboard"
-import { css, html, js, tab } from "../store/editors"
-import { Tutorial } from "../api"
-import { step, tutorialIds } from "../store/tutorial"
-import { taskId } from "../store/task"
+import { css, html, js, tab } from "../../store/editors"
+import { Tutorial } from "../../api"
+import { step, tutorialIds } from "../../store/tutorial"
+import { taskId } from "../../store/task"
 import { useRouter } from "vue-router"
 
 marked.use({
