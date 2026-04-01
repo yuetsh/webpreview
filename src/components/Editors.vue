@@ -85,7 +85,6 @@ import Editor from "./Editor.vue"
 import Toolbar from "./Toolbar.vue"
 import { html, css, js, tab, size, reset } from "../store/editors"
 import { taskId } from "../store/task"
-import { conversationId } from "../store/prompt"
 import { Submission } from "../api"
 import { NCode, useDialog, useMessage } from "naive-ui"
 import { h, ref } from "vue"
@@ -145,7 +144,6 @@ async function doSubmit() {
       html: html.value,
       css: css.value,
       js: js.value,
-      conversationId: conversationId.value || undefined,
     })
     message.success("提交成功")
   } catch (err) {

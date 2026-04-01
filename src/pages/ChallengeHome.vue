@@ -171,11 +171,16 @@ onUnmounted(disconnectPrompt)
 
 .left-tabs :deep(.n-tabs-pane-wrapper) {
   flex: 1;
+  min-height: 0;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .left-tabs :deep(.n-tab-pane) {
-  height: 100%;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
   padding: 0;
 }
 

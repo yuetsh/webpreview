@@ -280,6 +280,7 @@ watch([() => messages.value.length, streamingContent], () => {
 }
 
 .input-area {
+  flex-shrink: 0;
   padding: 12px;
   border-top: 1px solid #e0e0e0;
 }
