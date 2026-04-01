@@ -1,8 +1,16 @@
 import { useStorage } from "@vueuse/core"
 import { ref } from "vue"
+import { Tutorial } from "../api"
 
 export const step = useStorage("tutorial-step", 1)
 export const tutorialIds = ref<number[]>([])
+
+export async function loadTutorials(): Promise<void> {
+  tutorialIds.value = await Tutorial.listDisplay()
+  if (tutorialIds.value.length && !tutorialIds.value.includes(step.value)) {
+    step.value = tutorialIds.value[0] as number
+  }
+}
 
 export function prevDisabled(): boolean {
   const i = tutorialIds.value.indexOf(step.value)

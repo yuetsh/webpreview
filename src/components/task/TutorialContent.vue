@@ -7,7 +7,7 @@ import { marked } from "marked"
 import copyFn from "copy-text-to-clipboard"
 import { css, html, js, tab } from "../../store/editors"
 import { Tutorial } from "../../api"
-import { step, tutorialIds } from "../../store/tutorial"
+import { step, tutorialIds, loadTutorials } from "../../store/tutorial"
 import { taskId } from "../../store/task"
 import { useRouter } from "vue-router"
 
@@ -35,17 +35,6 @@ marked.use({
 const router = useRouter()
 const content = ref("")
 const $content = useTemplateRef<any>("$content")
-
-async function prepare() {
-  tutorialIds.value = await Tutorial.listDisplay()
-  if (!tutorialIds.value.length) {
-    content.value = "暂无教程"
-    return
-  }
-  if (!tutorialIds.value.includes(step.value)) {
-    step.value = tutorialIds.value[0] as number
-  }
-}
 
 async function render() {
   const data = await Tutorial.get(step.value)
@@ -85,7 +74,11 @@ function setupCodeActions() {
 }
 
 async function init() {
-  await prepare()
+  await loadTutorials()
+  if (!tutorialIds.value.length) {
+    content.value = "暂无教程"
+    return
+  }
   render()
 }
 
