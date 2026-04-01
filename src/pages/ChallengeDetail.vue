@@ -9,6 +9,9 @@
         </template>
         <template #suffix>
           <n-flex style="margin: 0 8px">
+            <n-button v-if="roleAdmin || roleSuper" text @click="showStats = true">
+              <Icon :width="16" icon="lucide:bar-chart-2" />
+            </n-button>
             <n-button
               v-if="authed"
               text
@@ -17,9 +20,6 @@
               "
             >
               <Icon :width="16" icon="lucide:list" />
-            </n-button>
-            <n-button v-if="roleAdmin || roleSuper" text @click="showStats = true">
-              <Icon :width="16" icon="lucide:bar-chart-2" />
             </n-button>
             <n-button v-if="roleSuper" text @click="edit">
               <Icon :width="16" icon="lucide:edit" />

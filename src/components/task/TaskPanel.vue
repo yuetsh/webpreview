@@ -31,9 +31,6 @@
         </template>
       </n-flex>
       <n-flex>
-        <n-button v-if="roleSuper" text @click="statsModal = true">
-          <Icon :width="16" icon="lucide:bar-chart-2"></Icon>
-        </n-button>
         <n-button
           v-if="authed"
           text
@@ -52,11 +49,10 @@
     <TutorialContent v-if="taskTab === TASK_TYPE.Tutorial" />
     <ChallengeList v-else />
   </div>
-  <TaskStatsModal v-model:show="statsModal" :task-id="taskId" />
 </template>
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
-import { computed, ref, watch } from "vue"
+import { computed, watch } from "vue"
 import { step, tutorialIds, prev, next, prevDisabled, nextDisabled } from "../../store/tutorial"
 import { authed, roleSuper } from "../../store/user"
 import { taskTab, taskId, challengeDisplay } from "../../store/task"
@@ -64,11 +60,9 @@ import { useRoute, useRouter } from "vue-router"
 import { TASK_TYPE } from "../../utils/const"
 import ChallengeList from "./ChallengeList.vue"
 import TutorialContent from "./TutorialContent.vue"
-import TaskStatsModal from "./TaskStatsModal.vue"
 
 const route = useRoute()
 const router = useRouter()
-const statsModal = ref(false)
 
 // 路由同步：初始执行 + watch 响应 SPA 内部导航
 function syncRoute(routeName: string) {
