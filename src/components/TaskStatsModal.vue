@@ -323,6 +323,65 @@
               </div>
             </n-flex>
           </div>
+
+          <!-- 人气前五 -->
+          <div style="margin-top: 12px">
+            <div
+              style="
+                font-weight: 600;
+                font-size: 13px;
+                margin-bottom: 8px;
+                color: #333;
+              "
+            >
+              人气前五
+            </div>
+            <div
+              v-if="stats.top_viewed.length === 0"
+              style="color: #aaa; font-size: 12px"
+            >
+              暂无
+            </div>
+            <div v-else style="display: flex; flex-direction: column; gap: 6px">
+              <div
+                v-for="(item, i) in stats.top_viewed"
+                :key="item.submission_id"
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  padding: 6px 10px;
+                  border: 1px solid #eee;
+                  border-radius: 6px;
+                  cursor: pointer;
+                  background: #fafafa;
+                "
+                @click="viewSubmission(item.submission_id)"
+              >
+                <span
+                  :style="{
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    background: i < 3 ? ['#f0a020', '#888', '#a07040'][i] : '#ddd',
+                    color: '#fff',
+                    fontSize: '11px',
+                    fontWeight: '700',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }"
+                >{{ i + 1 }}</span>
+                <span style="flex: 1; font-size: 13px; color: #333">
+                  {{ displayName(item.username, item.classname) }}
+                </span>
+                <span style="font-size: 12px; color: #2080f0; font-weight: 600">
+                  {{ item.view_count }} 次
+                </span>
+              </div>
+            </div>
+          </div>
         </n-spin>
       </template>
     </div>
