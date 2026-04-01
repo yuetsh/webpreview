@@ -22,8 +22,8 @@
 </template>
 <script lang="ts" setup>
 import { useMagicKeys, whenever } from "@vueuse/core"
-import Editors from "../components/Editors.vue"
-import Preview from "../components/Preview.vue"
+import Editors from "../components/editor/Editors.vue"
+import Preview from "../components/editor/Preview.vue"
 import Task from "../components/Task.vue"
 import { show, panelSize } from "../store/panel"
 import { html, css, js } from "../store/editors"

@@ -12,7 +12,7 @@
         style="height: 100%; padding-right: 10px; overflow: hidden"
       >
         <n-flex justify="space-between" style="flex-shrink: 0">
-          <n-button secondary @click="() => goHome($router, taskTab, step)">
+          <n-button secondary @click="() => goHome($router, taskTab, taskTab === TASK_TYPE.Challenge ? challengeDisplay : step)">
             首页
           </n-button>
           <n-flex align="center">
@@ -112,7 +112,7 @@ import { TASK_TYPE } from "../utils/const"
 import { watchDebounced } from "@vueuse/core"
 import { useRouter, useRoute } from "vue-router"
 
-import Preview from "../components/Preview.vue"
+import Preview from "../components/editor/Preview.vue"
 import TaskTitle from "../components/submissions/TaskTitle.vue"
 import CodeModal from "../components/submissions/CodeModal.vue"
 import ChainModal from "../components/submissions/ChainModal.vue"
@@ -120,7 +120,7 @@ import FlagCell from "../components/submissions/FlagCell.vue"
 import ExpandedSubTable from "../components/submissions/ExpandedSubTable.vue"
 
 import { submission } from "../store/submission"
-import { taskTab } from "../store/task"
+import { taskTab, challengeDisplay } from "../store/task"
 import { step } from "../store/tutorial"
 import { html as eHtml, css as eCss, js as eJs } from "../store/editors"
 import { roleAdmin, roleSuper, user } from "../store/user"

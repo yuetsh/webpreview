@@ -29,15 +29,15 @@
 <script lang="ts" setup>
 import { computed, h } from "vue"
 import { Icon } from "@iconify/vue"
-import { authed, roleNormal, roleSuper, user } from "../store/user"
-import { loginModal } from "../store/modal"
-import { show, panelSize } from "../store/panel"
-import { step } from "../store/tutorial"
-import { taskId } from "../store/task"
-import { Account } from "../api"
-import { Role } from "../utils/type"
-import { router } from "../router"
-import { ADMIN_URL } from "../utils/const"
+import { authed, roleNormal, roleSuper, user } from "../../store/user"
+import { loginModal } from "../../store/modal"
+import { show, panelSize } from "../../store/panel"
+import { step } from "../../store/tutorial"
+import { taskId } from "../../store/task"
+import { Account } from "../../api"
+import { Role } from "../../utils/type"
+import { router } from "../../router"
+import { ADMIN_URL } from "../../utils/const"
 
 const props = defineProps<{
   submitLoading: boolean

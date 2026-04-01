@@ -36,8 +36,8 @@
 import { watchDebounced } from "@vueuse/core"
 import { computed, onMounted, useTemplateRef } from "vue"
 import { useRouter } from "vue-router"
-import { Submission } from "../api"
-import { submission } from "../store/submission"
+import { Submission } from "../../api"
+import { submission } from "../../store/submission"
 import { useMessage } from "naive-ui"
 import copy from "copy-text-to-clipboard"
 

@@ -78,11 +78,12 @@ import { Icon } from "@iconify/vue"
 import { marked } from "marked"
 import PromptPanel from "../components/PromptPanel.vue"
 import ExternalAIPanel from "../components/ExternalAIPanel.vue"
-import Preview from "../components/Preview.vue"
+import Preview from "../components/editor/Preview.vue"
 import TaskStatsModal from "../components/TaskStatsModal.vue"
 import { Challenge, Submission } from "../api"
 import { html, css, js } from "../store/editors"
-import { taskId } from "../store/task"
+import { taskId, taskTab, challengeDisplay } from "../store/task"
+import { TASK_TYPE } from "../utils/const"
 import { authed, roleAdmin, roleSuper } from "../store/user"
 import {
   connectPrompt,
@@ -106,6 +107,8 @@ watch(streaming, (val) => {
 
 async function loadChallenge() {
   const display = Number(route.params.display)
+  taskTab.value = TASK_TYPE.Challenge
+  challengeDisplay.value = display
   const data = await Challenge.get(display)
   taskId.value = data.task_ptr
   challengeContent.value = await marked.parse(data.content, { async: true })
