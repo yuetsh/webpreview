@@ -62,7 +62,7 @@ const input = ref("")
 const messagesRef = ref<HTMLElement>()
 
 const modelOptions = [
-  { label: "豆包", value: "doubao-seed-2-0-mini-260215" },
+  { label: "豆包", value: "doubao-seed-2-0-lite-260215" },
   { label: "DeepSeek", value: "deepseek-chat" },
 ]
 const selectedModel = useStorage("prompt-model", "deepseek-chat")
