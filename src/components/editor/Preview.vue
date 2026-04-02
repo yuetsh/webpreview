@@ -7,6 +7,16 @@
       >
     </div>
     <n-flex>
+      <n-tooltip>
+        <template #trigger>
+          <n-button quaternary @click="cycleLayout">
+            <template #icon>
+              <Icon :icon="layoutIcon" />
+            </template>
+          </n-button>
+        </template>
+        {{ layoutLabel }}
+      </n-tooltip>
       <n-button quaternary @click="download" :disabled="!showDL">下载</n-button>
       <n-button quaternary @click="open">全屏</n-button>
       <n-button quaternary v-if="props.clearable" @click="clear">清空</n-button>
@@ -30,15 +40,18 @@
       </n-flex>
     </n-flex>
   </n-flex>
-  <iframe class="iframe" ref="iframe"></iframe>
+  <div class="iframe-wrapper" :style="iframeWrapperStyle">
+    <iframe class="iframe" ref="iframe"></iframe>
+  </div>
 </template>
 <script lang="ts" setup>
 import { watchDebounced } from "@vueuse/core"
-import { computed, onMounted, useTemplateRef } from "vue"
+import { computed, onMounted, useTemplateRef, ref } from "vue"
 import { useRouter } from "vue-router"
 import { Submission } from "../../api"
 import { submission } from "../../store/submission"
 import { useMessage } from "naive-ui"
+import { Icon } from "@iconify/vue"
 import copy from "copy-text-to-clipboard"
 
 interface Props {
@@ -52,6 +65,23 @@ interface Props {
 
 const props = defineProps<Props>()
 const emits = defineEmits(["afterScore", "showCode", "clear"])
+
+type Layout = "desktop" | "mobile" | "tablet"
+const layouts: Layout[] = ["desktop", "mobile", "tablet"]
+const layoutConfig: Record<Layout, { icon: string; label: string; width: string }> = {
+  desktop: { icon: "material-symbols:desktop-windows-outline", label: "桌面", width: "100%" },
+  mobile: { icon: "material-symbols:smartphone-outline", label: "移动端 (375px)", width: "375px" },
+  tablet: { icon: "material-symbols:tablet-outline", label: "平板 (768px)", width: "768px" },
+}
+const layoutIndex = ref(0)
+const layoutIcon = computed(() => layoutConfig[layouts[layoutIndex.value]].icon)
+const layoutLabel = computed(() => layoutConfig[layouts[layoutIndex.value]].label)
+const iframeWrapperStyle = computed(() => ({
+  maxWidth: layoutConfig[layouts[layoutIndex.value]].width,
+}))
+function cycleLayout() {
+  layoutIndex.value = (layoutIndex.value + 1) % layouts.length
+}
 
 const message = useMessage()
 const router = useRouter()
@@ -149,6 +179,14 @@ onMounted(preview)
 
 .titleText {
   font-size: 16px;
+}
+
+.iframe-wrapper {
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  transition: max-width 0.3s ease;
+  overflow: hidden;
 }
 
 .iframe {
