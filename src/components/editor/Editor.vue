@@ -18,6 +18,12 @@ const styleTheme = EditorView.baseTheme({
   },
 })
 
+const bgColors: Record<string, string> = {
+  html: "#fff6f3",
+  css: "#f3f6ff",
+  js: "#fffdf0",
+}
+
 interface Props {
   language?: "html" | "css" | "js"
   fontSize?: number
@@ -35,12 +41,22 @@ const lang = computed(() => {
   if (props.language === "css") return css()
   return javascript()
 })
+
+const bgTheme = computed(() => {
+  const bg = bgColors[props.language] ?? "#ffffff"
+  return EditorView.theme({
+    "&": { backgroundColor: bg },
+    ".cm-gutters": { backgroundColor: bg },
+  })
+})
+
+const extensions = computed(() => [styleTheme, bgTheme.value, lang.value])
 </script>
 <template>
   <Codemirror
     v-model="code"
     indentWithTab
-    :extensions="[styleTheme, lang]"
+    :extensions="extensions"
     :tabSize="4"
     :style="{ height: '100%', fontSize: props.fontSize + 'px' }"
   />

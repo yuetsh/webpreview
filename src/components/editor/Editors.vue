@@ -1,6 +1,8 @@
 <template>
+  <div class="editors-root">
   <n-tabs
     :value="tab"
+    :class="`tab-active-${tab}`"
     pane-class="pane"
     style="height: 100%"
     type="card"
@@ -73,6 +75,7 @@
       />
     </template>
   </n-tabs>
+  </div>
 </template>
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
@@ -184,5 +187,29 @@ async function formatAndSubmit() {
 
 .label {
   font-size: 16px;
+}
+
+:deep(.n-tabs-nav .n-tabs-tab[data-name="html"]) {
+  background-color: #fff6f3 !important;
+}
+:deep(.n-tabs-nav .n-tabs-tab[data-name="css"]) {
+  background-color: #f3f6ff !important;
+}
+:deep(.n-tabs-nav .n-tabs-tab[data-name="js"]) {
+  background-color: #fffdf0 !important;
+}
+
+.editors-root {
+  height: 100%;
+}
+
+:deep(.tab-active-html .n-tab-pane) {
+  background-color: #fff6f3;
+}
+:deep(.tab-active-css .n-tab-pane) {
+  background-color: #f3f6ff;
+}
+:deep(.tab-active-js .n-tab-pane) {
+  background-color: #fffdf0;
 }
 </style>

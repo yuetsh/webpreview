@@ -8,13 +8,15 @@
         :autosize="{ minRows: 3, maxRows: 8 }"
         placeholder="粘贴你发给外部 AI 的提示词..."
       />
-      <div class="field-label" style="margin-top: 12px">AI 代码</div>
-      <n-input
-        v-model:value="rawCode"
-        type="textarea"
-        :autosize="{ minRows: 6, maxRows: 16 }"
-        placeholder="粘贴外部 AI 返回的完整 HTML 代码..."
-      />
+      <div class="code-field">
+        <div class="field-label" style="margin-top: 12px">完整的代码</div>
+        <n-input
+          v-model:value="rawCode"
+          type="textarea"
+          class="code-input"
+          placeholder="粘贴完整的前端代码..."
+        />
+      </div>
       <div v-if="splitResult" class="split-result">
         <n-tag size="small" type="success"
           >HTML · {{ splitResult.html.length }} 字符</n-tag
@@ -128,6 +130,29 @@ async function submit() {
   min-height: 0;
   overflow-y: auto;
   padding: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.code-field {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.code-input {
+  flex: 1;
+  min-height: 0;
+}
+
+.code-input :deep(.n-input__textarea) {
+  height: 100%;
+}
+
+.code-input :deep(.n-input__textarea-el) {
+  height: 100%;
+  resize: none;
 }
 
 .field-label {
