@@ -27,8 +27,10 @@ export function setOnCodeComplete(fn: typeof _onCodeComplete) {
 }
 
 let ws: WebSocket | null = null
+let _currentTaskId = 0
 
 export function connectPrompt(taskId: number) {
+  _currentTaskId = taskId
   if (ws) ws.close()
 
   ws = new WebSocket(`${WS_BASE_URL}/ws/prompt/${taskId}/`)
@@ -41,6 +43,8 @@ export function connectPrompt(taskId: number) {
     const data = JSON.parse(event.data)
 
     if (data.type === "init") {
+      streaming.value = false
+      streamingContent.value = ""
       // Skip overwriting messages if HTTP preload already loaded this conversation.
       // If conversation_id differs (e.g. after "新对话"), always overwrite.
       const alreadyLoaded = conversationId.value === data.conversation_id
@@ -105,8 +109,25 @@ export function disconnectPrompt() {
 
 export function sendPrompt(content: string, model: string = "") {
   if (!ws || ws.readyState !== WebSocket.OPEN) return
+  streaming.value = true
   messages.value.push({ role: "user", content })
   ws.send(JSON.stringify({ type: "message", content, model }))
+}
+
+export function stopPrompt() {
+  // Remove the user message added to UI (not yet saved in DB)
+  if (
+    messages.value.length > 0 &&
+    messages.value[messages.value.length - 1].role === "user"
+  ) {
+    messages.value.pop()
+  }
+  streaming.value = false
+  streamingContent.value = ""
+  // connectPrompt closes old WS (triggering backend disconnect cleanup) then reconnects
+  if (_currentTaskId) {
+    connectPrompt(_currentTaskId)
+  }
 }
 
 function applyCode(code: {

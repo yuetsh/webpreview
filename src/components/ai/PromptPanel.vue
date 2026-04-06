@@ -35,9 +35,16 @@
           :disabled="streaming"
         />
         <n-button
+          v-if="streaming"
+          type="error"
+          @click="stopPrompt"
+        >
+          停止
+        </n-button>
+        <n-button
+          v-else
           type="primary"
-          :loading="streaming"
-          :disabled="!input.trim() || streaming"
+          :disabled="!input.trim() || !connected"
           @click="send"
         >
           发送
@@ -55,7 +62,9 @@ import {
   messages,
   streaming,
   streamingContent,
+  connected,
   sendPrompt,
+  stopPrompt,
 } from "../../store/prompt"
 
 const input = ref("")
