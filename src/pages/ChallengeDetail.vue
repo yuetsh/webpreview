@@ -200,7 +200,7 @@ onUnmounted(disconnectPrompt)
 .content {
   padding: 12px;
   overflow-y: auto;
-  height: calc(100% - 45px);
+  height: 100%;
   box-sizing: border-box;
 }
 </style>
