@@ -103,7 +103,7 @@ function clickMenu(name: string) {
   switch (name) {
     case "dashboard": {
       const route = roleAdmin.value ? "challenge-editor" : "tutorial-editor"
-      router.push({ name: route, query: { display: 0 } })
+      router.push({ name: route, params: { display: 0 } })
       break
     }
     case "admin":
