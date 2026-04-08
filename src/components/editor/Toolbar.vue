@@ -106,11 +106,11 @@ function clickMenu(name: string) {
       if (roleSuper.value) {
         router.push({
           name: "tutorial-editor",
-          params: { display: step.value },
+          params: { display: 0 },
         })
         break
       } else if (roleAdmin.value) {
-        router.push({ name: "challenge-editor" })
+        router.push({ name: "challenge-editor", params: { display: 0 } })
         break
       } else {
         break
