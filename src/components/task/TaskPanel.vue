@@ -24,7 +24,9 @@
           <n-button text @click="prev()" :disabled="prevDisabled()">
             <Icon :width="24" icon="pepicons-pencil:arrow-left"></Icon>
           </n-button>
-          <span v-if="progressText" class="progress-text">{{ progressText }}</span>
+          <span v-if="progressText" class="progress-text">{{
+            progressText
+          }}</span>
           <n-button text @click="next()" :disabled="nextDisabled()">
             <Icon :width="24" icon="pepicons-pencil:arrow-right"></Icon>
           </n-button>
@@ -53,7 +55,14 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
 import { computed, watch } from "vue"
-import { step, tutorialIds, prev, next, prevDisabled, nextDisabled } from "../../store/tutorial"
+import {
+  step,
+  tutorialIds,
+  prev,
+  next,
+  prevDisabled,
+  nextDisabled,
+} from "../../store/tutorial"
 import { authed, roleSuper } from "../../store/user"
 import { taskTab, taskId, challengeDisplay } from "../../store/task"
 import { useRoute, useRouter } from "vue-router"
@@ -71,7 +80,8 @@ function syncRoute(routeName: string) {
     if (route.params.display) step.value = Number(route.params.display)
   } else if (routeName.startsWith("home-challenge")) {
     taskTab.value = TASK_TYPE.Challenge
-    if (route.params.display) challengeDisplay.value = Number(route.params.display)
+    if (route.params.display)
+      challengeDisplay.value = Number(route.params.display)
   }
 }
 syncRoute(route.name as string)
@@ -80,8 +90,7 @@ watch(() => route.name as string, syncRoute)
 defineEmits(["hide"])
 
 const hideNav = computed(
-  () =>
-    taskTab.value !== TASK_TYPE.Tutorial || tutorialIds.value.length <= 1,
+  () => taskTab.value !== TASK_TYPE.Tutorial || tutorialIds.value.length <= 1,
 )
 
 const progressText = computed(() => {

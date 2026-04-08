@@ -1,10 +1,5 @@
 <template>
-  <n-split
-    :size="panelSize"
-    @update-size="changeSize"
-    min="400px"
-    max="900px"
-  >
+  <n-split :size="panelSize" @update-size="changeSize" min="400px" max="900px">
     <template #1>
       <TaskPanel @hide="hide" />
     </template>

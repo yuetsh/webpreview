@@ -363,7 +363,8 @@
                     width: '20px',
                     height: '20px',
                     borderRadius: '50%',
-                    background: i < 3 ? ['#f0a020', '#888', '#a07040'][i] : '#ddd',
+                    background:
+                      i < 3 ? ['#f0a020', '#888', '#a07040'][i] : '#ddd',
                     color: '#fff',
                     fontSize: '11px',
                     fontWeight: '700',
@@ -372,7 +373,8 @@
                     justifyContent: 'center',
                     flexShrink: 0,
                   }"
-                >{{ i + 1 }}</span>
+                  >{{ i + 1 }}</span
+                >
                 <span style="flex: 1; font-size: 13px; color: #333">
                   {{ displayName(item.username, item.classname) }}
                 </span>

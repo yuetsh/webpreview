@@ -12,13 +12,17 @@
         <template #header>
           <n-flex align="center" :size="6">
             <span v-if="item.submitted" class="check-icon">✓</span>
-            <span :class="{ 'submitted-title': item.submitted }">{{ item.title }}</span>
+            <span :class="{ 'submitted-title': item.submitted }">{{
+              item.title
+            }}</span>
           </n-flex>
         </template>
         <template #header-extra>
           <n-flex :size="6">
             <n-tag type="warning" size="small">{{ item.score }} 分</n-tag>
-            <n-tag v-if="item.pass_score != null" size="small">及格 {{ item.pass_score }} 分</n-tag>
+            <n-tag v-if="item.pass_score != null" size="small"
+              >及格 {{ item.pass_score }} 分</n-tag
+            >
           </n-flex>
         </template>
       </n-card>

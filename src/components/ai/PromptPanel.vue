@@ -34,11 +34,7 @@
           style="width: 120px"
           :disabled="streaming"
         />
-        <n-button
-          v-if="streaming"
-          type="error"
-          @click="stopPrompt"
-        >
+        <n-button v-if="streaming" type="error" @click="stopPrompt">
           停止
         </n-button>
         <n-button

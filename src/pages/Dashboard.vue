@@ -1,10 +1,7 @@
 <template>
   <n-flex class="container" :wrap="false">
     <div class="sidebar">
-      <div
-        class="back-btn"
-        @click="() => goHome($router, taskTab, step)"
-      >
+      <div class="back-btn" @click="() => goHome($router, taskTab, step)">
         ← 返回
       </div>
       <n-divider style="margin: 8px 0" />
@@ -78,7 +75,9 @@ const menu = computed(() =>
   color: #888;
   cursor: pointer;
   border-radius: 6px;
-  transition: background-color 0.15s, color 0.15s;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
   user-select: none;
 }
 
@@ -93,7 +92,9 @@ const menu = computed(() =>
   font-size: 14px;
   cursor: pointer;
   color: #444;
-  transition: background-color 0.15s, color 0.15s;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
   user-select: none;
 }
 

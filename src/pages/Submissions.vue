@@ -12,7 +12,17 @@
         style="height: 100%; padding-right: 10px; overflow: hidden"
       >
         <n-flex justify="space-between" style="flex-shrink: 0">
-          <n-button secondary @click="() => goHome($router, taskTab, taskTab === TASK_TYPE.Challenge ? challengeDisplay : step)">
+          <n-button
+            secondary
+            @click="
+              () =>
+                goHome(
+                  $router,
+                  taskTab,
+                  taskTab === TASK_TYPE.Challenge ? challengeDisplay : step,
+                )
+            "
+          >
             首页
           </n-button>
           <n-flex align="center">

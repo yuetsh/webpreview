@@ -38,7 +38,6 @@ import {
 } from "../../store/user"
 import { loginModal } from "../../store/modal"
 import { show, panelSize } from "../../store/panel"
-import { step } from "../../store/tutorial"
 import { taskId } from "../../store/task"
 import { Account } from "../../api"
 import { Role } from "../../utils/type"
@@ -103,18 +102,9 @@ function showTutorial() {
 function clickMenu(name: string) {
   switch (name) {
     case "dashboard": {
-      if (roleSuper.value) {
-        router.push({
-          name: "tutorial-editor",
-          params: { display: 0 },
-        })
-        break
-      } else if (roleAdmin.value) {
-        router.push({ name: "challenge-editor", params: { display: 0 } })
-        break
-      } else {
-        break
-      }
+      const route = roleAdmin.value ? "challenge-editor" : "tutorial-editor"
+      router.push({ name: route, query: { display: 0 } })
+      break
     }
     case "admin":
       window.open(ADMIN_URL)

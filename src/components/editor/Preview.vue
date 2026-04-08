@@ -68,14 +68,31 @@ const emits = defineEmits(["afterScore", "showCode", "clear"])
 
 type Layout = "desktop" | "mobile" | "tablet"
 const layouts: Layout[] = ["desktop", "mobile", "tablet"]
-const layoutConfig: Record<Layout, { icon: string; label: string; width: string }> = {
-  desktop: { icon: "material-symbols:desktop-windows-outline", label: "桌面", width: "100%" },
-  mobile: { icon: "material-symbols:smartphone-outline", label: "移动端 (375px)", width: "375px" },
-  tablet: { icon: "material-symbols:tablet-outline", label: "平板 (768px)", width: "768px" },
+const layoutConfig: Record<
+  Layout,
+  { icon: string; label: string; width: string }
+> = {
+  desktop: {
+    icon: "material-symbols:desktop-windows-outline",
+    label: "桌面",
+    width: "100%",
+  },
+  mobile: {
+    icon: "material-symbols:smartphone-outline",
+    label: "移动端 (375px)",
+    width: "375px",
+  },
+  tablet: {
+    icon: "material-symbols:tablet-outline",
+    label: "平板 (768px)",
+    width: "768px",
+  },
 }
 const layoutIndex = ref(0)
 const layoutIcon = computed(() => layoutConfig[layouts[layoutIndex.value]].icon)
-const layoutLabel = computed(() => layoutConfig[layouts[layoutIndex.value]].label)
+const layoutLabel = computed(
+  () => layoutConfig[layouts[layoutIndex.value]].label,
+)
 const iframeWrapperStyle = computed(() => ({
   maxWidth: layoutConfig[layouts[layoutIndex.value]].width,
 }))
