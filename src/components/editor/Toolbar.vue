@@ -29,7 +29,13 @@
 <script lang="ts" setup>
 import { computed, h } from "vue"
 import { Icon } from "@iconify/vue"
-import { authed, roleNormal, roleSuper, user } from "../../store/user"
+import {
+  authed,
+  roleAdmin,
+  roleNormal,
+  roleSuper,
+  user,
+} from "../../store/user"
 import { loginModal } from "../../store/modal"
 import { show, panelSize } from "../../store/panel"
 import { step } from "../../store/tutorial"
@@ -96,9 +102,20 @@ function showTutorial() {
 
 function clickMenu(name: string) {
   switch (name) {
-    case "dashboard":
-      router.push({ name: "tutorial-editor", params: { display: step.value } })
-      break
+    case "dashboard": {
+      if (roleSuper.value) {
+        router.push({
+          name: "tutorial-editor",
+          params: { display: step.value },
+        })
+        break
+      } else if (roleAdmin.value) {
+        router.push({ name: "challenge-editor" })
+        break
+      } else {
+        break
+      }
+    }
     case "admin":
       window.open(ADMIN_URL)
       break
