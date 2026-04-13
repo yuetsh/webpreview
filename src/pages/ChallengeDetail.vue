@@ -34,7 +34,12 @@
           </n-flex>
         </template>
         <n-tab-pane name="desc" tab="挑战描述" display-directive="show">
-          <div class="markdown-body content" v-html="challengeContent" />
+          <div
+            class="markdown-body content no-select"
+            v-html="challengeContent"
+            ref="$desc"
+            @copy.prevent
+          />
         </n-tab-pane>
         <n-tab-pane name="chat" tab="AI 对话" display-directive="show">
           <PromptPanel />
@@ -96,11 +101,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted, computed } from "vue"
+import { ref, watch, onMounted, onUnmounted, computed, useTemplateRef } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useMessage } from "naive-ui"
 import { Icon } from "@iconify/vue"
-import { marked } from "marked"
+import { marked, type MarkedOptions } from "marked"
+import copyFn from "copy-text-to-clipboard"
 import PromptPanel from "../components/ai/PromptPanel.vue"
 import ExternalAIPanel from "../components/ai/ExternalAIPanel.vue"
 import Preview from "../components/editor/Preview.vue"
@@ -122,8 +128,35 @@ const route = useRoute()
 const router = useRouter()
 const message = useMessage()
 
+const challengeRenderer = new marked.Renderer()
+challengeRenderer.code = ({ text, lang }) => {
+  const language = lang?.toLowerCase() ?? "text"
+  return `<div class="codeblock-wrapper" data-lang="${language}">
+  <div class="codeblock-action">
+    <span class="lang">${language.toUpperCase()}</span>
+    <button class="action-btn" data-action="copy">复制</button>
+  </div>
+  <pre><code class="language-${language}">${text}</code></pre>
+</div>`
+}
+challengeRenderer.link = ({ href, text }) =>
+  `<a href="${href}" target="_blank">${text}</a>`
+
+function setupCodeCopy() {
+  $desc.value?.addEventListener("click", (e: MouseEvent) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-action='copy']")
+    if (!btn) return
+    const wrapper = btn.closest<HTMLElement>("[data-lang]")!
+    const code = wrapper.querySelector("code")?.textContent ?? ""
+    copyFn(code)
+    btn.textContent = "已复制"
+    setTimeout(() => { btn.textContent = "复制" }, 1000)
+  })
+}
+
 const activeTab = ref("desc")
 const challengeContent = ref("")
+const $desc = useTemplateRef<HTMLElement>("$desc")
 const showCode = ref(false)
 const showStats = ref(false)
 const showAssets = ref(false)
@@ -143,7 +176,10 @@ async function loadChallenge() {
   challengeDisplay.value = display
   const data = await Challenge.get(display)
   taskId.value = data.task_ptr
-  challengeContent.value = await marked.parse(data.content, { async: true })
+  challengeContent.value = await marked.parse(data.content, {
+    async: true,
+    renderer: challengeRenderer,
+  } as MarkedOptions)
   assets.value = await TaskAssets.listChallenge(display)
   if (!authed.value) return
   connectPrompt(data.task_ptr)
@@ -180,7 +216,10 @@ function back() {
   router.push({ name: "home-challenge-list" })
 }
 
-onMounted(loadChallenge)
+onMounted(() => {
+  setupCodeCopy()
+  loadChallenge()
+})
 onUnmounted(disconnectPrompt)
 </script>
 
@@ -231,5 +270,64 @@ onUnmounted(disconnectPrompt)
   overflow-y: auto;
   height: 100%;
   box-sizing: border-box;
+}
+
+.no-select {
+  user-select: none;
+}
+</style>
+
+<style>
+.challenge-sider .codeblock-wrapper {
+  padding: 1rem;
+  background-color: #f6f8fa;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  overflow: auto;
+}
+
+.challenge-sider .codeblock-wrapper pre {
+  padding: 0;
+  background-color: transparent;
+  border-radius: 0;
+  margin-bottom: 0;
+  overflow: visible;
+}
+
+.challenge-sider .codeblock-wrapper pre code {
+  padding: 0;
+  font-size: 1rem;
+  font-family: Monaco, monospace;
+  user-select: text;
+}
+
+.challenge-sider .codeblock-action {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.challenge-sider .codeblock-action .lang {
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.challenge-sider .action-btn {
+  height: 28px;
+  padding: 0 14px;
+  font-size: 14px;
+  border-radius: 3px;
+  border: 1px solid #d9d9d9;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.challenge-sider .action-btn:hover {
+  border-color: #18a058;
+  color: #18a058;
 }
 </style>
