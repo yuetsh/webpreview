@@ -58,8 +58,13 @@
             </n-button>
           </n-form-item>
         </n-form>
+        <TaskAssetManager
+          v-if="tutorial.display"
+          task-type="tutorial"
+          :display="tutorial.display"
+        />
         <MarkdownEditor
-          style="height: calc(100vh - 90px)"
+          style="height: calc(100vh - 220px)"
           v-model="tutorial.content"
         />
       </n-flex>
@@ -74,6 +79,7 @@ import { Tutorial } from "../api"
 import type { TutorialSlim } from "../utils/type"
 import { useDialog, useMessage } from "naive-ui"
 import MarkdownEditor from "../components/dashboard/MarkdownEditor.vue"
+import TaskAssetManager from "../components/task/TaskAssetManager.vue"
 
 const route = useRoute()
 const router = useRouter()

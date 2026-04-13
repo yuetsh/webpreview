@@ -8,7 +8,7 @@ import copyFn from "copy-text-to-clipboard"
 import { css, html, js, tab } from "../../store/editors"
 import { Tutorial } from "../../api"
 import { step, tutorialIds, loadTutorials } from "../../store/tutorial"
-import { taskId } from "../../store/task"
+import { taskId, assetBaseUrl } from "../../store/task"
 import { useRouter } from "vue-router"
 
 marked.use({
@@ -39,6 +39,7 @@ const $content = useTemplateRef<any>("$content")
 async function render() {
   const data = await Tutorial.get(step.value)
   taskId.value = data.task_ptr
+  assetBaseUrl.value = `/media/tasks/tutorial/${step.value}/`
   const merged = `# ${data.display}. ${data.title}\n${data.content}`
   content.value = await marked.parse(merged, { async: true })
 }

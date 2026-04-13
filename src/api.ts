@@ -7,6 +7,7 @@ import type {
   SubmissionOut,
   PromptMessage,
   TaskStatsOut,
+  TaskAsset,
 } from "./utils/type"
 import { BASE_URL, STORAGE_KEY } from "./utils/const"
 
@@ -269,5 +270,48 @@ export const Helper = {
       headers: { "content-type": "multipart/form-data" },
     })
     return !!res.data.url ? res.data.url : ""
+  },
+}
+
+export const TaskAssets = {
+  async listChallenge(display: number): Promise<TaskAsset[]> {
+    return (await http.get<TaskAsset[]>(`/assets/challenge/${display}`)).data
+  },
+  async uploadChallenge(
+    display: number,
+    name: string,
+    file: File,
+  ): Promise<TaskAsset> {
+    const form = new window.FormData()
+    form.append("name", name)
+    form.append("file", file)
+    return (
+      await http.post<TaskAsset>(`/assets/challenge/${display}`, form, {
+        headers: { "content-type": "multipart/form-data" },
+      })
+    ).data
+  },
+  async deleteChallenge(display: number, name: string) {
+    return (await http.delete(`/assets/challenge/${display}/${name}`)).data
+  },
+  async listTutorial(display: number): Promise<TaskAsset[]> {
+    return (await http.get<TaskAsset[]>(`/assets/tutorial/${display}`)).data
+  },
+  async uploadTutorial(
+    display: number,
+    name: string,
+    file: File,
+  ): Promise<TaskAsset> {
+    const form = new window.FormData()
+    form.append("name", name)
+    form.append("file", file)
+    return (
+      await http.post<TaskAsset>(`/assets/tutorial/${display}`, form, {
+        headers: { "content-type": "multipart/form-data" },
+      })
+    ).data
+  },
+  async deleteTutorial(display: number, name: string) {
+    return (await http.delete(`/assets/tutorial/${display}/${name}`)).data
   },
 }

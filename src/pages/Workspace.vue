@@ -9,7 +9,12 @@
           <Editors />
         </template>
         <template #2>
-          <Preview :html="html" :css="css" :js="js" />
+          <Preview
+            :html="html"
+            :css="css"
+            :js="js"
+            :asset-base-url="assetBaseUrl"
+          />
         </template>
       </n-split>
     </template>
@@ -22,6 +27,7 @@ import Preview from "../components/editor/Preview.vue"
 import TaskPanel from "../components/task/TaskPanel.vue"
 import { show, panelSize } from "../store/panel"
 import { html, css, js } from "../store/editors"
+import { assetBaseUrl } from "../store/task"
 
 const { ctrl_s } = useMagicKeys({
   passive: false,

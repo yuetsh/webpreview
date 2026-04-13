@@ -24,37 +24,76 @@
           <n-button text @click="prev()" :disabled="prevDisabled()">
             <Icon :width="24" icon="pepicons-pencil:arrow-left"></Icon>
           </n-button>
-          <span v-if="progressText" class="progress-text">{{
-            progressText
-          }}</span>
+          <span v-if="progressText" class="progress-text">
+            {{ progressText }}
+          </span>
           <n-button text @click="next()" :disabled="nextDisabled()">
             <Icon :width="24" icon="pepicons-pencil:arrow-right"></Icon>
           </n-button>
         </template>
       </n-flex>
       <n-flex>
-        <n-button
-          v-if="authed"
-          text
-          @click="$router.push({ name: 'submissions', params: { page: 1 } })"
-        >
-          <Icon :width="16" icon="lucide:list"></Icon>
-        </n-button>
-        <n-button text v-if="roleSuper" @click="edit">
-          <Icon :width="16" icon="lucide:edit"></Icon>
-        </n-button>
-        <n-button text @click="$emit('hide')">
-          <Icon :width="24" icon="material-symbols:close-rounded"></Icon>
-        </n-button>
+        <n-tooltip v-if="tutorialAssets.length && taskTab === TASK_TYPE.Tutorial" trigger="hover">
+          <template #trigger>
+            <n-button text @click="showAssets = true">
+              <Icon :width="16" icon="lucide:image"></Icon>
+            </n-button>
+          </template>
+          素材
+        </n-tooltip>
+        <n-tooltip v-if="authed" trigger="hover">
+          <template #trigger>
+            <n-button
+              text
+              @click="$router.push({ name: 'submissions', params: { page: 1 } })"
+            >
+              <Icon :width="16" icon="lucide:list"></Icon>
+            </n-button>
+          </template>
+          提交记录
+        </n-tooltip>
+        <n-tooltip v-if="roleSuper" trigger="hover">
+          <template #trigger>
+            <n-button text @click="edit">
+              <Icon :width="16" icon="lucide:edit"></Icon>
+            </n-button>
+          </template>
+          编辑
+        </n-tooltip>
+        <n-tooltip trigger="hover">
+          <template #trigger>
+            <n-button text @click="$emit('hide')">
+              <Icon :width="24" icon="material-symbols:close-rounded"></Icon>
+            </n-button>
+          </template>
+          关闭
+        </n-tooltip>
       </n-flex>
     </n-flex>
     <TutorialContent v-if="taskTab === TASK_TYPE.Tutorial" />
     <ChallengeList v-else />
   </div>
+  <n-modal
+    v-model:show="showAssets"
+    preset="card"
+    title="素材"
+    style="width: 500px"
+  >
+    <n-grid :cols="3" :x-gap="12" :y-gap="12">
+      <n-gi v-for="asset in tutorialAssets" :key="asset.name">
+        <n-card size="small" :title="asset.name">
+          <n-image
+            :src="asset.url"
+            style="width: 100%; height: 100px; object-fit: contain"
+          />
+        </n-card>
+      </n-gi>
+    </n-grid>
+  </n-modal>
 </template>
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
-import { computed, watch } from "vue"
+import { computed, ref, watch } from "vue"
 import {
   step,
   tutorialIds,
@@ -67,8 +106,27 @@ import { authed, roleSuper } from "../../store/user"
 import { taskTab, taskId, challengeDisplay } from "../../store/task"
 import { useRoute, useRouter } from "vue-router"
 import { TASK_TYPE } from "../../utils/const"
+import { TaskAssets } from "../../api"
+import type { TaskAsset } from "../../utils/type"
 import ChallengeList from "./ChallengeList.vue"
 import TutorialContent from "./TutorialContent.vue"
+
+const tutorialAssets = ref<TaskAsset[]>([])
+const showAssets = ref(false)
+
+async function loadTutorialAssets(display: number) {
+  if (!display) {
+    tutorialAssets.value = []
+    return
+  }
+  try {
+    tutorialAssets.value = await TaskAssets.listTutorial(display)
+  } catch {
+    tutorialAssets.value = []
+  }
+}
+
+watch(step, loadTutorialAssets, { immediate: true })
 
 const route = useRoute()
 const router = useRouter()

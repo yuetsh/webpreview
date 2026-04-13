@@ -9,6 +9,9 @@
         </template>
         <template #suffix>
           <n-flex style="margin: 0 8px">
+            <n-button v-if="assets.length" text @click="showAssets = true">
+              <Icon :width="16" icon="lucide:image" />
+            </n-button>
             <n-button
               v-if="roleAdmin || roleSuper"
               text
@@ -46,6 +49,7 @@
         :html="html"
         :css="css"
         :js="js"
+        :asset-base-url="assetBaseUrl"
         show-code-button
         clearable
         @showCode="showCode = true"
@@ -54,6 +58,23 @@
     </div>
   </div>
   <TaskStatsModal v-model:show="showStats" :task-id="taskId" />
+  <n-modal
+    v-model:show="showAssets"
+    preset="card"
+    title="素材"
+    style="width: 500px"
+  >
+    <n-grid :cols="3" :x-gap="12" :y-gap="12">
+      <n-gi v-for="asset in assets" :key="asset.name">
+        <n-card size="small" :title="asset.name">
+          <n-image
+            :src="asset.url"
+            style="width: 100%; height: 100px; object-fit: contain"
+          />
+        </n-card>
+      </n-gi>
+    </n-grid>
+  </n-modal>
   <n-modal
     v-model:show="showCode"
     preset="card"
@@ -75,7 +96,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted } from "vue"
+import { ref, watch, onMounted, onUnmounted, computed } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useMessage } from "naive-ui"
 import { Icon } from "@iconify/vue"
@@ -84,7 +105,8 @@ import PromptPanel from "../components/ai/PromptPanel.vue"
 import ExternalAIPanel from "../components/ai/ExternalAIPanel.vue"
 import Preview from "../components/editor/Preview.vue"
 import TaskStatsModal from "../components/task/TaskStatsModal.vue"
-import { Challenge, Submission } from "../api"
+import { Challenge, Submission, TaskAssets } from "../api"
+import type { TaskAsset } from "../utils/type"
 import { html, css, js } from "../store/editors"
 import { taskId, taskTab, challengeDisplay } from "../store/task"
 import { TASK_TYPE } from "../utils/const"
@@ -104,6 +126,12 @@ const activeTab = ref("desc")
 const challengeContent = ref("")
 const showCode = ref(false)
 const showStats = ref(false)
+const showAssets = ref(false)
+const assets = ref<TaskAsset[]>([])
+
+const assetBaseUrl = computed(
+  () => `/media/tasks/challenge/${challengeDisplay.value}/`,
+)
 
 watch(streaming, (val) => {
   if (val) activeTab.value = "chat"
@@ -116,6 +144,7 @@ async function loadChallenge() {
   const data = await Challenge.get(display)
   taskId.value = data.task_ptr
   challengeContent.value = await marked.parse(data.content, { async: true })
+  assets.value = await TaskAssets.listChallenge(display)
   if (!authed.value) return
   connectPrompt(data.task_ptr)
   setOnCodeComplete(async (code) => {

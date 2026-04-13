@@ -2,9 +2,9 @@
   <n-flex align="center" justify="space-between" class="title">
     <div>
       <n-text class="titleText">预览</n-text>
-      <n-text v-if="!!submission.id" depth="3"
-        >({{ submission.view_count || 0 }})</n-text
-      >
+      <n-text v-if="!!submission.id" depth="3">
+        ({{ submission.view_count || 0 }})
+      </n-text>
     </div>
     <n-flex>
       <n-tooltip>
@@ -24,8 +24,9 @@
         quaternary
         v-if="props.showCodeButton"
         @click="emits('showCode')"
-        >代码</n-button
       >
+        代码
+      </n-button>
       <n-button quaternary v-if="props.submissionId" @click="copyLink">
         链接
       </n-button>
@@ -58,6 +59,7 @@ interface Props {
   html: string
   css: string
   js: string
+  assetBaseUrl?: string
   submissionId?: string
   showCodeButton?: boolean
   clearable?: boolean
@@ -113,6 +115,7 @@ function getContent() {
     <meta charset="UTF-8" />
     <title>预览</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    ${props.assetBaseUrl ? `<base href="${props.assetBaseUrl}">` : ""}
     <style>${props.css}</style>
     <link rel="stylesheet" href="/normalize.min.css" />
   </head>

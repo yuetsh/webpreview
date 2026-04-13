@@ -72,8 +72,13 @@
             </n-button>
           </n-form-item>
         </n-form>
+        <TaskAssetManager
+          v-if="challenge.display"
+          task-type="challenge"
+          :display="challenge.display"
+        />
         <MarkdownEditor
-          style="height: calc(100vh - 90px)"
+          style="height: calc(100vh - 220px)"
           v-model="challenge.content"
         />
       </n-flex>
@@ -88,6 +93,7 @@ import { Challenge } from "../api"
 import type { ChallengeSlim } from "../utils/type"
 import { useDialog, useMessage } from "naive-ui"
 import MarkdownEditor from "../components/dashboard/MarkdownEditor.vue"
+import TaskAssetManager from "../components/task/TaskAssetManager.vue"
 
 const route = useRoute()
 const router = useRouter()

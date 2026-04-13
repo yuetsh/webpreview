@@ -27,6 +27,11 @@ export function getRole(role: Role) {
 
 export type FlagType = "red" | "blue" | "green" | "yellow" | null
 
+export interface TaskAsset {
+  name: string
+  url: string
+}
+
 export interface TutorialSlim {
   display: number
   title: string
