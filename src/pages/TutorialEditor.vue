@@ -104,7 +104,7 @@ async function getContent() {
   if (target) {
     show(display)
   } else if (list.value.length > 0) {
-    show(list.value[0].display)
+    show(list.value[0]!.display)
   }
 }
 

@@ -91,12 +91,12 @@ const layoutConfig: Record<
   },
 }
 const layoutIndex = ref(0)
-const layoutIcon = computed(() => layoutConfig[layouts[layoutIndex.value]].icon)
+const layoutIcon = computed(() => layoutConfig[layouts[layoutIndex.value]!].icon)
 const layoutLabel = computed(
-  () => layoutConfig[layouts[layoutIndex.value]].label,
+  () => layoutConfig[layouts[layoutIndex.value]!].label,
 )
 const iframeWrapperStyle = computed(() => ({
-  maxWidth: layoutConfig[layouts[layoutIndex.value]].width,
+  maxWidth: layoutConfig[layouts[layoutIndex.value]!].width,
 }))
 function cycleLayout() {
   layoutIndex.value = (layoutIndex.value + 1) % layouts.length
