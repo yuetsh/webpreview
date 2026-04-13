@@ -43,7 +43,7 @@
 
     <n-gi :span="6" class="col">
       <n-flex vertical>
-        <n-form inline>
+        <n-form inline :show-feedback="false">
           <n-form-item label="序号" label-placement="left">
             <n-input-number
               style="width: 100px"
