@@ -1,11 +1,10 @@
 <template>
   <n-flex vertical>
     <n-flex align="center">
-      <n-text strong>素材</n-text>
-      <n-button size="small" @click="showUpload = true">上传图片</n-button>
+      <n-text strong>图片素材</n-text>
+      <n-button size="small" @click="showUpload = true">上传</n-button>
     </n-flex>
-    <n-empty v-if="!assets.length" description="暂无素材" size="small" />
-    <n-flex v-else wrap>
+    <n-flex v-if="assets.length" wrap>
       <n-card
         v-for="asset in assets"
         :key="asset.name"
@@ -15,13 +14,13 @@
         <template #cover>
           <n-image
             :src="asset.url"
-            style="width: 100%; height: 80px; object-fit: cover"
+            style="width: 100%; height: 100px; object-fit: contain"
           />
         </template>
         <n-flex align="center" justify="space-between">
-          <n-text style="font-size: 12px; word-break: break-all">{{
-            asset.name
-          }}</n-text>
+          <n-text style="font-size: 12px; word-break: break-all">
+            {{ asset.name }}
+          </n-text>
           <n-button
             size="tiny"
             quaternary

@@ -33,7 +33,10 @@
         </template>
       </n-flex>
       <n-flex>
-        <n-tooltip v-if="tutorialAssets.length && taskTab === TASK_TYPE.Tutorial" trigger="hover">
+        <n-tooltip
+          v-if="tutorialAssets.length && taskTab === TASK_TYPE.Tutorial"
+          trigger="hover"
+        >
           <template #trigger>
             <n-button text @click="showAssets = true">
               <Icon :width="16" icon="lucide:image"></Icon>
@@ -45,7 +48,9 @@
           <template #trigger>
             <n-button
               text
-              @click="$router.push({ name: 'submissions', params: { page: 1 } })"
+              @click="
+                $router.push({ name: 'submissions', params: { page: 1 } })
+              "
             >
               <Icon :width="16" icon="lucide:list"></Icon>
             </n-button>
@@ -76,19 +81,25 @@
   <n-modal
     v-model:show="showAssets"
     preset="card"
-    title="素材"
-    style="width: 500px"
+    title="图片素材"
+    style="width: 570px"
   >
-    <n-grid :cols="3" :x-gap="12" :y-gap="12">
-      <n-gi v-for="asset in tutorialAssets" :key="asset.name">
-        <n-card size="small" :title="asset.name">
+    <n-flex wrap>
+      <n-card
+        v-for="asset in tutorialAssets"
+        :key="asset.name"
+        :title="asset.name"
+        size="small"
+        style="width: 120px"
+      >
+        <template #cover>
           <n-image
             :src="asset.url"
             style="width: 100%; height: 100px; object-fit: contain"
           />
-        </n-card>
-      </n-gi>
-    </n-grid>
+        </template>
+      </n-card>
+    </n-flex>
   </n-modal>
 </template>
 <script lang="ts" setup>
