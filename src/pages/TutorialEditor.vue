@@ -42,7 +42,10 @@
       <n-flex vertical>
         <n-form inline :show-feedback="false">
           <n-form-item label="序号" label-placement="left">
-            <n-input-number v-model:value="tutorial.display" />
+            <n-input-number
+              style="width: 100px"
+              v-model:value="tutorial.display"
+            />
           </n-form-item>
 
           <n-form-item label="标题" label-placement="left">
