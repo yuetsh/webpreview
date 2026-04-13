@@ -78,7 +78,7 @@
           :display="challenge.display"
         />
         <MarkdownEditor
-          style="height: calc(100vh - 220px)"
+          style="height: calc(100vh - 100px)"
           v-model="challenge.content"
         />
       </n-flex>
