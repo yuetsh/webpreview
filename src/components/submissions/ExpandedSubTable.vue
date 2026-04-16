@@ -24,7 +24,7 @@ import {
 import type { SubmissionOut } from "../../utils/type"
 import { TASK_TYPE } from "../../utils/const"
 import { parseTime } from "../../utils/helper"
-import { user } from "../../store/user"
+import { user, roleSuper } from "../../store/user"
 import { submission } from "../../store/submission"
 
 const props = defineProps<{
@@ -36,7 +36,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   select: [id: string]
   delete: [row: SubmissionOut, parentId: string]
-  "show-chain": [userId: number, taskId: number]
+  "show-chain": [userId: number, taskId: number, username: string]
 }>()
 
 const isChallenge = computed(() => props.row.task_type === TASK_TYPE.Challenge)
@@ -76,57 +76,51 @@ const subColumns = computed((): DataTableColumn<SubmissionOut>[] => [
       )
     },
   },
-  ...(isChallenge.value
-    ? [
-        {
-          title: "提示词",
-          key: "prompt",
-          width: 70,
-          render: (r: SubmissionOut) =>
-            h(
-              NButton,
-              {
-                text: true,
-                type: "primary",
-                onClick: (e: Event) => {
-                  e.stopPropagation()
-                  emit("show-chain", r.userid, r.task_id)
+  {
+    title: "操作",
+    key: "actions",
+    width: isChallenge.value ? 110 : 60,
+    render: (r: SubmissionOut) =>
+      h("div", { style: { display: "flex", gap: "8px" } }, [
+        ...(isChallenge.value
+          ? [
+              h(
+                NButton,
+                {
+                  text: true,
+                  type: "primary",
+                  onClick: (e: Event) => {
+                    e.stopPropagation()
+                    emit("show-chain", r.userid, r.task_id, r.username)
+                  },
                 },
-              },
-              () => "查看",
-            ),
-        } as DataTableColumn<SubmissionOut>,
-      ]
-    : []),
-  ...(!isChallenge.value
-    ? [
-        {
-          title: "操作",
-          key: "actions",
-          width: 60,
-          render: (r: SubmissionOut) => {
-            if (r.username !== user.username) return null
-            return h(
-              NPopconfirm,
-              { onPositiveClick: () => emit("delete", r, props.row.id) },
-              {
-                trigger: () =>
-                  h(
-                    NButton,
-                    {
-                      text: true,
-                      type: "error",
-                      size: "small",
-                      onClick: (e: Event) => e.stopPropagation(),
-                    },
-                    () => "删除",
-                  ),
-                default: () => "确定删除这次提交？",
-              },
-            )
-          },
-        } as DataTableColumn<SubmissionOut>,
-      ]
-    : []),
+                () => "查看",
+              ),
+            ]
+          : []),
+        ...(r.username === user.username || roleSuper.value
+          ? [
+              h(
+                NPopconfirm,
+                { onPositiveClick: () => emit("delete", r, props.row.id) },
+                {
+                  trigger: () =>
+                    h(
+                      NButton,
+                      {
+                        text: true,
+                        type: "error",
+                        size: "small",
+                        onClick: (e: Event) => e.stopPropagation(),
+                      },
+                      () => "删除",
+                    ),
+                  default: () => "确定删除这次提交？",
+                },
+              ),
+            ]
+          : []),
+      ]),
+  } as DataTableColumn<SubmissionOut>,
 ])
 </script>

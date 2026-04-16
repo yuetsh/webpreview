@@ -131,17 +131,47 @@
                 "
               >
                 <span>{{ round.question }}</span>
-                <span
-                  v-if="round.prompt_level"
-                  :style="{
-                    flexShrink: 0,
-                    fontSize: '11px',
-                    fontWeight: 'bold',
-                    color: levelColors[round.prompt_level],
-                    marginTop: '2px',
-                  }"
-                  >L{{ round.prompt_level }}</span
-                >
+                <div style="display: flex; flex-direction: row; align-items: center; gap: 4px; flex-shrink: 0">
+                  <span
+                    v-if="round.source"
+                    :style="{
+                      fontSize: '10px',
+                      padding: '1px 5px',
+                      borderRadius: '4px',
+                      background: round.source === 'conversation' ? '#e8f0fe' : '#f0f0f0',
+                      color: round.source === 'conversation' ? '#2060c0' : '#888',
+                      fontWeight: 500,
+                      whiteSpace: 'nowrap',
+                    }"
+                  >{{ round.source === "conversation" ? "对话" : "手动" }}</span>
+                  <span
+                    v-if="round.prompt_level"
+                    :style="{
+                      fontSize: '11px',
+                      fontWeight: 'bold',
+                      color: levelColors[round.prompt_level],
+                    }"
+                    >L{{ round.prompt_level }}</span
+                  >
+                  <n-popconfirm
+                    v-if="round.assistantMsgId && canDelete"
+                    :show-icon="false"
+                    @positive-click="deleteRound(index)"
+                  >
+                    <template #trigger>
+                      <n-button
+                        text
+                        size="tiny"
+                        type="error"
+                        style="margin-left: 2px"
+                        @click.stop
+                      >
+                        <Icon icon="lucide:trash-2" :width="12" />
+                      </n-button>
+                    </template>
+                    确定删除这一轮？
+                  </n-popconfirm>
+                </div>
               </div>
             </div>
           </div>
@@ -171,15 +201,20 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from "vue"
+import { NPopconfirm, NButton } from "naive-ui"
 import { Icon } from "@iconify/vue"
 import { Prompt } from "../../api"
 import type { PromptMessage } from "../../utils/type"
+import { user, roleSuper } from "../../store/user"
 
 const props = defineProps<{
   show: boolean
   userId: number
   taskId: number
+  username?: string
 }>()
+
+const canDelete = computed(() => roleSuper.value || (!!props.username && props.username === user.username))
 
 defineEmits<{ "update:show": [value: boolean] }>()
 
@@ -190,7 +225,9 @@ const selectedRound = ref(0)
 const rounds = computed(() => {
   const result: {
     question: string
+    source: string | null
     prompt_level: number | null
+    assistantMsgId: number | null
     html: string | null
     css: string | null
     js: string | null
@@ -199,19 +236,25 @@ const rounds = computed(() => {
     if (msg.role !== "user") continue
     let html: string | null = null,
       css: string | null = null,
-      js: string | null = null
+      js: string | null = null,
+      assistantMsgId: number | null = null
     for (const reply of messages.value.slice(i + 1)) {
       if (reply.role === "user") break
-      if (reply.role === "assistant" && reply.code_html) {
-        html = reply.code_html
-        css = reply.code_css
-        js = reply.code_js
+      if (reply.role === "assistant") {
+        assistantMsgId = reply.id
+        if (reply.code_html) {
+          html = reply.code_html
+          css = reply.code_css
+          js = reply.code_js
+        }
         break
       }
     }
     result.push({
       question: msg.content,
+      source: msg.source ?? null,
       prompt_level: msg.prompt_level ?? null,
+      assistantMsgId,
       html,
       css,
       js,
@@ -219,6 +262,16 @@ const rounds = computed(() => {
   }
   return result
 })
+
+async function deleteRound(index: number) {
+  const round = rounds.value[index]
+  if (!round.assistantMsgId) return
+  await Prompt.deleteMessagePair(round.assistantMsgId)
+  await loadMessages()
+  if (selectedRound.value >= rounds.value.length) {
+    selectedRound.value = Math.max(0, rounds.value.length - 1)
+  }
+}
 
 const levelColors: Record<number, string> = {
   1: "#aaa",

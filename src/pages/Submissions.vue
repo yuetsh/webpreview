@@ -107,6 +107,7 @@
     v-model:show="chainModal"
     :user-id="chainUserId"
     :task-id="chainTaskId"
+    :username="chainUsername"
   />
 </template>
 
@@ -160,6 +161,7 @@ const codeModal = ref(false)
 const chainModal = ref(false)
 const chainUserId = ref<number>(0)
 const chainTaskId = ref<number>(0)
+const chainUsername = ref<string>("")
 
 // 展开行
 const expandedKeys = ref<string[]>([])
@@ -201,9 +203,10 @@ async function clearAllFlags() {
   query.flag = null
 }
 
-function showChain(userId: number, taskId: number) {
+function showChain(userId: number, taskId: number, username: string) {
   chainUserId.value = userId
   chainTaskId.value = taskId
+  chainUsername.value = username
   chainModal.value = true
 }
 
@@ -219,7 +222,7 @@ const columns: DataTableColumn<SubmissionOut>[] = [
         loading: expandedLoading.has(row.id),
         onSelect: (id) => getSubmissionByID(id),
         onDelete: (r, parentId) => handleDelete(r, parentId),
-        "onShow-chain": (userId, taskId) => showChain(userId, taskId),
+        "onShow-chain": (userId, taskId, username) => showChain(userId, taskId, username),
       }),
   },
   {
