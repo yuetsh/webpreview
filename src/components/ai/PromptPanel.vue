@@ -1,10 +1,36 @@
 <template>
   <div class="prompt-panel">
     <div class="messages" ref="messagesRef">
-      <div v-for="(msg, i) in messages" :key="i" :class="['message', msg.role]">
-        <div class="message-role">{{ msg.role === "user" ? "我" : "AI" }}</div>
-        <div class="message-content" v-html="renderContent(msg)"></div>
+      <div
+        v-for="(pair, pi) in pairs"
+        :key="pair.assistantMsg?.id ?? 'user-' + pair.index"
+        class="message-pair"
+        :class="{ 'has-delete': pair.assistantMsg?.id && !streaming }"
+      >
+        <!-- Delete button: only shown on hover when pair has assistant id and not streaming -->
+        <button
+          v-if="pair.assistantMsg?.id && !streaming"
+          class="pair-delete-btn"
+          @click="deletePair(pair.assistantMsg!.id!)"
+          title="删除这轮对话及关联提交"
+        >
+          <Icon icon="lucide:trash-2" :width="14" />
+        </button>
+
+        <!-- User message -->
+        <div class="message user">
+          <div class="message-role">我</div>
+          <div class="message-content" v-html="renderContent(pair.userMsg)"></div>
+        </div>
+
+        <!-- Assistant message -->
+        <div v-if="pair.assistantMsg" class="message assistant">
+          <div class="message-role">AI</div>
+          <div class="message-content" v-html="renderContent(pair.assistantMsg)"></div>
+        </div>
       </div>
+
+      <!-- Streaming indicator -->
       <div v-if="streaming" class="message assistant">
         <div class="message-role">AI</div>
         <div v-if="!streamingContent" class="typing-indicator">
@@ -51,9 +77,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, nextTick } from "vue"
+import { ref, watch, nextTick, computed } from "vue"
 import { useStorage } from "@vueuse/core"
 import { marked, Renderer } from "marked"
+import { useMessage } from "naive-ui"
+import { Icon } from "@iconify/vue"
 import {
   messages,
   streaming,
@@ -62,15 +90,51 @@ import {
   sendPrompt,
   stopPrompt,
 } from "../../store/prompt"
+import { Prompt } from "../../api"
 
 const input = ref("")
 const messagesRef = ref<HTMLElement>()
+const naiveMessage = useMessage()
 
 const modelOptions = [
   { label: "豆包", value: "doubao-seed-2-0-lite-260215" },
   { label: "DeepSeek", value: "deepseek-chat" },
 ]
 const selectedModel = useStorage("prompt-model", "deepseek-chat")
+
+// Group messages into user+assistant pairs
+const pairs = computed(() => {
+  const result: Array<{
+    userMsg: { role: string; content: string; id?: number }
+    assistantMsg: { role: string; content: string; id?: number; code?: any } | null
+    index: number
+  }> = []
+  const msgs = messages.value
+  let i = 0
+  while (i < msgs.length) {
+    if (msgs[i].role === "user") {
+      const assistantMsg = msgs[i + 1]?.role === "assistant" ? msgs[i + 1] : null
+      result.push({ userMsg: msgs[i], assistantMsg, index: i })
+      i += assistantMsg ? 2 : 1
+    } else {
+      i++
+    }
+  }
+  return result
+})
+
+async function deletePair(assistantMsgId: number) {
+  try {
+    await Prompt.deleteMessagePair(assistantMsgId)
+    const msgIdx = messages.value.findIndex((m) => m.id === assistantMsgId)
+    if (msgIdx >= 1) {
+      messages.value.splice(msgIdx - 1, 2)
+    }
+    naiveMessage.success("已删除")
+  } catch {
+    naiveMessage.error("删除失败，请重试")
+  }
+}
 
 function send() {
   const text = input.value.trim()
@@ -133,7 +197,6 @@ function renderContent(msg: { role: string; content: string }): string {
   return renderMarkdown(msg.content)
 }
 
-// Auto-scroll to bottom on new messages
 watch([() => messages.value.length, streamingContent], () => {
   nextTick(() => {
     if (messagesRef.value) {
@@ -288,5 +351,39 @@ watch([() => messages.value.length, streamingContent], () => {
   flex-shrink: 0;
   padding: 12px;
   border-top: 1px solid #e0e0e0;
+}
+
+.message-pair {
+  position: relative;
+  margin-bottom: 4px;
+}
+
+.message-pair .message {
+  margin-bottom: 16px;
+}
+
+.pair-delete-btn {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: none;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 3px 6px;
+  cursor: pointer;
+  color: #bbb;
+  line-height: 1;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.pair-delete-btn:hover {
+  color: #e03e3e;
+  border-color: #e03e3e;
+}
+
+.message-pair.has-delete:hover .pair-delete-btn {
+  display: inline-flex;
+  align-items: center;
 }
 </style>

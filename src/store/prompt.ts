@@ -5,6 +5,7 @@ import { html, css, js } from "./editors"
 export interface PromptMessage {
   role: "user" | "assistant"
   content: string
+  id?: number          // assistant message backend pk (for deletion)
   code?: { html: string | null; css: string | null; js: string | null }
   created?: string
 }
@@ -15,11 +16,10 @@ export const connected = ref(false)
 export const streaming = ref(false)
 export const streamingContent = ref("")
 let _onCodeComplete:
-  | ((code: {
-      html: string | null
-      css: string | null
-      js: string | null
-    }) => void)
+  | ((
+      code: { html: string | null; css: string | null; js: string | null },
+      messageId: number
+    ) => void)
   | null = null
 
 export function setOnCodeComplete(fn: typeof _onCodeComplete) {
@@ -45,14 +45,10 @@ export function connectPrompt(taskId: number) {
     if (data.type === "init") {
       streaming.value = false
       streamingContent.value = ""
-      // Skip overwriting messages if HTTP preload already loaded this conversation.
-      // If conversation_id differs (e.g. after "新对话"), always overwrite.
       const alreadyLoaded = conversationId.value === data.conversation_id
       conversationId.value = data.conversation_id
       if (!alreadyLoaded) {
         messages.value = data.messages || []
-        // Apply code from last assistant message if exists
-        // (skipped when HTTP preload already loaded and applied)
         const lastAssistant = [...messages.value]
           .reverse()
           .find((m) => m.role === "assistant" && m.code)
@@ -65,18 +61,17 @@ export function connectPrompt(taskId: number) {
       streamingContent.value += data.content
     } else if (data.type === "complete") {
       streaming.value = false
-      // Push the full assistant message
       messages.value.push({
         role: "assistant",
         content: streamingContent.value,
+        id: data.message_id,
         code: data.code,
       })
       streamingContent.value = ""
-      // Apply code to editors
       if (data.code) {
         applyCode(data.code)
         if (_onCodeComplete) {
-          _onCodeComplete(data.code)
+          _onCodeComplete(data.code, data.message_id)
         }
       }
     } else if (data.type === "error") {
@@ -115,7 +110,6 @@ export function sendPrompt(content: string, model: string = "") {
 }
 
 export function stopPrompt() {
-  // Remove the user message added to UI (not yet saved in DB)
   if (
     messages.value.length > 0 &&
     messages.value[messages.value.length - 1].role === "user"
@@ -124,7 +118,6 @@ export function stopPrompt() {
   }
   streaming.value = false
   streamingContent.value = ""
-  // connectPrompt closes old WS (triggering backend disconnect cleanup) then reconnects
   if (_currentTaskId) {
     connectPrompt(_currentTaskId)
   }

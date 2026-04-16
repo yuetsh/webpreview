@@ -160,12 +160,14 @@ export const Submission = {
       js?: string
       prompt?: string
     },
+    messageId?: number,
   ) {
     const { prompt, ...rest } = code
     const data = {
       task_id: taskId,
       ...rest,
       prompt: prompt || null,
+      message_id: messageId ?? null,
     }
     const res = await http.post("/submission/", data)
     return res.data
@@ -259,6 +261,13 @@ export const Prompt = {
     const convs = await this.listConversations(taskId, userId)
     if (!convs.length) return []
     return this.getMessages(convs[0].id)
+  },
+
+  async deleteMessagePair(
+    messageId: number,
+  ): Promise<{ deleted: boolean; submission_deleted: boolean }> {
+    const res = await http.delete(`/prompt/messages/${messageId}/pair`)
+    return res.data
   },
 }
 

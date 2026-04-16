@@ -183,13 +183,17 @@ async function loadChallenge() {
   assets.value = await TaskAssets.listChallenge(display)
   if (!authed.value) return
   connectPrompt(data.task_ptr)
-  setOnCodeComplete(async (code) => {
+  setOnCodeComplete(async (code, messageId) => {
     try {
-      await Submission.create(taskId.value, {
-        html: code.html ?? "",
-        css: code.css ?? "",
-        js: code.js ?? "",
-      })
+      await Submission.create(
+        taskId.value,
+        {
+          html: code.html ?? "",
+          css: code.css ?? "",
+          js: code.js ?? "",
+        },
+        messageId,
+      )
       message.success("已自动提交本次对话生成的代码")
     } catch {
       // 静默失败，不打扰用户
