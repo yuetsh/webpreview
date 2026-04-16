@@ -3,6 +3,7 @@ import type { TASK_TYPE } from "./const"
 export interface PromptMessage {
   id: number
   role: string
+  source?: string
   content: string
   code_html: string | null
   code_css: string | null
