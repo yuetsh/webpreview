@@ -98,9 +98,9 @@ const naiveMessage = useMessage()
 
 const modelOptions = [
   { label: "豆包", value: "doubao-seed-2-0-lite-260215" },
-  { label: "DeepSeek", value: "deepseek-chat" },
+  { label: "DeepSeek", value: "deepseek-v4-flash" },
 ]
-const selectedModel = useStorage("prompt-model", "deepseek-chat")
+const selectedModel = useStorage("prompt-model", "deepseek-v4-flash")
 
 // Group messages into user+assistant pairs
 const pairs = computed(() => {
