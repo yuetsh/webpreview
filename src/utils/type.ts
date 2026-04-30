@@ -160,3 +160,47 @@ export interface TaskStatsOut {
   classes: string[]
   top_viewed: TopViewedItem[]
 }
+
+export interface ShowcaseItem {
+  submission_id: string
+  username: string
+  task_title: string
+  task_display: number
+  score: number
+  view_count: number
+  html: string | null
+  css: string | null
+  js: string | null
+  has_prompt_chain: boolean
+}
+
+export interface AwardSection {
+  id: number
+  name: string
+  description: string
+  item_ordering: string
+  items: ShowcaseItem[]
+}
+
+export interface ShowcaseDetail {
+  submission_id: string
+  username: string
+  task_title: string
+  task_display: number
+  score: number
+  view_count: number
+  html: string | null
+  css: string | null
+  js: string | null
+  awards: string[]
+  has_prompt_chain: boolean
+}
+
+export interface PromptRound {
+  question: string
+  source: string
+  prompt_level: number | null
+  html: string | null
+  css: string | null
+  js: string | null
+}

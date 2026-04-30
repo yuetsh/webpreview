@@ -26,6 +26,19 @@ const routes = [
     props: true,
   },
   {
+    path: "/showcase",
+    name: "showcase",
+    component: () => import("./pages/Showcase.vue"),
+    meta: { auth: true },
+  },
+  {
+    path: "/showcase/:id",
+    name: "showcase-detail",
+    component: () => import("./pages/ShowcaseDetail.vue"),
+    props: true,
+    meta: { auth: true },
+  },
+  {
     path: "/dashboard",
     name: "dashboard",
     component: () => import("./pages/Dashboard.vue"),

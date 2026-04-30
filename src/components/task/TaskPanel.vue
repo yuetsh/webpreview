@@ -57,6 +57,14 @@
           </template>
           提交记录
         </n-tooltip>
+        <n-tooltip v-if="authed" trigger="hover">
+          <template #trigger>
+            <n-button text @click="$router.push({ name: 'showcase' })">
+              <Icon :width="16" icon="lucide:award"></Icon>
+            </n-button>
+          </template>
+          作品广场
+        </n-tooltip>
         <n-tooltip v-if="roleSuper" trigger="hover">
           <template #trigger>
             <n-button text @click="edit">

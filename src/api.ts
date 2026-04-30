@@ -8,6 +8,9 @@ import type {
   PromptMessage,
   TaskStatsOut,
   TaskAsset,
+  AwardSection,
+  ShowcaseDetail,
+  PromptRound,
 } from "./utils/type"
 import { BASE_URL, STORAGE_KEY } from "./utils/const"
 
@@ -279,6 +282,25 @@ export const Helper = {
       headers: { "content-type": "multipart/form-data" },
     })
     return !!res.data.url ? res.data.url : ""
+  },
+}
+
+export const Showcase = {
+  async list(): Promise<AwardSection[]> {
+    const res = await http.get("/submission/showcase/")
+    return res.data
+  },
+
+  async getDetail(submissionId: string): Promise<ShowcaseDetail> {
+    const res = await http.get(`/submission/showcase/${submissionId}/`)
+    return res.data
+  },
+
+  async getPromptChain(submissionId: string): Promise<PromptRound[]> {
+    const res = await http.get(
+      `/submission/showcase/${submissionId}/prompt-chain/`,
+    )
+    return res.data
   },
 }
 
