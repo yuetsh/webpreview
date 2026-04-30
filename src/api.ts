@@ -209,6 +209,11 @@ export const Submission = {
     return res.data
   },
 
+  async getPromptChain(id: string): Promise<PromptRound[]> {
+    const res = await http.get(`/submission/${id}/prompt-chain`)
+    return res.data
+  },
+
   async delete(id: string) {
     const res = await http.delete("/submission/" + id)
     return res.data

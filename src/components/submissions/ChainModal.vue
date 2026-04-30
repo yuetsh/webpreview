@@ -203,14 +203,13 @@
 import { computed, ref, watch } from "vue"
 import { NPopconfirm, NButton } from "naive-ui"
 import { Icon } from "@iconify/vue"
-import { Prompt } from "../../api"
-import type { PromptMessage } from "../../utils/type"
+import { Prompt, Submission } from "../../api"
+import type { PromptRound } from "../../utils/type"
 import { user, roleSuper } from "../../store/user"
 
 const props = defineProps<{
   show: boolean
-  userId: number
-  taskId: number
+  submissionId: string
   username?: string
 }>()
 
@@ -219,49 +218,12 @@ const canDelete = computed(() => roleSuper.value || (!!props.username && props.u
 defineEmits<{ "update:show": [value: boolean] }>()
 
 const loading = ref(false)
-const messages = ref<PromptMessage[]>([])
 const selectedRound = ref(0)
-
-const rounds = computed(() => {
-  const result: {
-    question: string
-    source: string | null
-    prompt_level: number | null
-    assistantMsgId: number | null
-    html: string | null
-    css: string | null
-    js: string | null
-  }[] = []
-  for (const [i, msg] of messages.value.entries()) {
-    if (msg.role !== "user") continue
-    let html: string | null = null,
-      css: string | null = null,
-      js: string | null = null,
-      assistantMsgId: number | null = null
-    for (const reply of messages.value.slice(i + 1)) {
-      if (reply.role === "user") break
-      if (reply.role === "assistant") {
-        assistantMsgId = reply.id
-        if (reply.code_html) {
-          html = reply.code_html
-          css = reply.code_css
-          js = reply.code_js
-        }
-        break
-      }
-    }
-    result.push({
-      question: msg.content,
-      source: msg.source ?? null,
-      prompt_level: msg.prompt_level ?? null,
-      assistantMsgId,
-      html,
-      css,
-      js,
-    })
-  }
-  return result
-})
+type ChainRound = Omit<PromptRound, "source"> & {
+  source: string | null
+  assistantMsgId: number | null
+}
+const rounds = ref<ChainRound[]>([])
 
 async function deleteRound(index: number) {
   const round = rounds.value[index]
@@ -291,24 +253,28 @@ const selectedPageHtml = computed(() => {
 })
 
 async function loadMessages() {
-  if (!props.userId || !props.taskId) return
+  if (!props.submissionId) return
   loading.value = true
-  messages.value = []
+  rounds.value = []
   selectedRound.value = 0
   try {
-    messages.value = await Prompt.getMessagesByUserTask(
-      props.taskId,
-      props.userId,
-    )
+    const data = await Submission.getPromptChain(props.submissionId)
+    rounds.value = data.map((round) => ({
+      ...round,
+      source: round.source ?? null,
+      assistantMsgId: round.assistant_msg_id ?? null,
+    }))
     const last = rounds.value.length - 1
     if (last >= 0) selectedRound.value = last
+  } catch {
+    rounds.value = []
   } finally {
     loading.value = false
   }
 }
 
 watch(
-  () => [props.show, props.userId, props.taskId] as const,
+  () => [props.show, props.submissionId] as const,
   ([visible]) => {
     if (visible) loadMessages()
   },

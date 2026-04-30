@@ -36,7 +36,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   select: [id: string]
   delete: [row: SubmissionOut, parentId: string]
-  "show-chain": [userId: number, taskId: number, username: string]
+  "show-chain": [submissionId: string, username: string]
 }>()
 
 const isChallenge = computed(() => props.row.task_type === TASK_TYPE.Challenge)
@@ -91,7 +91,7 @@ const subColumns = computed((): DataTableColumn<SubmissionOut>[] => [
                   type: "primary",
                   onClick: (e: Event) => {
                     e.stopPropagation()
-                    emit("show-chain", r.userid, r.task_id, r.username)
+                    emit("show-chain", r.id, r.username)
                   },
                 },
                 () => "查看",

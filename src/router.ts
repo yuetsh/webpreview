@@ -68,12 +68,10 @@ export const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to) => {
   const isLoggedIn = localStorage.getItem(STORAGE_KEY.LOGIN) === "true"
   if (to.meta.auth && !isLoggedIn) {
     loginModal.value = true
-    next(false)
-  } else {
-    next()
+    return false
   }
 })

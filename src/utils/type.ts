@@ -200,6 +200,7 @@ export interface PromptRound {
   question: string
   source: string
   prompt_level: number | null
+  assistant_msg_id?: number | null
   html: string | null
   css: string | null
   js: string | null
