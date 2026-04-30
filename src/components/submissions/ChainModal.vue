@@ -130,20 +130,40 @@
                   gap: 8px;
                 "
               >
-                <span>{{ round.question }}</span>
-                <div style="display: flex; flex-direction: row; align-items: center; gap: 4px; flex-shrink: 0">
+                <div
+                  class="prompt-markdown markdown-body"
+                  :class="{
+                    'is-collapsed':
+                      isPromptLong(round.question) && !isExpanded(index),
+                  }"
+                  v-html="renderMarkdown(round.question)"
+                ></div>
+                <div
+                  style="
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    gap: 4px;
+                    flex-shrink: 0;
+                  "
+                >
                   <span
                     v-if="round.source"
                     :style="{
                       fontSize: '10px',
                       padding: '1px 5px',
                       borderRadius: '4px',
-                      background: round.source === 'conversation' ? '#e8f0fe' : '#f0f0f0',
-                      color: round.source === 'conversation' ? '#2060c0' : '#888',
+                      background:
+                        round.source === 'conversation' ? '#e8f0fe' : '#f0f0f0',
+                      color:
+                        round.source === 'conversation' ? '#2060c0' : '#888',
                       fontWeight: 500,
                       whiteSpace: 'nowrap',
                     }"
-                  >{{ round.source === "conversation" ? "对话" : "手动" }}</span>
+                    >{{
+                      round.source === "conversation" ? "对话" : "手动"
+                    }}</span
+                  >
                   <span
                     v-if="round.prompt_level"
                     :style="{
@@ -153,6 +173,23 @@
                     }"
                     >L{{ round.prompt_level }}</span
                   >
+                  <n-button
+                    v-if="isPromptLong(round.question)"
+                    text
+                    size="tiny"
+                    type="primary"
+                    @click.stop="toggleExpanded(index)"
+                  >
+                    <Icon
+                      :icon="
+                        isExpanded(index)
+                          ? 'lucide:chevron-up'
+                          : 'lucide:chevron-down'
+                      "
+                      :width="12"
+                    />
+                    {{ isExpanded(index) ? "收起" : "展开" }}
+                  </n-button>
                   <n-popconfirm
                     v-if="round.assistantMsgId && canDelete"
                     :show-icon="false"
@@ -203,6 +240,7 @@
 import { computed, ref, watch } from "vue"
 import { NPopconfirm, NButton } from "naive-ui"
 import { Icon } from "@iconify/vue"
+import { marked } from "marked"
 import { Prompt, Submission } from "../../api"
 import type { PromptRound } from "../../utils/type"
 import { user, roleSuper } from "../../store/user"
@@ -213,12 +251,16 @@ const props = defineProps<{
   username?: string
 }>()
 
-const canDelete = computed(() => roleSuper.value || (!!props.username && props.username === user.username))
+const canDelete = computed(
+  () =>
+    roleSuper.value || (!!props.username && props.username === user.username),
+)
 
 defineEmits<{ "update:show": [value: boolean] }>()
 
 const loading = ref(false)
 const selectedRound = ref(0)
+const expandedRounds = ref<Set<number>>(new Set())
 type ChainRound = Omit<PromptRound, "source"> & {
   source: string | null
   assistantMsgId: number | null
@@ -252,11 +294,34 @@ const selectedPageHtml = computed(() => {
   return `<!DOCTYPE html><html><head><meta charset="utf-8">${style}</head><body>${round.html}${script}</body></html>`
 })
 
+function renderMarkdown(text: string): string {
+  return marked.parse(text) as string
+}
+
+function isPromptLong(text: string): boolean {
+  return text.length > 220 || text.split(/\r?\n/).length > 4
+}
+
+function isExpanded(index: number): boolean {
+  return expandedRounds.value.has(index)
+}
+
+function toggleExpanded(index: number) {
+  const next = new Set(expandedRounds.value)
+  if (next.has(index)) {
+    next.delete(index)
+  } else {
+    next.add(index)
+  }
+  expandedRounds.value = next
+}
+
 async function loadMessages() {
   if (!props.submissionId) return
   loading.value = true
   rounds.value = []
   selectedRound.value = 0
+  expandedRounds.value = new Set()
   try {
     const data = await Submission.getPromptChain(props.submissionId)
     rounds.value = data.map((round) => ({
@@ -280,3 +345,44 @@ watch(
   },
 )
 </script>
+
+<style scoped>
+.prompt-markdown {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.prompt-markdown.is-collapsed {
+  position: relative;
+  max-height: 126px;
+  overflow: hidden;
+}
+
+.prompt-markdown :deep(p),
+.prompt-markdown :deep(ul),
+.prompt-markdown :deep(ol),
+.prompt-markdown :deep(blockquote),
+.prompt-markdown :deep(pre) {
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+
+.prompt-markdown :deep(:last-child) {
+  margin-bottom: 0;
+}
+
+.prompt-markdown :deep(pre) {
+  padding: 8px;
+  overflow-x: auto;
+  font-size: 12px;
+}
+
+.prompt-markdown :deep(code) {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+</style>
