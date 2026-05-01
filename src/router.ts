@@ -59,6 +59,11 @@ const routes = [
         name: "user-manage",
         component: () => import("./pages/UserManage.vue"),
       },
+      {
+        path: "showcase",
+        name: "showcase-manage",
+        component: () => import("./pages/ShowcaseManage.vue"),
+      },
     ],
   },
 ]

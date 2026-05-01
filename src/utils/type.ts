@@ -182,6 +182,53 @@ export interface AwardSection {
   items: ShowcaseItem[]
 }
 
+export type ItemOrdering = "manual" | "awarded_at" | "score" | "view_count"
+
+export interface AwardManageIn {
+  name: string
+  description: string
+  sort_order: number
+  is_active: boolean
+  item_ordering: ItemOrdering
+}
+
+export interface AwardManageOut extends AwardManageIn {
+  id: number
+  item_count: number
+}
+
+export interface AwardItemIn {
+  submission_id: string
+  sort_order: number
+}
+
+export interface AwardItemUpdateIn {
+  sort_order: number
+}
+
+export interface ShowcaseSubmissionLookupOut {
+  submission_id: string
+  username: string
+  task_title: string
+  task_display: number
+  score: number
+  view_count: number
+  has_prompt_chain: boolean
+}
+
+export interface AwardItemManageOut {
+  id: number
+  submission_id: string
+  username: string
+  task_title: string
+  task_display: number
+  score: number
+  view_count: number
+  sort_order: number
+  awarded_at: string
+  has_prompt_chain: boolean
+}
+
 export interface ShowcaseDetail {
   submission_id: string
   username: string

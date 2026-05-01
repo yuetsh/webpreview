@@ -9,6 +9,12 @@ import type {
   TaskStatsOut,
   TaskAsset,
   AwardSection,
+  AwardManageIn,
+  AwardManageOut,
+  AwardItemIn,
+  AwardItemUpdateIn,
+  AwardItemManageOut,
+  ShowcaseSubmissionLookupOut,
   ShowcaseDetail,
   PromptRound,
 } from "./utils/type"
@@ -293,6 +299,73 @@ export const Helper = {
 export const Showcase = {
   async list(): Promise<AwardSection[]> {
     const res = await http.get("/submission/showcase/")
+    return res.data
+  },
+
+  async listManageAwards(): Promise<AwardManageOut[]> {
+    const res = await http.get("/submission/showcase/manage/awards")
+    return res.data
+  },
+
+  async createAward(payload: AwardManageIn): Promise<AwardManageOut> {
+    const res = await http.post("/submission/showcase/manage/awards", payload)
+    return res.data
+  },
+
+  async updateAward(
+    id: number,
+    payload: AwardManageIn,
+  ): Promise<AwardManageOut> {
+    const res = await http.put(
+      `/submission/showcase/manage/awards/${id}`,
+      payload,
+    )
+    return res.data
+  },
+
+  async deleteAward(id: number) {
+    const res = await http.delete(`/submission/showcase/manage/awards/${id}`)
+    return res.data
+  },
+
+  async listAwardItems(id: number): Promise<AwardItemManageOut[]> {
+    const res = await http.get(`/submission/showcase/manage/awards/${id}/items`)
+    return res.data
+  },
+
+  async findSubmissionForAward(
+    submissionId: string,
+  ): Promise<ShowcaseSubmissionLookupOut> {
+    const res = await http.get(
+      `/submission/showcase/manage/submissions/${submissionId}`,
+    )
+    return res.data
+  },
+
+  async addAwardItem(
+    id: number,
+    payload: AwardItemIn,
+  ): Promise<AwardItemManageOut> {
+    const res = await http.post(
+      `/submission/showcase/manage/awards/${id}/items`,
+      payload,
+    )
+    return res.data
+  },
+
+  async updateAwardItem(
+    itemId: number,
+    payload: AwardItemUpdateIn,
+  ): Promise<AwardItemManageOut> {
+    const res = await http.put(
+      `/submission/showcase/manage/items/${itemId}`,
+      payload,
+    )
+    return res.data
+  },
+
+  async deleteAwardItem(itemId: number) {
+    const res = await http.delete(`/submission/showcase/manage/items/${itemId}`)
     return res.data
   },
 

@@ -63,7 +63,7 @@
               <Icon :width="16" icon="lucide:award"></Icon>
             </n-button>
           </template>
-          作品广场
+          创意工坊
         </n-tooltip>
         <n-tooltip v-if="roleSuper" trigger="hover">
           <template #trigger>

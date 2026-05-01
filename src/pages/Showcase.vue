@@ -2,7 +2,7 @@
   <main class="showcase">
     <header class="header">
       <div>
-        <n-h2 class="title">作品广场</n-h2>
+        <n-h2 class="title">创意工坊</n-h2>
         <n-text depth="3">优秀作品展示</n-text>
       </div>
     </header>

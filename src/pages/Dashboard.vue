@@ -44,6 +44,11 @@ const menu = computed(() =>
       show: roleSuper.value,
     },
     {
+      label: "工坊",
+      route: { name: "showcase-manage" },
+      show: roleSuper.value,
+    },
+    {
       label: "提交",
       route: { name: "submissions", params: { page: 1 } },
       show: roleAdmin.value || roleSuper.value,

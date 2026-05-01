@@ -6,7 +6,7 @@
           <template #icon>
             <Icon icon="lucide:arrow-left" />
           </template>
-          返回作品广场
+          返回创意工坊
         </n-button>
       </div>
       <iframe ref="iframe" class="preview-iframe" sandbox="allow-scripts" />
