@@ -2,6 +2,7 @@
 import { onMounted, useTemplateRef } from "vue"
 import { Submission } from "../api"
 import type { SubmissionAll } from "../utils/type"
+import { buildPreviewDocument } from "../utils/previewDocument"
 
 interface Props {
   id: string
@@ -18,20 +19,13 @@ async function init() {
   const doc = iframe.value.contentDocument
   if (doc) {
     doc.open()
-    doc.write(`<!DOCTYPE html>
-<html lang="zh-Hans-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <title>预览</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>${submission.css}</style>
-    <link rel="stylesheet" href="/normalize.min.css" />
-  </head>
-  <body>
-    ${submission.html}
-    <script>${submission.js}<\/script>
-  </body>
-</html>`)
+    doc.write(
+      buildPreviewDocument({
+        html: submission.html,
+        css: submission.css,
+        js: submission.js,
+      }),
+    )
     doc.close()
   }
 }

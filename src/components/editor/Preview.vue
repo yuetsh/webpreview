@@ -42,18 +42,19 @@
     </n-flex>
   </n-flex>
   <div class="iframe-wrapper" :style="iframeWrapperStyle">
-    <iframe class="iframe" ref="iframe"></iframe>
+    <iframe class="iframe" :srcdoc="previewContent"></iframe>
   </div>
 </template>
 <script lang="ts" setup>
 import { watchDebounced } from "@vueuse/core"
-import { computed, onMounted, useTemplateRef, ref } from "vue"
+import { computed, onMounted, ref } from "vue"
 import { useRouter } from "vue-router"
 import { Submission } from "../../api"
 import { submission } from "../../store/submission"
 import { useMessage } from "naive-ui"
 import { Icon } from "@iconify/vue"
 import copy from "copy-text-to-clipboard"
+import { buildPreviewDocument } from "../../utils/previewDocument"
 
 interface Props {
   html: string
@@ -91,7 +92,9 @@ const layoutConfig: Record<
   },
 }
 const layoutIndex = ref(0)
-const layoutIcon = computed(() => layoutConfig[layouts[layoutIndex.value]!].icon)
+const layoutIcon = computed(
+  () => layoutConfig[layouts[layoutIndex.value]!].icon,
+)
 const layoutLabel = computed(
   () => layoutConfig[layouts[layoutIndex.value]!].label,
 )
@@ -105,35 +108,20 @@ function cycleLayout() {
 const message = useMessage()
 const router = useRouter()
 
-const iframe = useTemplateRef<HTMLIFrameElement>("iframe")
 const showDL = computed(() => props.html || props.css || props.js)
+const previewContent = ref("")
 
 function getContent() {
-  return `<!DOCTYPE html>
-<html lang="zh-Hans-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <title>预览</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    ${props.assetBaseUrl ? `<base href="${props.assetBaseUrl}">` : ""}
-    <style>${props.css}</style>
-    <link rel="stylesheet" href="/normalize.min.css" />
-  </head>
-  <body>
-    ${props.html}
-    <script>${props.js}<\/script>
-  </body>
-</html>`
+  return buildPreviewDocument({
+    html: props.html,
+    css: props.css,
+    js: props.js,
+    assetBaseUrl: props.assetBaseUrl,
+  })
 }
 
 function preview() {
-  if (!iframe.value) return
-  const doc = iframe.value.contentDocument
-  if (doc) {
-    doc.open()
-    doc.write(getContent())
-    doc.close()
-  }
+  previewContent.value = getContent()
 }
 
 function download() {
@@ -155,7 +143,7 @@ function open() {
     })
     window.open(data.href, "_blank")
   } else {
-    const newTab = window.open("/usercontent.html")
+    const newTab = window.open("about:blank", "_blank")
     if (!newTab) return
     newTab.document.open()
     newTab.document.write(getContent())
@@ -183,10 +171,14 @@ async function updateScore(score: number) {
   }
 }
 
-watchDebounced(() => [props.html, props.css, props.js], preview, {
-  debounce: 500,
-  maxWait: 1000,
-})
+watchDebounced(
+  () => [props.html, props.css, props.js, props.assetBaseUrl],
+  preview,
+  {
+    debounce: 500,
+    maxWait: 1000,
+  },
+)
 onMounted(preview)
 </script>
 <style scoped>
