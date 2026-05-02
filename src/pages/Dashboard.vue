@@ -49,7 +49,7 @@ const menu = computed(() =>
       show: roleSuper.value,
     },
     {
-      label: "平时成绩",
+      label: "成绩",
       route: { name: "gradebook" },
       show: roleAdmin.value || roleSuper.value,
     },
