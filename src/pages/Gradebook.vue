@@ -94,6 +94,7 @@ import {
 } from "naive-ui"
 import { useRouter } from "vue-router"
 import { Account, Gradebook } from "../api"
+import { displayGradebookStudentName } from "../utils/gradebook"
 import type {
   GradebookCell,
   GradebookOut,
@@ -172,7 +173,11 @@ function renderTaskHeader(task: GradebookTask) {
 function renderScore(row: GradebookRow, task: GradebookTask) {
   const cell = row.scores[task.id]
   if (!cell || !cell.submitted) {
-    return h("span", { class: "missing-cell" }, "缺交")
+    return h(
+      NText,
+      { class: "missing-cell", type: "error" },
+      { default: () => "缺交" },
+    )
   }
   return h(
     NButton,
@@ -187,6 +192,11 @@ function renderScore(row: GradebookRow, task: GradebookTask) {
     },
     { default: () => formatScore(cell.score) },
   )
+}
+
+function renderMissingCount(value: number) {
+  if (value <= 0) return "0"
+  return h(NText, { type: "error" }, { default: () => String(value) })
 }
 
 const columns = computed<DataTableColumn<GradebookRow>[]>(() => {
@@ -215,8 +225,10 @@ const columns = computed<DataTableColumn<GradebookRow>[]>(() => {
       key: "username",
       width: 140,
       fixed: "left",
-      render: (row) =>
-        h(NText, { title: row.username }, { default: () => row.username }),
+      render: (row) => {
+        const studentName = displayGradebookStudentName(row)
+        return h(NText, { title: studentName }, { default: () => studentName })
+      },
     },
     {
       title: "班级",
@@ -271,6 +283,7 @@ const columns = computed<DataTableColumn<GradebookRow>[]>(() => {
       key: "missing_task_count",
       width: 70,
       fixed: "right",
+      render: (row) => renderMissingCount(row.missing_task_count),
     },
   ]
 })
