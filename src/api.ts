@@ -14,6 +14,8 @@ import type {
   AwardItemIn,
   AwardItemUpdateIn,
   AwardItemManageOut,
+  GradebookOut,
+  GradebookQuery,
   ShowcaseSubmissionLookupOut,
   ShowcaseDetail,
   PromptRound,
@@ -249,6 +251,50 @@ export const Submission = {
     if (classname) params.classname = classname
     const res = await http.get(`/submission/stats/${taskId}`, { params })
     return res.data as TaskStatsOut
+  },
+}
+
+function gradebookParams(query: GradebookQuery) {
+  const params: Record<string, string | boolean> = {
+    classname: query.classname,
+  }
+  if (query.task_type) params.task_type = query.task_type
+  if (query.username) params.username = query.username
+  if (query.include_all_tasks) params.include_all_tasks = true
+  return params
+}
+
+function filenameFromDisposition(
+  disposition: string | undefined,
+  fallback: string,
+) {
+  const match = disposition?.match(/filename\*=UTF-8''([^;]+)/)
+  return match ? decodeURIComponent(match[1]) : fallback
+}
+
+export const Gradebook = {
+  async get(query: GradebookQuery): Promise<GradebookOut> {
+    const res = await http.get("/submission/gradebook/", {
+      params: gradebookParams(query),
+    })
+    return res.data
+  },
+
+  async downloadCsv(query: GradebookQuery) {
+    const res = await http.get("/submission/gradebook/export/", {
+      params: gradebookParams(query),
+      responseType: "blob",
+    })
+    const blob = new Blob([res.data], { type: "text/csv;charset=utf-8" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = filenameFromDisposition(
+      res.headers["content-disposition"],
+      `gradebook-${query.classname}.csv`,
+    )
+    a.click()
+    URL.revokeObjectURL(url)
   },
 }
 

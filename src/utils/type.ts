@@ -161,6 +161,58 @@ export interface TaskStatsOut {
   top_viewed: TopViewedItem[]
 }
 
+export type GradebookTaskType = "tutorial" | "challenge"
+export type GradebookGrade = "A" | "B" | "C" | "D" | "E"
+
+export interface GradebookQuery {
+  classname: string
+  task_type?: GradebookTaskType | ""
+  username?: string
+  include_all_tasks?: boolean
+}
+
+export interface GradebookTask {
+  id: number
+  display: number
+  title: string
+  task_type: GradebookTaskType
+  submitted_count: number
+  coverage: number
+  included: boolean
+}
+
+export interface GradebookCell {
+  score: number
+  submitted: boolean
+  submission_id: string | null
+}
+
+export interface GradebookRow {
+  user_id: number
+  username: string
+  classname: string
+  rank: number
+  grade: GradebookGrade
+  scores: Record<number, GradebookCell>
+  tutorial_total: number
+  challenge_total: number
+  total_score: number
+  average_score: number | null
+  submitted_task_count: number
+  missing_task_count: number
+}
+
+export interface GradebookOut {
+  classname: string
+  classes: string[]
+  task_count: number
+  included_task_count: number
+  student_count: number
+  coverage_threshold_count: number
+  tasks: GradebookTask[]
+  rows: GradebookRow[]
+}
+
 export interface ShowcaseItem {
   submission_id: string
   username: string
