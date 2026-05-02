@@ -49,6 +49,11 @@ const menu = computed(() =>
       show: roleSuper.value,
     },
     {
+      label: "平时成绩",
+      route: { name: "gradebook" },
+      show: roleAdmin.value || roleSuper.value,
+    },
+    {
       label: "提交",
       route: { name: "submissions", params: { page: 1 } },
       show: roleAdmin.value || roleSuper.value,

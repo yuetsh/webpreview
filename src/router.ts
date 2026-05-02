@@ -64,6 +64,11 @@ const routes = [
         name: "showcase-manage",
         component: () => import("./pages/ShowcaseManage.vue"),
       },
+      {
+        path: "gradebook",
+        name: "gradebook",
+        component: () => import("./pages/Gradebook.vue"),
+      },
     ],
   },
 ]
