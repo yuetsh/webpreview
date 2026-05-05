@@ -311,7 +311,7 @@ const itemColumns: DataTableColumn<AwardItemManageOut>[] = [
   {
     title: "提交者",
     key: "username",
-    width: 92,
+    width: 180,
   },
   {
     title: "任务",
