@@ -1,7 +1,11 @@
 <template>
-  <n-flex vertical class="gradebook-page" :size="12">
-    <n-flex class="toolbar" align="center" justify="space-between">
-      <n-flex align="center" :size="8" class="filters">
+  <n-flex
+    vertical
+    :size="12"
+    style="height: 100%; min-width: 0; box-sizing: border-box; padding: 10px 10px 10px 0; overflow: hidden;"
+  >
+    <n-flex class="toolbar" align="center" justify="space-between" style="flex-shrink: 0;">
+      <n-flex align="center" :size="8" wrap style="min-width: 0;">
         <n-select
           v-model:value="query.classname"
           class="class-select"
@@ -56,7 +60,7 @@
       {{ loadError }}
     </n-alert>
 
-    <n-flex v-if="gradebook" class="summary" align="center" :size="8">
+    <n-flex v-if="gradebook" align="center" :size="8" style="flex-shrink: 0;">
       <n-tag size="small">学生 {{ gradebook.student_count }}</n-tag>
       <n-tag size="small">任务 {{ gradebook.task_count }}</n-tag>
       <n-tag size="small" type="success">
@@ -68,7 +72,6 @@
     </n-flex>
 
     <n-data-table
-      class="gradebook-table"
       size="small"
       striped
       flex-height
@@ -77,6 +80,7 @@
       :data="rows"
       :row-key="(row: GradebookRow) => row.user_id"
       :scroll-x="scrollX"
+      style="flex: 1; min-height: 0;"
     />
   </n-flex>
 </template>
@@ -347,24 +351,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.gradebook-page {
-  height: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-  padding: 10px 10px 10px 0;
-  overflow: hidden;
-}
-
-.toolbar,
-.summary {
-  flex-shrink: 0;
-}
-
-.filters {
-  min-width: 0;
-  flex-wrap: wrap;
-}
-
 .class-select {
   width: 150px;
 }
@@ -375,11 +361,6 @@ onMounted(async () => {
 
 .search-input {
   width: 160px;
-}
-
-.gradebook-table {
-  flex: 1;
-  min-height: 0;
 }
 
 .task-header {

@@ -1,36 +1,38 @@
 <template>
   <main class="showcase">
-    <header class="header">
+    <n-flex justify="space-between" align="flex-end" style="margin-bottom: 32px;">
       <div>
-        <n-h2 class="title">创意工坊</n-h2>
+        <n-h2 style="margin: 0 0 4px;">创意工坊</n-h2>
         <n-text depth="3">优秀作品展示</n-text>
       </div>
-    </header>
+    </n-flex>
 
     <n-spin :show="loading">
       <n-empty
         v-if="!loading && awards.length === 0"
         description="暂无展示作品"
-        class="empty"
+        style="margin-top: 72px;"
       />
 
       <section
         v-for="section in awards"
         :key="section.id"
-        class="award-section"
+        style="margin-bottom: 48px;"
       >
-        <div class="section-header">
-          <n-h3 class="section-title">{{ section.name }}</n-h3>
-          <n-text v-if="section.description" depth="3" class="section-desc">
+        <n-flex vertical :size="4" style="margin-bottom: 16px;">
+          <n-h3 style="margin: 0;">{{ section.name }}</n-h3>
+          <n-text v-if="section.description" depth="3" style="font-size: 13px;">
             {{ section.description }}
           </n-text>
-        </div>
+        </n-flex>
 
         <div class="card-grid">
-          <article
+          <n-card
             v-for="item in section.items"
             :key="item.submission_id"
             class="work-card"
+            content-style="padding: 0;"
+            hoverable
             @click="openDetail(item.submission_id)"
           >
             <div class="card-preview">
@@ -44,23 +46,31 @@
             </div>
             <div class="card-info">
               <n-flex justify="space-between" align="center" :wrap="false">
-                <n-text strong class="username">{{ item.username }}</n-text>
-                <n-flex align="center" :wrap="false" class="metric-row">
-                  <span class="metric">
+                <n-ellipsis style="font-size: 13px; font-weight: 600; min-width: 0; flex: 1;">
+                  {{ item.username }}
+                </n-ellipsis>
+                <n-flex align="center" :wrap="false" :size="8" style="flex-shrink: 0;">
+                  <n-flex align="center" :size="3">
                     <Icon icon="lucide:star" :width="13" />
-                    {{ item.score.toFixed(1) }}
-                  </span>
-                  <span class="metric">
+                    <n-text style="font-size: 12px; color: #666;">
+                      {{ item.score.toFixed(1) }}
+                    </n-text>
+                  </n-flex>
+                  <n-flex align="center" :size="3">
                     <Icon icon="lucide:eye" :width="13" />
-                    {{ item.view_count }}
-                  </span>
+                    <n-text style="font-size: 12px; color: #666;">
+                      {{ item.view_count }}
+                    </n-text>
+                  </n-flex>
                 </n-flex>
               </n-flex>
-              <n-text depth="3" class="task-title">
+              <n-ellipsis
+                style="display: block; margin-top: 4px; font-size: 12px; line-height: 1.4; color: #888;"
+              >
                 {{ item.task_title }}
-              </n-text>
+              </n-ellipsis>
             </div>
-          </article>
+          </n-card>
         </div>
       </section>
     </n-spin>
@@ -106,40 +116,6 @@ onMounted(init)
   padding: 32px 20px 48px;
 }
 
-.header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 32px;
-}
-
-.title {
-  margin: 0 0 4px;
-}
-
-.empty {
-  margin-top: 72px;
-}
-
-.award-section {
-  margin-bottom: 48px;
-}
-
-.section-header {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-bottom: 16px;
-}
-
-.section-title {
-  margin: 0;
-}
-
-.section-desc {
-  font-size: 13px;
-}
-
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -148,19 +124,11 @@ onMounted(init)
 
 .work-card {
   overflow: hidden;
-  border: 1px solid #e6e6e6;
-  border-radius: 8px;
-  background: #fff;
   cursor: pointer;
-  transition:
-    box-shadow 0.2s ease,
-    transform 0.2s ease,
-    border-color 0.2s ease;
+  transition: transform 0.2s ease;
 }
 
 .work-card:hover {
-  border-color: #c9dcff;
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
   transform: translateY(-2px);
 }
 
@@ -189,47 +157,5 @@ onMounted(init)
   min-height: 72px;
   padding: 10px 12px;
   border-top: 1px solid #f0f0f0;
-}
-
-.username {
-  min-width: 0;
-  overflow: hidden;
-  font-size: 13px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.metric-row {
-  flex-shrink: 0;
-  gap: 8px;
-}
-
-.metric {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  color: #666;
-  font-size: 12px;
-  line-height: 1;
-}
-
-.task-title {
-  display: block;
-  margin-top: 4px;
-  overflow: hidden;
-  font-size: 12px;
-  line-height: 1.4;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-@media (max-width: 640px) {
-  .showcase {
-    padding: 24px 12px 36px;
-  }
-
-  .card-grid {
-    grid-template-columns: 1fr;
-  }
 }
 </style>

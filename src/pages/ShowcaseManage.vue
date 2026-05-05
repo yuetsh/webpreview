@@ -1,6 +1,11 @@
 <template>
-  <n-flex class="manage-page" :wrap="false">
-    <aside class="award-panel">
+  <n-layout has-sider style="height: 100%;">
+    <n-layout-sider
+      :width="260"
+      bordered
+      content-style="overflow: auto; height: 100%;"
+      style="background: #fafafa;"
+    >
       <n-flex class="panel-header" justify="space-between" align="center">
         <n-text strong>奖项</n-text>
         <n-button size="small" secondary title="新建奖项" @click="startCreate">
@@ -15,7 +20,7 @@
           v-if="!awardsLoading && awards.length === 0"
           description="暂无奖项"
           size="small"
-          class="award-empty"
+          style="margin-top: 40px;"
         />
         <button
           v-for="award in awards"
@@ -27,21 +32,23 @@
           ]"
           @click="selectAward(award)"
         >
-          <span class="award-name">{{ award.name }}</span>
-          <span class="award-meta">
+          <n-ellipsis style="flex: 1; min-width: 0; font-size: 14px; font-weight: 500;">
+            {{ award.name }}
+          </n-ellipsis>
+          <n-flex align="center" :size="6" style="flex-shrink: 0; color: #777; font-size: 12px;">
             <n-tag v-if="!award.is_active" size="small">停用</n-tag>
             <span>{{ award.item_count }} 件</span>
-          </span>
+          </n-flex>
         </button>
       </n-spin>
-    </aside>
+    </n-layout-sider>
 
-    <section class="detail-panel">
+    <n-layout content-style="padding: 12px; overflow: auto; height: 100%; box-sizing: border-box;">
       <n-form
         :model="awardDraft"
         label-placement="left"
         label-width="82"
-        class="award-form"
+        style="max-width: 1100px;"
       >
         <n-grid :cols="4" :x-gap="12" :y-gap="8" responsive="screen">
           <n-form-item-gi :span="2" label="名称">
@@ -51,7 +58,7 @@
             <n-input-number
               v-model:value="awardDraft.sort_order"
               :show-button="false"
-              class="number-input"
+              style="width: 120px;"
             />
           </n-form-item-gi>
           <n-form-item-gi label="启用">
@@ -70,7 +77,7 @@
             />
           </n-form-item-gi>
           <n-form-item-gi>
-            <n-flex justify="end" class="form-actions">
+            <n-flex justify="end" style="width: 100%;">
               <n-button
                 type="primary"
                 :disabled="!canSaveAward"
@@ -100,7 +107,7 @@
 
       <n-divider />
 
-      <n-flex class="section-header" justify="space-between" align="center">
+      <n-flex justify="space-between" align="center" style="margin-bottom: 10px;">
         <n-text strong>已授奖作品</n-text>
         <n-flex align="center">
           <n-button
@@ -136,16 +143,16 @@
         :data="awardItems"
         :loading="itemsLoading"
         :row-key="(row: AwardItemManageOut) => row.id"
-        class="items-table"
+        style="max-width: 1100px;"
       />
-    </section>
-  </n-flex>
+    </n-layout>
+  </n-layout>
 
   <n-modal
     v-model:show="addWorkModalVisible"
     preset="card"
     title="添加作品"
-    class="add-work-modal"
+    style="width: min(640px, calc(100vw - 32px));"
   >
     <n-flex vertical :size="12">
       <n-input-group>
@@ -172,7 +179,7 @@
         {{ lookupError }}
       </n-alert>
 
-      <div v-if="submissionCandidate" class="candidate-panel">
+      <n-flex v-if="submissionCandidate" vertical :size="12">
         <n-descriptions :column="2" size="small" bordered>
           <n-descriptions-item label="提交者">
             {{ submissionCandidate.username }}
@@ -209,7 +216,7 @@
             </n-tag>
           </n-descriptions-item>
         </n-descriptions>
-        <n-flex justify="end" class="candidate-actions">
+        <n-flex justify="end" style="width: 100%;">
           <n-button secondary @click="clearSubmissionLookup">清空</n-button>
           <n-button
             type="primary"
@@ -226,7 +233,7 @@
             {{ candidateAlreadyAwarded ? "已添加" : "添加到奖项" }}
           </n-button>
         </n-flex>
-      </div>
+      </n-flex>
     </n-flex>
   </n-modal>
 </template>
@@ -553,21 +560,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.manage-page {
-  height: 100%;
-  min-width: 0;
-}
-
-.award-panel {
-  width: 260px;
-  min-width: 260px;
-  height: 100%;
-  box-sizing: border-box;
-  overflow: auto;
-  border-right: 1px solid #efeff5;
-  background: #fafafa;
-}
-
 .panel-header {
   position: sticky;
   top: 0;
@@ -575,10 +567,6 @@ onMounted(async () => {
   padding: 12px;
   border-bottom: 1px solid #efeff5;
   background: #fafafa;
-}
-
-.award-empty {
-  margin-top: 40px;
 }
 
 .award-row {
@@ -604,66 +592,6 @@ onMounted(async () => {
 .award-row.active {
   background: #e8f8f0;
   color: #18a058;
-}
-
-.award-name {
-  min-width: 0;
-  overflow: hidden;
-  font-size: 14px;
-  font-weight: 500;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.award-meta {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  gap: 6px;
-  color: #777;
-  font-size: 12px;
-}
-
-.detail-panel {
-  flex: 1;
-  min-width: 0;
-  height: 100%;
-  box-sizing: border-box;
-  overflow: auto;
-  padding: 12px;
-}
-
-.award-form {
-  max-width: 1100px;
-}
-
-.number-input {
-  width: 120px;
-}
-
-.form-actions {
-  width: 100%;
-}
-
-.section-header {
-  margin-bottom: 10px;
-}
-
-.items-table {
-  max-width: 1100px;
-}
-
-.candidate-panel {
-  display: grid;
-  gap: 12px;
-}
-
-.candidate-actions {
-  width: 100%;
-}
-
-:global(.add-work-modal) {
-  width: min(640px, calc(100vw - 32px));
 }
 
 :deep(.table-number-input) {

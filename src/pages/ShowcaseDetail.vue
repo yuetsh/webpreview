@@ -9,15 +9,19 @@
           返回创意工坊
         </n-button>
       </div>
-      <iframe ref="iframe" class="preview-iframe" sandbox="allow-scripts" />
+      <iframe
+        v-if="detailSrcdoc"
+        :srcdoc="detailSrcdoc"
+        class="preview-iframe"
+        sandbox="allow-scripts"
+      />
     </section>
 
     <aside class="info-panel">
-      <div class="meta">
-        <n-h3 class="detail-title">{{ detail.task_title }}</n-h3>
+      <n-flex vertical :size="0">
+        <n-h3 style="margin: 0 0 4px;">{{ detail.task_title }}</n-h3>
         <n-text depth="3">{{ detail.username }}</n-text>
-
-        <n-flex class="award-row" wrap>
+        <n-flex wrap :size="8" style="margin-top: 12px;">
           <n-tag
             v-for="award in detail.awards"
             :key="award"
@@ -27,18 +31,21 @@
             {{ award }}
           </n-tag>
         </n-flex>
-
-        <div class="stat-row">
-          <div class="stat-item">
+        <n-flex :size="18" style="margin-top: 14px;">
+          <n-flex align="center" :size="6">
             <Icon icon="lucide:star" :width="16" />
-            <span>{{ detail.score.toFixed(1) }}</span>
-          </div>
-          <div class="stat-item">
+            <n-text strong style="font-size: 14px;">
+              {{ detail.score.toFixed(1) }}
+            </n-text>
+          </n-flex>
+          <n-flex align="center" :size="6">
             <Icon icon="lucide:eye" :width="16" />
-            <span>{{ detail.view_count }}</span>
-          </div>
-        </div>
-      </div>
+            <n-text strong style="font-size: 14px;">
+              {{ detail.view_count }}
+            </n-text>
+          </n-flex>
+        </n-flex>
+      </n-flex>
 
       <n-divider v-if="detail.has_prompt_chain" />
 
@@ -48,45 +55,66 @@
       >
         <n-collapse-item title="创作过程" name="chain">
           <template #header-extra>
-            <n-text depth="3" class="collapse-extra">点击展开</n-text>
+            <n-text depth="3" style="font-size: 12px;">点击展开</n-text>
           </template>
           <n-spin :show="chainLoading">
             <n-empty
               v-if="!chainLoading && rounds.length === 0"
               description="暂无记录"
             />
-            <div v-else class="chain-layout">
-              <div class="round-list">
-                <button
-                  v-for="(round, i) in rounds"
-                  :key="i"
-                  class="round-item"
-                  :class="{ active: selectedRound === i }"
-                  type="button"
-                  @click="selectedRound = i"
-                >
-                  <span class="round-index">{{ i + 1 }}</span>
-                  <span class="round-content">
-                    <span class="round-text">{{ round.question }}</span>
-                    <span class="round-tags">
-                      <span class="tag-source">
-                        {{ round.source === "conversation" ? "对话" : "手动" }}
-                      </span>
-                      <span
-                        v-if="round.prompt_level"
-                        class="tag-level"
-                        :style="{ color: levelColors[round.prompt_level] }"
+            <n-flex v-else vertical :size="12">
+              <n-scrollbar style="max-height: 260px;">
+                <n-flex vertical :size="8" style="padding-right: 4px;">
+                  <n-card
+                    v-for="(round, i) in rounds"
+                    :key="i"
+                    size="small"
+                    content-style="padding: 8px;"
+                    :style="{
+                      cursor: 'pointer',
+                      borderColor: selectedRound === i ? '#2080f0' : undefined,
+                      background: selectedRound === i ? '#e8f0fe' : undefined,
+                    }"
+                    @click="selectedRound = i"
+                  >
+                    <n-flex align="flex-start" :size="8">
+                      <n-avatar
+                        round
+                        :size="20"
+                        :color="selectedRound === i ? '#2080f0' : '#9db7e8'"
+                        style="font-size: 11px; font-weight: 700; flex-shrink: 0;"
                       >
-                        L{{ round.prompt_level }}
-                      </span>
-                    </span>
-                  </span>
-                </button>
-              </div>
-              <div class="round-preview">
-                <div class="round-preview-label">
+                        {{ i + 1 }}
+                      </n-avatar>
+                      <n-flex vertical :size="4" style="min-width: 0; flex: 1;">
+                        <n-text style="font-size: 12px; line-height: 1.5;">
+                          {{ round.question }}
+                        </n-text>
+                        <n-flex :size="5">
+                          <n-tag size="small" style="font-size: 10px;">
+                            {{ round.source === "conversation" ? "对话" : "手动" }}
+                          </n-tag>
+                          <n-text
+                            v-if="round.prompt_level"
+                            :style="{
+                              color: levelColors[round.prompt_level],
+                              fontSize: '11px',
+                              fontWeight: 700,
+                            }"
+                          >
+                            L{{ round.prompt_level }}
+                          </n-text>
+                        </n-flex>
+                      </n-flex>
+                    </n-flex>
+                  </n-card>
+                </n-flex>
+              </n-scrollbar>
+
+              <n-flex vertical :size="8">
+                <n-text strong style="font-size: 12px; color: #555;">
                   第 {{ selectedRound + 1 }} 轮效果
-                </div>
+                </n-text>
                 <iframe
                   v-if="selectedRoundSrcdoc"
                   :key="selectedRound"
@@ -94,30 +122,38 @@
                   sandbox="allow-scripts"
                   class="round-iframe"
                 />
-                <n-empty
+                <n-flex
                   v-else
-                  description="该轮无网页代码"
-                  class="round-empty"
-                />
-              </div>
-            </div>
+                  justify="center"
+                  align="center"
+                  style="min-height: 240px;"
+                >
+                  <n-empty description="该轮无网页代码" />
+                </n-flex>
+              </n-flex>
+            </n-flex>
           </n-spin>
         </n-collapse-item>
       </n-collapse>
     </aside>
   </main>
 
-  <div v-else-if="notFound" class="state">
+  <n-flex
+    v-else-if="notFound"
+    justify="center"
+    align="center"
+    style="min-height: 100vh; padding: 40px;"
+  >
     <n-empty description="作品不存在" />
-  </div>
+  </n-flex>
 
-  <div v-else class="state">
+  <n-flex v-else justify="center" align="center" style="min-height: 100vh;">
     <n-spin />
-  </div>
+  </n-flex>
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, useTemplateRef, watch } from "vue"
+import { computed, onMounted, ref } from "vue"
 import { useRouter } from "vue-router"
 import { Icon } from "@iconify/vue"
 import { Showcase } from "../api"
@@ -128,7 +164,6 @@ const props = defineProps<{
 }>()
 
 const router = useRouter()
-const iframe = useTemplateRef<HTMLIFrameElement>("iframe")
 const detail = ref<ShowcaseDetail | null>(null)
 const notFound = ref(false)
 const rounds = ref<PromptRound[]>([])
@@ -145,6 +180,11 @@ const levelColors: Record<number, string> = {
   6: "#c94f4f",
 }
 
+const detailSrcdoc = computed(() => {
+  if (!detail.value) return null
+  return buildDetailHtml(detail.value)
+})
+
 const selectedRoundSrcdoc = computed(() => {
   const round = rounds.value[selectedRound.value]
   if (!round?.html) return null
@@ -157,15 +197,6 @@ function buildDetailHtml(d: ShowcaseDetail) {
   const css = d.css ? `<style>${d.css}</style>` : ""
   const js = d.js ? `<script>${d.js}<\/script>` : ""
   return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/normalize.min.css" />${css}</head><body>${d.html ?? ""}${js}</body></html>`
-}
-
-function renderPreview() {
-  if (!iframe.value || !detail.value) return
-  const doc = iframe.value.contentDocument
-  if (!doc) return
-  doc.open()
-  doc.write(buildDetailHtml(detail.value))
-  doc.close()
 }
 
 async function loadChain() {
@@ -190,19 +221,10 @@ function onCollapseChange(
 async function init() {
   try {
     detail.value = await Showcase.getDetail(props.id)
-    await nextTick()
-    renderPreview()
   } catch {
     notFound.value = true
   }
 }
-
-watch(
-  () => detail.value,
-  (value) => {
-    if (value) renderPreview()
-  },
-)
 
 onMounted(init)
 </script>
@@ -242,156 +264,12 @@ onMounted(init)
   overflow-y: auto;
 }
 
-.meta {
-  display: flex;
-  flex-direction: column;
-}
-
-.detail-title {
-  margin: 0 0 4px;
-}
-
-.award-row {
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.stat-row {
-  display: flex;
-  gap: 18px;
-  margin-top: 14px;
-}
-
-.stat-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: #333;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.collapse-extra {
-  font-size: 12px;
-}
-
-.chain-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 12px;
-}
-
-.round-list {
-  display: flex;
-  max-height: 260px;
-  flex-direction: column;
-  gap: 8px;
-  overflow-y: auto;
-}
-
-.round-item {
-  display: flex;
-  width: 100%;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 8px;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  background: #f9fafb;
-  color: inherit;
-  cursor: pointer;
-  font: inherit;
-  text-align: left;
-  transition:
-    background 0.15s ease,
-    border-color 0.15s ease;
-}
-
-.round-item.active {
-  border-color: #2080f0;
-  background: #e8f0fe;
-}
-
-.round-index {
-  display: flex;
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #9db7e8;
-  color: #fff;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.round-item.active .round-index {
-  background: #2080f0;
-}
-
-.round-content {
-  min-width: 0;
-}
-
-.round-text {
-  display: block;
-  color: #333;
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-.round-tags {
-  display: flex;
-  gap: 5px;
-  margin-top: 5px;
-}
-
-.tag-source {
-  border-radius: 4px;
-  background: #eef1f4;
-  color: #666;
-  font-size: 10px;
-  line-height: 1.5;
-  padding: 1px 5px;
-}
-
-.tag-level {
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.round-preview {
-  display: flex;
-  min-height: 260px;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.round-preview-label {
-  color: #555;
-  font-size: 12px;
-  font-weight: 700;
-}
-
 .round-iframe {
   min-height: 240px;
   flex: 1;
   border: 1px solid #e0e0e0;
   border-radius: 6px;
   background: #fff;
-}
-
-.round-empty {
-  margin: auto;
-}
-
-.state {
-  display: flex;
-  min-height: 100vh;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
 }
 
 @media (max-width: 760px) {
