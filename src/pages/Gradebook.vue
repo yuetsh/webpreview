@@ -227,18 +227,12 @@ const columns = computed<DataTableColumn<GradebookRow>[]>(() => {
     {
       title: "学生",
       key: "username",
-      width: 140,
+      width: 100,
       fixed: "left",
       render: (row) => {
         const studentName = displayGradebookStudentName(row)
         return h(NText, { title: studentName }, { default: () => studentName })
       },
-    },
-    {
-      title: "班级",
-      key: "classname",
-      width: 90,
-      fixed: "left",
     },
     ...tasks.map((task) => ({
       title: () => renderTaskHeader(task),
