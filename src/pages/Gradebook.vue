@@ -209,13 +209,13 @@ const columns = computed<DataTableColumn<GradebookRow>[]>(() => {
     {
       title: "排名",
       key: "rank",
-      width: 66,
+      width: 60,
       fixed: "left",
     },
     {
       title: "等级",
       key: "grade",
-      width: 66,
+      width: 60,
       fixed: "left",
       render: (row) =>
         h(
@@ -227,7 +227,7 @@ const columns = computed<DataTableColumn<GradebookRow>[]>(() => {
     {
       title: "学生",
       key: "username",
-      width: 100,
+      width: 80,
       fixed: "left",
       render: (row) => {
         const studentName = displayGradebookStudentName(row)
