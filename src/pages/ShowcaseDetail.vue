@@ -2,7 +2,7 @@
   <main v-if="detail" class="detail-layout">
     <section class="preview-panel">
       <div class="back-bar">
-        <n-button text @click="router.push({ name: 'showcase' })">
+        <n-button text @click="router.back()">
           <template #icon>
             <Icon icon="lucide:arrow-left" />
           </template>
