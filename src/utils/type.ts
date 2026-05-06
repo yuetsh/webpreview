@@ -12,6 +12,19 @@ export interface PromptMessage {
   created: string
 }
 
+export interface PromptHistoryItem {
+  user_message_id: number
+  assistant_message_id: number
+  submission_id: string | null
+  source: string
+  prompt: string
+  prompt_level: number | null
+  code_html: string | null
+  code_css: string | null
+  code_js: string | null
+  created: string
+}
+
 export enum Role {
   Super = "super",
   Admin = "admin",

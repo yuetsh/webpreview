@@ -6,6 +6,7 @@ import type {
   FlagType,
   SubmissionOut,
   PromptMessage,
+  PromptHistoryItem,
   TaskStatsOut,
   TaskAsset,
   AwardSection,
@@ -304,6 +305,11 @@ export const Prompt = {
     if (taskId) params.task_id = taskId
     if (userId) params.user_id = userId
     return (await http.get("/prompt/conversations/", { params })).data
+  },
+
+  async listHistory(taskId: number): Promise<PromptHistoryItem[]> {
+    const res = await http.get(`/prompt/history/${taskId}`)
+    return res.data
   },
 
   async getMessages(conversationId: string): Promise<PromptMessage[]> {

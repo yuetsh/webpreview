@@ -52,6 +52,9 @@ import { html, css, js } from "../../store/editors"
 import { Submission } from "../../api"
 
 const props = defineProps<{ taskId: number }>()
+const emit = defineEmits<{
+  submitted: []
+}>()
 const message = useMessage()
 
 const promptText = ref("")
@@ -105,6 +108,7 @@ async function submit() {
       js: splitResult.value.js,
       prompt: promptText.value.trim(),
     })
+    emit("submitted")
     message.success("提交成功")
     promptText.value = ""
     rawCode.value = ""

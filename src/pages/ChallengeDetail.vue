@@ -52,7 +52,15 @@
           <PromptPanel />
         </n-tab-pane>
         <n-tab-pane name="external" tab="手动提交" display-directive="show">
-          <ExternalAIPanel :task-id="taskId" />
+          <ExternalAIPanel :task-id="taskId" @submitted="historyRefreshKey++" />
+        </n-tab-pane>
+        <n-tab-pane name="history" tab="历史对话" display-directive="show">
+          <PromptHistoryPanel
+            :task-id="taskId"
+            :active="activeTab === 'history'"
+            :asset-base-url="assetBaseUrl"
+            :refresh-key="historyRefreshKey"
+          />
         </n-tab-pane>
       </n-tabs>
     </div>
@@ -116,6 +124,7 @@ import { marked, type MarkedOptions } from "marked"
 import copyFn from "copy-text-to-clipboard"
 import PromptPanel from "../components/ai/PromptPanel.vue"
 import ExternalAIPanel from "../components/ai/ExternalAIPanel.vue"
+import PromptHistoryPanel from "../components/ai/PromptHistoryPanel.vue"
 import Preview from "../components/editor/Preview.vue"
 import TaskStatsModal from "../components/task/TaskStatsModal.vue"
 import { Challenge, Submission, TaskAssets } from "../api"
@@ -169,6 +178,7 @@ const showCode = ref(false)
 const showStats = ref(false)
 const showAssets = ref(false)
 const assets = ref<TaskAsset[]>([])
+const historyRefreshKey = ref(0)
 
 const assetBaseUrl = computed(
   () => `/media/tasks/challenge/${challengeDisplay.value}/`,
@@ -203,6 +213,7 @@ async function loadChallenge() {
         },
         messageId,
       )
+      historyRefreshKey.value++
       message.success("已自动提交本次对话生成的代码")
     } catch {
       // 静默失败，不打扰用户
