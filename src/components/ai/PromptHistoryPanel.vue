@@ -35,7 +35,7 @@
     <n-scrollbar v-else class="history-scrollbar">
       <n-flex vertical :size="12" class="history-list">
         <n-card
-          v-for="item in items"
+          v-for="(item, index) in items"
           :key="item.assistant_message_id"
           class="history-card"
           :class="{
@@ -45,6 +45,7 @@
           size="small"
           :bordered="true"
           hoverable
+          :embedded="selectedAssistantMessageId === item.assistant_message_id"
           :content-style="{ padding: 0 }"
           @click="selectItem(item)"
         >
@@ -54,11 +55,33 @@
             justify="space-between"
             :wrap="false"
           >
+            <n-flex align="center" :wrap="false" :size="6">
+              <n-tag
+                round
+                size="small"
+                :bordered="false"
+                :type="
+                  selectedAssistantMessageId === item.assistant_message_id
+                    ? 'success'
+                    : 'default'
+                "
+              >
+                #{{ index + 1 }}
+              </n-tag>
+              <n-tag
+                size="small"
+                :type="item.source === 'manual' ? 'info' : 'success'"
+              >
+                {{ item.source === "manual" ? "手动提交" : "AI 对话" }}
+              </n-tag>
+            </n-flex>
             <n-tag
+              v-if="selectedAssistantMessageId === item.assistant_message_id"
               size="small"
-              :type="item.source === 'manual' ? 'info' : 'success'"
+              type="success"
+              :bordered="false"
             >
-              {{ item.source === "manual" ? "手动提交" : "AI 对话" }}
+              正在预览
             </n-tag>
             <n-text depth="3">
               {{ parseTime(item.created, "YYYY-MM-DD HH:mm") }}
@@ -217,11 +240,26 @@ onMounted(() => {
 
 .history-card {
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
 
 .history-card.is-selected {
+  --n-border-color: #18a058;
   border-color: #18a058;
-  box-shadow: 0 8px 20px rgba(24, 160, 88, 0.18);
+  box-shadow:
+    0 0 0 2px rgba(24, 160, 88, 0.35),
+    0 12px 26px rgba(24, 160, 88, 0.24);
+  transform: translateY(-1px);
+}
+
+.history-card.is-selected::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: #18a058;
+  z-index: 1;
 }
 
 .history-main {
