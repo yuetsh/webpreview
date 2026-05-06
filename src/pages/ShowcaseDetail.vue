@@ -156,7 +156,7 @@
 import { computed, onMounted, ref } from "vue"
 import { useRouter } from "vue-router"
 import { Icon } from "@iconify/vue"
-import { Showcase } from "../api"
+import { Showcase, Submission } from "../api"
 import type { PromptRound, ShowcaseDetail } from "../utils/type"
 
 const props = defineProps<{
@@ -221,6 +221,7 @@ function onCollapseChange(
 async function init() {
   try {
     detail.value = await Showcase.getDetail(props.id)
+    void Submission.incrementView(props.id)
   } catch {
     notFound.value = true
   }
