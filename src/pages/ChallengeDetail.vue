@@ -34,12 +34,19 @@
           </n-flex>
         </template>
         <n-tab-pane name="desc" tab="挑战描述" display-directive="show">
-          <div
-            class="markdown-body content no-select"
-            v-html="challengeContent"
-            ref="$desc"
-            @copy.prevent
-          />
+          <div class="desc-pane">
+            <div class="challenge-meta">
+              <n-text depth="3">
+                出题人：{{ challengeAuthor || "未设置" }}
+              </n-text>
+            </div>
+            <div
+              class="markdown-body content no-select"
+              v-html="challengeContent"
+              ref="$desc"
+              @copy.prevent
+            />
+          </div>
         </n-tab-pane>
         <n-tab-pane name="chat" tab="AI 对话" display-directive="show">
           <PromptPanel />
@@ -156,6 +163,7 @@ function setupCodeCopy() {
 
 const activeTab = ref("desc")
 const challengeContent = ref("")
+const challengeAuthor = ref("")
 const $desc = useTemplateRef<HTMLElement>("$desc")
 const showCode = ref(false)
 const showStats = ref(false)
@@ -176,6 +184,7 @@ async function loadChallenge() {
   challengeDisplay.value = display
   const data = await Challenge.get(display)
   taskId.value = data.task_ptr
+  challengeAuthor.value = data.author_name ?? ""
   challengeContent.value = await marked.parse(data.content, {
     async: true,
     renderer: challengeRenderer,
@@ -272,8 +281,21 @@ onUnmounted(disconnectPrompt)
 .content {
   padding: 12px;
   overflow-y: auto;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   box-sizing: border-box;
+}
+
+.desc-pane {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.challenge-meta {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--n-border-color, #efeff5);
+  flex-shrink: 0;
 }
 
 .no-select {

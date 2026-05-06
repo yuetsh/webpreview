@@ -56,6 +56,7 @@ export interface ChallengeSlim {
   pass_score: number | null
   submitted: boolean
   is_public: boolean
+  author_name: string | null
 }
 
 export interface ChallengeIn {

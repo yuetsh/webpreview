@@ -25,6 +25,9 @@
             >
           </n-flex>
         </template>
+        <n-text depth="3" class="challenge-author">
+          出题人：{{ item.author_name || "未设置" }}
+        </n-text>
       </n-card>
     </n-flex>
   </div>
@@ -71,5 +74,10 @@ onMounted(async () => {
 
 .submitted-title {
   color: #888;
+}
+
+.challenge-author {
+  display: block;
+  font-size: 13px;
 }
 </style>

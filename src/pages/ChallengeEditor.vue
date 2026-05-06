@@ -29,6 +29,7 @@
               </n-button>
               <span>【{{ item.display }}】{{ item.title }}</span>
               <n-tag size="small" type="warning">{{ item.score }}分</n-tag>
+              <n-tag size="small">出题人 {{ item.author_name || "未设置" }}</n-tag>
             </n-flex>
           </template>
           <template #header-extra>
@@ -65,6 +66,9 @@
 
           <n-form-item label="公开" label-placement="left">
             <n-switch v-model:value="challenge.is_public" />
+          </n-form-item>
+          <n-form-item label="出题人" label-placement="left">
+            <n-text depth="3">{{ challenge.author_name || "未设置" }}</n-text>
           </n-form-item>
           <n-form-item label-placement="left">
             <n-button type="primary" @click="submit" :disabled="!canSubmit">
@@ -107,6 +111,7 @@ const challenge = reactive({
   content: "",
   score: 0,
   is_public: false,
+  author_name: "",
 })
 
 const canSubmit = computed(
@@ -129,6 +134,7 @@ function createNew() {
   challenge.content = ""
   challenge.score = 0
   challenge.is_public = false
+  challenge.author_name = ""
 }
 
 async function submit() {
@@ -140,6 +146,7 @@ async function submit() {
     challenge.content = ""
     challenge.score = 0
     challenge.is_public = false
+    challenge.author_name = ""
     await getContent()
   } catch (error: any) {
     message.error(error.response.data.detail)
@@ -168,6 +175,7 @@ async function show(display: number) {
   challenge.content = item.content
   challenge.score = item.score
   challenge.is_public = item.is_public
+  challenge.author_name = item.author_name ?? ""
 }
 
 async function togglePublic(display: number) {
