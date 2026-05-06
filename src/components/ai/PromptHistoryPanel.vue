@@ -240,30 +240,21 @@ onMounted(() => {
 
 .history-card {
   cursor: pointer;
-  position: relative;
   overflow: hidden;
 }
 
 .history-card.is-selected {
-  --n-border-color: #18a058;
-  border-color: #18a058;
-  box-shadow:
-    0 0 0 2px rgba(24, 160, 88, 0.35),
-    0 12px 26px rgba(24, 160, 88, 0.24);
-  transform: translateY(-1px);
+  --n-color: #f7fffa;
+  box-shadow: 0 10px 24px rgba(24, 160, 88, 0.14);
 }
 
-.history-card.is-selected::before {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 4px;
-  background: #18a058;
-  z-index: 1;
+.history-card.is-selected .history-main {
+  background: #eefaf3;
 }
 
 .history-main {
   padding: 10px 12px;
+  transition: background-color 0.18s ease;
 }
 
 .prompt-markdown {
@@ -308,6 +299,11 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.history-card.is-selected .thumbnail {
+  border-top-color: #d8f1e2;
+  background: #f4fbf6;
 }
 
 .thumbnail iframe {
