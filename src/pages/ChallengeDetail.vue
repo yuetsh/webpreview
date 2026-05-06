@@ -60,6 +60,7 @@
             :active="activeTab === 'history'"
             :asset-base-url="assetBaseUrl"
             :refresh-key="historyRefreshKey"
+            @select="previewHistoryItem"
           />
         </n-tab-pane>
       </n-tabs>
@@ -232,6 +233,12 @@ function clearAll() {
   html.value = ""
   css.value = ""
   js.value = ""
+}
+
+function previewHistoryItem(code: { html: string; css: string; js: string }) {
+  html.value = code.html
+  css.value = code.css
+  js.value = code.js
 }
 
 function back() {

@@ -37,9 +37,16 @@
         <n-card
           v-for="item in items"
           :key="item.assistant_message_id"
+          class="history-card"
+          :class="{
+            'is-selected':
+              selectedAssistantMessageId === item.assistant_message_id,
+          }"
           size="small"
           :bordered="true"
+          hoverable
           :content-style="{ padding: 0 }"
+          @click="selectItem(item)"
         >
           <n-flex
             class="history-main"
@@ -57,9 +64,10 @@
               {{ parseTime(item.created, "YYYY-MM-DD HH:mm") }}
             </n-text>
           </n-flex>
-          <n-p class="prompt-text">
-            {{ item.prompt }}
-          </n-p>
+          <div
+            class="prompt-markdown markdown-body"
+            v-html="renderMarkdown(item.prompt)"
+          />
           <div class="thumbnail" aria-label="页面缩略图">
             <iframe
               v-if="item.hasPage"
@@ -81,6 +89,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue"
 import { Icon } from "@iconify/vue"
+import { marked } from "marked"
 import { Prompt } from "../../api"
 import type { PromptHistoryItem } from "../../utils/type"
 import { parseTime } from "../../utils/helper"
@@ -93,6 +102,10 @@ const props = defineProps<{
   refreshKey?: number
 }>()
 
+const emit = defineEmits<{
+  select: [code: { html: string; css: string; js: string }]
+}>()
+
 type HistoryViewItem = PromptHistoryItem & {
   hasPage: boolean
   previewDoc: string
@@ -100,6 +113,7 @@ type HistoryViewItem = PromptHistoryItem & {
 
 const items = ref<HistoryViewItem[]>([])
 const loading = ref(false)
+const selectedAssistantMessageId = ref<number | null>(null)
 let loadedTaskId = 0
 
 function toViewItem(item: PromptHistoryItem): HistoryViewItem {
@@ -118,13 +132,36 @@ function toViewItem(item: PromptHistoryItem): HistoryViewItem {
   }
 }
 
+function renderMarkdown(text: string): string {
+  return marked.parse(text) as string
+}
+
+function selectItem(item: HistoryViewItem) {
+  selectedAssistantMessageId.value = item.assistant_message_id
+  emit("select", {
+    html: item.code_html ?? "",
+    css: item.code_css ?? "",
+    js: item.code_js ?? "",
+  })
+}
+
 async function load(force = true) {
   if (!props.taskId || loading.value) return
   if (!force && loadedTaskId === props.taskId) return
   loading.value = true
   try {
+    const taskChanged = loadedTaskId !== props.taskId
     const data = await Prompt.listHistory(props.taskId)
     items.value = data.map(toViewItem)
+    if (
+      taskChanged ||
+      !items.value.some(
+        (item) =>
+          item.assistant_message_id === selectedAssistantMessageId.value,
+      )
+    ) {
+      selectedAssistantMessageId.value = null
+    }
     loadedTaskId = props.taskId
   } finally {
     loading.value = false
@@ -178,16 +215,49 @@ onMounted(() => {
   padding: 12px;
 }
 
+.history-card {
+  cursor: pointer;
+}
+
+.history-card.is-selected {
+  border-color: #18a058;
+  box-shadow: 0 8px 20px rgba(24, 160, 88, 0.18);
+}
+
 .history-main {
   padding: 10px 12px;
 }
 
-.prompt-text {
+.prompt-markdown {
   margin: 0;
   padding: 0 12px 12px;
   color: #333;
   font-size: 14px;
   line-height: 1.6;
+  word-break: break-word;
+  background: transparent;
+}
+
+.prompt-markdown :deep(p),
+.prompt-markdown :deep(ul),
+.prompt-markdown :deep(ol),
+.prompt-markdown :deep(blockquote),
+.prompt-markdown :deep(pre) {
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+
+.prompt-markdown :deep(:last-child) {
+  margin-bottom: 0;
+}
+
+.prompt-markdown :deep(pre) {
+  padding: 8px;
+  overflow-x: auto;
+  font-size: 12px;
+}
+
+.prompt-markdown :deep(code) {
   white-space: pre-wrap;
   word-break: break-word;
 }
