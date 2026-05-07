@@ -46,25 +46,35 @@
     </div>
     <GuidancePanel @generate="onGuidanceGenerate" />
     <div class="input-area">
-      <n-input
-        v-model:value="input"
-        type="textarea"
-        :autosize="{ minRows: 1, maxRows: 4 }"
-        placeholder="描述你想要的网页效果..."
-        :disabled="streaming"
-        @keydown.enter.exact.prevent="send"
-      />
-      <n-flex justify="flex-end" align="center" style="margin-top: 8px">
+      <n-flex
+        class="prompt-input-row"
+        align="flex-start"
+        :wrap="false"
+        :size="8"
+      >
+        <n-input
+          v-model:value="input"
+          type="textarea"
+          :autosize="{ minRows: 1, maxRows: 4 }"
+          placeholder="描述你想要的网页效果..."
+          :disabled="streaming"
+          style="flex: 1; min-width: 0"
+          @keydown.enter.exact.prevent="send"
+        />
         <n-button
           secondary
           :disabled="!input.trim() || !connected || !currentTaskId || streaming"
+          style="flex-shrink: 0"
           title="调教提示词"
+          aria-label="调教提示词"
           @click="startGuidance"
         >
           <template #icon>
             <Icon icon="lucide:lightbulb" :width="16" />
           </template>
         </n-button>
+      </n-flex>
+      <n-flex justify="flex-end" align="center" style="margin-top: 8px">
         <n-select
           v-model:value="selectedModel"
           :options="modelOptions"
