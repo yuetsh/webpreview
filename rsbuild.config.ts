@@ -9,12 +9,13 @@ export default defineConfig({
     template: "./index.html",
   },
   source: {
-    include: [/node_modules[\\/]marked[\\/]/],
+    // include: [/node_modules[\\/]marked[\\/]/],
     entry: {
       index: "./src/main.ts",
     },
   },
   output: {
+    target: "web",
     polyfill: "usage",
   },
   tools: {
@@ -37,18 +38,6 @@ export default defineConfig({
         ws: true,
         changeOrigin: true,
       },
-    },
-  },
-  performance: {
-    chunkSplit: {
-      // strategy: "split-by-experience",
-      strategy: "split-by-module",
-      // forceSplitting: {
-      //   "lib-ui": /node_modules[\\/]naive-ui[\\/]/,
-      //   "lib-cm": /node_modules[\\/]@codemirror[\\/]/,
-      //   "lib-marked": /node_modules[\\/]marked[\\/]/,
-      //   "lib-hljs": /node_modules[\\/]highlight\.js[\\/]/,
-      // },
     },
   },
 })
