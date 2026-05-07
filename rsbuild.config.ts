@@ -9,7 +9,6 @@ export default defineConfig({
     template: "./index.html",
   },
   source: {
-    // include: [/node_modules[\\/]marked[\\/]/],
     entry: {
       index: "./src/main.ts",
     },
