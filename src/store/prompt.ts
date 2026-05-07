@@ -15,6 +15,7 @@ export const conversationId = ref<string>("")
 export const connected = ref(false)
 export const streaming = ref(false)
 export const streamingContent = ref("")
+export const currentTaskId = ref(0)
 let _onCodeComplete:
   | ((
       code: { html: string | null; css: string | null; js: string | null },
@@ -31,6 +32,7 @@ let _currentTaskId = 0
 
 export function connectPrompt(taskId: number) {
   _currentTaskId = taskId
+  currentTaskId.value = taskId
   if (ws) ws.close()
 
   ws = new WebSocket(`${WS_BASE_URL}/ws/prompt/${taskId}/`)
@@ -99,6 +101,8 @@ export function disconnectPrompt() {
   connected.value = false
   streaming.value = false
   streamingContent.value = ""
+  currentTaskId.value = 0
+  _currentTaskId = 0
   _onCodeComplete = null
 }
 

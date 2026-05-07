@@ -11,21 +11,7 @@
         vertical
         style="height: 100%; padding-right: 10px; overflow: hidden"
       >
-        <n-flex justify="space-between" style="flex-shrink: 0">
-          <n-button
-            secondary
-            @click="
-              () =>
-                goHome(
-                  $router,
-                  taskTab,
-                  taskTab === TASK_TYPE.Challenge ? challengeDisplay : step,
-                )
-            "
-          >
-            首页
-          </n-button>
-          <n-flex align="center">
+        <n-flex align="center" justify="end">
             <n-select
               :value="query.flag"
               style="width: 100px"
@@ -64,7 +50,6 @@
             >
               <Icon :width="16" icon="lucide:refresh-cw" />
             </n-button>
-          </n-flex>
         </n-flex>
         <n-data-table
           flex-height

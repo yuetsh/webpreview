@@ -44,6 +44,7 @@
         <div class="streaming-hint">AI 正在思考中…</div>
       </div>
     </div>
+    <GuidancePanel @generate="onGuidanceGenerate" />
     <div class="input-area">
       <n-input
         v-model:value="input"
@@ -54,6 +55,16 @@
         @keydown.enter.exact.prevent="send"
       />
       <n-flex justify="flex-end" align="center" style="margin-top: 8px">
+        <n-button
+          secondary
+          :disabled="!input.trim() || !connected || !currentTaskId || streaming"
+          title="调教提示词"
+          @click="startGuidance"
+        >
+          <template #icon>
+            <Icon icon="lucide:lightbulb" :width="16" />
+          </template>
+        </n-button>
         <n-select
           v-model:value="selectedModel"
           :options="modelOptions"
@@ -82,6 +93,8 @@ import { useStorage } from "@vueuse/core"
 import { marked, Renderer } from "marked"
 import { useMessage } from "naive-ui"
 import { Icon } from "@iconify/vue"
+import GuidancePanel from "./GuidancePanel.vue"
+import { openGuidance } from "../../store/guidance"
 import {
   messages,
   streaming,
@@ -89,6 +102,7 @@ import {
   connected,
   sendPrompt,
   stopPrompt,
+  currentTaskId,
 } from "../../store/prompt"
 import { Prompt } from "../../api"
 
@@ -140,6 +154,17 @@ function send() {
   const text = input.value.trim()
   if (!text || streaming.value) return
   sendPrompt(text, selectedModel.value)
+  input.value = ""
+}
+
+function startGuidance() {
+  const text = input.value.trim()
+  if (!text || !currentTaskId.value) return
+  openGuidance(currentTaskId.value, text)
+}
+
+function onGuidanceGenerate(finalPrompt: string) {
+  sendPrompt(finalPrompt, selectedModel.value)
   input.value = ""
 }
 
