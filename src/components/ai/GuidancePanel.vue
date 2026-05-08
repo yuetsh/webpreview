@@ -20,7 +20,7 @@
         </div>
 
         <div v-if="streaming" class="guidance-msg assistant">
-          <div class="msg-role">AI 教练</div>
+          <div class="msg-role">AI</div>
           <div v-if="!displayStreamingContent" class="typing-indicator">
             <span></span><span></span><span></span>
           </div>

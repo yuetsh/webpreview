@@ -41,7 +41,7 @@
           class="message-content"
           v-html="renderMarkdown(streamingContent)"
         ></div>
-        <div class="streaming-hint">AI 正在思考中…</div>
+        <div class="streaming-hint">AI 正在生成中…</div>
       </div>
     </div>
     <GuidancePanel @generate="onGuidanceGenerate" />
@@ -78,7 +78,7 @@
         <n-select
           v-model:value="selectedModel"
           :options="modelOptions"
-          style="width: 120px"
+          style="width: 150px"
           :disabled="streaming"
         />
         <n-button v-if="streaming" type="error" @click="stopPrompt">
@@ -123,6 +123,7 @@ const naiveMessage = useMessage()
 const modelOptions = [
   { label: "豆包", value: "doubao-seed-2-0-lite-260215" },
   { label: "DeepSeek", value: "deepseek-v4-flash" },
+  { label: "DeepSeek(思考)", value: "deepseek-v4-flash-thinking" },
 ]
 const selectedModel = useStorage("prompt-model", "deepseek-v4-flash")
 
