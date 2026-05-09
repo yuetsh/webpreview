@@ -49,7 +49,7 @@
           </div>
         </n-tab-pane>
         <n-tab-pane name="chat" tab="AI 对话" display-directive="show">
-          <PromptPanel />
+          <PromptPanel @deleted="historyRefreshKey++" />
         </n-tab-pane>
         <n-tab-pane name="external" tab="手动提交" display-directive="show">
           <ExternalAIPanel :task-id="taskId" @submitted="historyRefreshKey++" />
@@ -61,6 +61,7 @@
             :asset-base-url="assetBaseUrl"
             :refresh-key="historyRefreshKey"
             @select="previewHistoryItem"
+            @deleted="removeMessagePair"
           />
         </n-tab-pane>
       </n-tabs>
@@ -139,6 +140,7 @@ import {
   disconnectPrompt,
   streaming,
   setOnCodeComplete,
+  removeMessagePair,
 } from "../store/prompt"
 
 const route = useRoute()
@@ -193,14 +195,17 @@ async function loadChallenge() {
   const display = Number(route.params.display)
   taskTab.value = TASK_TYPE.Challenge
   challengeDisplay.value = display
-  const data = await Challenge.get(display)
+  const [data, fetchedAssets] = await Promise.all([
+    Challenge.get(display),
+    TaskAssets.listChallenge(display),
+  ])
   taskId.value = data.task_ptr
   challengeAuthor.value = data.author_name ?? ""
   challengeContent.value = await marked.parse(data.content, {
     async: true,
     renderer: challengeRenderer,
   } as MarkedOptions)
-  assets.value = await TaskAssets.listChallenge(display)
+  assets.value = fetchedAssets
   if (!authed.value) return
   connectPrompt(data.task_ptr)
   setOnCodeComplete(async (code, messageId) => {

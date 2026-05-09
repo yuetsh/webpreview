@@ -75,17 +75,36 @@
                 {{ item.source === "manual" ? "手动提交" : "AI 对话" }}
               </n-tag>
             </n-flex>
-            <n-tag
-              v-if="selectedAssistantMessageId === item.assistant_message_id"
-              size="small"
-              type="success"
-              :bordered="false"
-            >
-              正在预览
-            </n-tag>
-            <n-text depth="3">
-              {{ parseTime(item.created, "YYYY-MM-DD HH:mm") }}
-            </n-text>
+            <n-flex align="center" :wrap="false" :size="4">
+              <n-tag
+                v-if="selectedAssistantMessageId === item.assistant_message_id"
+                size="small"
+                type="success"
+                :bordered="false"
+              >
+                正在预览
+              </n-tag>
+              <n-text depth="3">
+                {{ parseTime(item.created, "YYYY-MM-DD HH:mm") }}
+              </n-text>
+              <n-tooltip placement="top">
+                <template #trigger>
+                  <n-button
+                    quaternary
+                    circle
+                    size="small"
+                    :loading="deletingId === item.assistant_message_id"
+                    :disabled="deletingId !== null"
+                    @click="deleteItem(item, $event)"
+                  >
+                    <template #icon>
+                      <Icon icon="lucide:trash-2" />
+                    </template>
+                  </n-button>
+                </template>
+                删除这条历史对话
+              </n-tooltip>
+            </n-flex>
           </n-flex>
           <div
             class="prompt-markdown markdown-body"
@@ -112,7 +131,8 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue"
 import { Icon } from "@iconify/vue"
-import { marked } from "marked"
+import { useMessage } from "naive-ui"
+import { renderMarkdown } from "../../utils/markdown"
 import { Prompt } from "../../api"
 import type { PromptHistoryItem } from "../../utils/type"
 import { parseTime } from "../../utils/helper"
@@ -127,6 +147,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   select: [code: { html: string; css: string; js: string }]
+  deleted: [assistantMessageId: number]
 }>()
 
 type HistoryViewItem = PromptHistoryItem & {
@@ -137,7 +158,11 @@ type HistoryViewItem = PromptHistoryItem & {
 const items = ref<HistoryViewItem[]>([])
 const loading = ref(false)
 const selectedAssistantMessageId = ref<number | null>(null)
+const deletingId = ref<number | null>(null)
 let loadedTaskId = 0
+let pendingRefresh = false
+
+const naiveMessage = useMessage()
 
 function toViewItem(item: PromptHistoryItem): HistoryViewItem {
   const html = item.code_html ?? ""
@@ -155,8 +180,25 @@ function toViewItem(item: PromptHistoryItem): HistoryViewItem {
   }
 }
 
-function renderMarkdown(text: string): string {
-  return marked.parse(text) as string
+async function deleteItem(item: HistoryViewItem, e: Event) {
+  e.stopPropagation()
+  if (deletingId.value !== null) return
+  deletingId.value = item.assistant_message_id
+  try {
+    await Prompt.deleteMessagePair(item.assistant_message_id)
+    items.value = items.value.filter(
+      (i) => i.assistant_message_id !== item.assistant_message_id,
+    )
+    if (selectedAssistantMessageId.value === item.assistant_message_id) {
+      selectedAssistantMessageId.value = null
+    }
+    emit("deleted", item.assistant_message_id)
+    naiveMessage.success("已删除")
+  } catch {
+    naiveMessage.error("删除失败，请重试")
+  } finally {
+    deletingId.value = null
+  }
 }
 
 function selectItem(item: HistoryViewItem) {
@@ -194,7 +236,14 @@ async function load(force = true) {
 watch(
   () => [props.active, props.taskId] as const,
   ([active]) => {
-    if (active) load(false)
+    if (active) {
+      if (pendingRefresh) {
+        pendingRefresh = false
+        load(true)
+      } else {
+        load(false)
+      }
+    }
   },
 )
 
@@ -202,6 +251,7 @@ watch(
   () => props.refreshKey,
   () => {
     if (props.active) load(true)
+    else pendingRefresh = true
   },
 )
 
@@ -242,6 +292,7 @@ onMounted(() => {
   cursor: pointer;
   overflow: hidden;
 }
+
 
 .history-card.is-selected {
   --n-color: #f7fffa;

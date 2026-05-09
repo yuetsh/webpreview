@@ -84,8 +84,8 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from "vue"
-import { marked } from "marked"
 import { Icon } from "@iconify/vue"
+import { renderMarkdown } from "../../utils/markdown"
 import {
   messages,
   streaming,
@@ -109,10 +109,6 @@ const messagesRef = ref<HTMLElement>()
 const displayStreamingContent = computed(() =>
   streamingContent.value.replace(/^\[READY\]\n?/, "")
 )
-
-function renderMarkdown(text: string): string {
-  return marked.parse(text) as string
-}
 
 function send() {
   const text = draftPrompt.value.trim()

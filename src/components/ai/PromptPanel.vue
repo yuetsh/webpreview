@@ -100,7 +100,6 @@
 <script setup lang="ts">
 import { ref, watch, nextTick, computed } from "vue"
 import { useStorage } from "@vueuse/core"
-import { marked, Renderer } from "marked"
 import { useMessage } from "naive-ui"
 import { Icon } from "@iconify/vue"
 import GuidancePanel from "./GuidancePanel.vue"
@@ -113,8 +112,12 @@ import {
   sendPrompt,
   stopPrompt,
   currentTaskId,
+  removeMessagePair,
 } from "../../store/prompt"
 import { Prompt } from "../../api"
+import { renderMarkdown } from "../../utils/markdown"
+
+const emit = defineEmits<{ deleted: [] }>()
 
 const input = ref("")
 const messagesRef = ref<HTMLElement>()
@@ -151,11 +154,9 @@ const pairs = computed(() => {
 async function deletePair(assistantMsgId: number) {
   try {
     await Prompt.deleteMessagePair(assistantMsgId)
-    const msgIdx = messages.value.findIndex((m) => m.id === assistantMsgId)
-    if (msgIdx >= 1) {
-      messages.value.splice(msgIdx - 1, 2)
-    }
+    removeMessagePair(assistantMsgId)
     naiveMessage.success("已删除")
+    emit("deleted")
   } catch {
     naiveMessage.error("删除失败，请重试")
   }
@@ -177,56 +178,6 @@ function startGuidance() {
 function onGuidanceGenerate(finalPrompt: string) {
   sendPrompt(finalPrompt, selectedModel.value)
   input.value = ""
-}
-
-const renderer = new Renderer()
-renderer.code = function ({ lang }: { text: string; lang?: string }) {
-  const label = lang ? lang.toUpperCase() : "CODE"
-  const colors: Record<
-    string,
-    { bg: string; fg: string; dot: string; border: string; shimmer: string }
-  > = {
-    html: {
-      bg: "#f0fff4",
-      fg: "#18a058",
-      dot: "#18a058",
-      border: "#b8e8cc",
-      shimmer: "#f0fff4, #e0f7ea, #f0fff4",
-    },
-    css: {
-      bg: "#f0f0ff",
-      fg: "#6060d0",
-      dot: "#6060d0",
-      border: "#d0d0f0",
-      shimmer: "#f0f0ff, #e8e8fa, #f0f0ff",
-    },
-    js: {
-      bg: "#fffbf0",
-      fg: "#c0960a",
-      dot: "#c0960a",
-      border: "#f0e0b0",
-      shimmer: "#fffbf0, #fff5e0, #fffbf0",
-    },
-    javascript: {
-      bg: "#fffbf0",
-      fg: "#c0960a",
-      dot: "#c0960a",
-      border: "#f0e0b0",
-      shimmer: "#fffbf0, #fff5e0, #fffbf0",
-    },
-  }
-  const c = colors[(lang ?? "").toLowerCase()] ?? {
-    bg: "#f0f7ff",
-    fg: "#2080f0",
-    dot: "#2080f0",
-    border: "#e0eaf5",
-    shimmer: "#f0f7ff, #e8f4f8, #f0f7ff",
-  }
-  return `<div class="code-placeholder" style="background: linear-gradient(90deg, ${c.shimmer}); background-size: 200% 100%; border-color: ${c.border}"><span class="code-placeholder-dot" style="background: ${c.dot}"></span><span class="code-placeholder-label" style="color: ${c.fg}; background: ${c.fg}18">${label}</span><span class="code-placeholder-text">代码正在生成中，结束后会自动应用到预览区</span></div>`
-}
-
-function renderMarkdown(text: string): string {
-  return marked.parse(text, { renderer }) as string
 }
 
 function renderContent(msg: { role: string; content: string }): string {
@@ -289,47 +240,6 @@ watch([() => messages.value.length, streamingContent], () => {
   font-size: 13px;
 }
 
-.message-content :deep(.code-placeholder) {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  margin: 8px 0;
-  background: linear-gradient(90deg, #f0f7ff, #e8f4f8, #f0f7ff);
-  background-size: 200% 100%;
-  animation: shimmer 2s ease-in-out infinite;
-  border-radius: 6px;
-  border: 1px solid #e0eaf5;
-}
-
-.message-content :deep(.code-placeholder-dot) {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #2080f0;
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
-.message-content :deep(.code-placeholder-label) {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 1px 6px;
-  border-radius: 3px;
-}
-
-.message-content :deep(.code-placeholder-text) {
-  font-size: 12px;
-  color: #888;
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
 
 @keyframes pulse {
   0%,

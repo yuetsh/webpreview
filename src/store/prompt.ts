@@ -28,10 +28,8 @@ export function setOnCodeComplete(fn: typeof _onCodeComplete) {
 }
 
 let ws: WebSocket | null = null
-let _currentTaskId = 0
 
 export function connectPrompt(taskId: number) {
-  _currentTaskId = taskId
   currentTaskId.value = taskId
   if (ws) ws.close()
 
@@ -102,7 +100,6 @@ export function disconnectPrompt() {
   streaming.value = false
   streamingContent.value = ""
   currentTaskId.value = 0
-  _currentTaskId = 0
   _onCodeComplete = null
 }
 
@@ -122,8 +119,15 @@ export function stopPrompt() {
   }
   streaming.value = false
   streamingContent.value = ""
-  if (_currentTaskId) {
-    connectPrompt(_currentTaskId)
+  if (currentTaskId.value) {
+    connectPrompt(currentTaskId.value)
+  }
+}
+
+export function removeMessagePair(assistantMsgId: number) {
+  const idx = messages.value.findIndex((m) => m.id === assistantMsgId)
+  if (idx >= 1) {
+    messages.value.splice(idx - 1, 2)
   }
 }
 
