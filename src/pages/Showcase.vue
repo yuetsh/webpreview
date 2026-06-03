@@ -33,7 +33,7 @@
             class="work-card"
             content-style="padding: 0;"
             hoverable
-            @click="openDetail(item.submission_id)"
+            @click="openDetail(item)"
           >
             <div class="card-preview">
               <iframe
@@ -79,12 +79,10 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue"
-import { useRouter } from "vue-router"
 import { Icon } from "@iconify/vue"
-import { Showcase } from "../api"
+import { Showcase, Submission } from "../api"
 import type { AwardSection, ShowcaseItem } from "../utils/type"
 
-const router = useRouter()
 const loading = ref(true)
 const awards = ref<AwardSection[]>([])
 
@@ -94,8 +92,15 @@ function buildSrcdoc(item: ShowcaseItem): string {
   return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/normalize.min.css" />${css}</head><body>${item.html ?? ""}${js}</body></html>`
 }
 
-function openDetail(id: string) {
-  router.push({ name: "showcase-detail", params: { id } })
+function openDetail(item: ShowcaseItem) {
+  const srcdoc = buildSrcdoc(item)
+  const win = window.open("", "_blank")
+  if (win) {
+    win.document.open()
+    win.document.write(srcdoc)
+    win.document.close()
+  }
+  void Submission.incrementView(item.submission_id)
 }
 
 async function init() {
