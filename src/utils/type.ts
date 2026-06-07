@@ -293,6 +293,7 @@ export interface AwardItemManageOut {
   sort_order: number
   awarded_at: string
   has_prompt_chain: boolean
+  is_stale: boolean
 }
 
 export interface ShowcaseDetail {

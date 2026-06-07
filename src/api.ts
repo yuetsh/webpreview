@@ -421,6 +421,13 @@ export const Showcase = {
     return res.data
   },
 
+  async refreshAwardItem(itemId: number): Promise<AwardItemManageOut> {
+    const res = await http.put(
+      `/submission/showcase/manage/items/${itemId}/refresh`,
+    )
+    return res.data
+  },
+
   async getDetail(submissionId: string): Promise<ShowcaseDetail> {
     const res = await http.get(`/submission/showcase/${submissionId}/`)
     return res.data

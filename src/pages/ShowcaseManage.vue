@@ -242,6 +242,7 @@
 import { computed, h, onMounted, reactive, ref } from "vue"
 import {
   NButton,
+  NButtonGroup,
   NInputNumber,
   NTag,
   useMessage,
@@ -268,6 +269,7 @@ const itemsLoading = ref(false)
 const savingAward = ref(false)
 const deletingAward = ref(false)
 const updatingItemIds = ref(new Set<number>())
+const refreshingItemIds = ref(new Set<number>())
 const addWorkModalVisible = ref(false)
 const lookupSubmissionId = ref("")
 const lookupLoading = ref(false)
@@ -348,21 +350,48 @@ const itemColumns: DataTableColumn<AwardItemManageOut>[] = [
       ),
   },
   {
+    title: "状态",
+    key: "is_stale",
+    width: 96,
+    render: (row) =>
+      row.is_stale
+        ? h(NTag, { size: "small", type: "warning" }, { default: () => "有新提交" })
+        : null,
+  },
+  {
     title: "",
     key: "actions",
-    width: 54,
+    width: 100,
     render: (row) =>
-      h(
-        NButton,
-        {
-          size: "small",
-          tertiary: true,
-          type: "error",
-          title: "移除",
-          onClick: () => removeAwardItem(row),
-        },
-        { icon: () => h(Icon, { icon: "lucide:trash-2", width: 15 }) },
-      ),
+      h(NButtonGroup, { size: "small" }, {
+        default: () => [
+          row.is_stale
+            ? h(
+                NButton,
+                {
+                  size: "small",
+                  secondary: true,
+                  type: "warning",
+                  title: "切换到最新提交",
+                  loading: refreshingItemIds.value.has(row.id),
+                  onClick: () => refreshAwardItem(row),
+                },
+                { icon: () => h(Icon, { icon: "lucide:refresh-cw", width: 14 }) },
+              )
+            : null,
+          h(
+            NButton,
+            {
+              size: "small",
+              tertiary: true,
+              type: "error",
+              title: "移除",
+              onClick: () => removeAwardItem(row),
+            },
+            { icon: () => h(Icon, { icon: "lucide:trash-2", width: 15 }) },
+          ),
+        ],
+      }),
   },
 ]
 
@@ -468,6 +497,27 @@ function setUpdatingItem(id: number, loading: boolean) {
   if (loading) next.add(id)
   else next.delete(id)
   updatingItemIds.value = next
+}
+
+function setRefreshingItem(id: number, loading: boolean) {
+  const next = new Set(refreshingItemIds.value)
+  if (loading) next.add(id)
+  else next.delete(id)
+  refreshingItemIds.value = next
+}
+
+async function refreshAwardItem(row: AwardItemManageOut) {
+  setRefreshingItem(row.id, true)
+  try {
+    const updated = await Showcase.refreshAwardItem(row.id)
+    const idx = awardItems.value.findIndex((item) => item.id === row.id)
+    if (idx !== -1) awardItems.value[idx] = updated
+    message.success("已切换到最新提交")
+  } catch (err: any) {
+    message.error(err.response?.data?.detail ?? "切换失败")
+  } finally {
+    setRefreshingItem(row.id, false)
+  }
 }
 
 async function updateItemOrder(row: AwardItemManageOut, sortOrder: number) {
