@@ -5,25 +5,28 @@ import Workspace from "./pages/Workspace.vue"
 import { STORAGE_KEY } from "./utils/const"
 
 const routes = [
-  { path: "/", name: "home", component: Workspace },
-  { path: "/tutorial", name: "home-tutorial-list", component: Workspace },
-  { path: "/tutorial/:display", name: "home-tutorial", component: Workspace },
-  { path: "/challenge", name: "home-challenge-list", component: Workspace },
+  { path: "/", name: "home", component: Workspace, meta: { auth: true } },
+  { path: "/tutorial", name: "home-tutorial-list", component: Workspace, meta: { auth: true } },
+  { path: "/tutorial/:display", name: "home-tutorial", component: Workspace, meta: { auth: true } },
+  { path: "/challenge", name: "home-challenge-list", component: Workspace, meta: { auth: true } },
   {
     path: "/challenge/:display",
     name: "home-challenge",
     component: () => import("./pages/ChallengeDetail.vue"),
+    meta: { auth: true },
   },
   {
     path: "/submissions/:page",
     name: "submissions",
     component: () => import("./pages/Submissions.vue"),
+    meta: { auth: true },
   },
   {
     path: "/submission/:id",
     name: "submission",
     component: () => import("./pages/Submission.vue"),
     props: true,
+    meta: { auth: true },
   },
   {
     path: "/showcase",

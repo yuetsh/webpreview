@@ -31,6 +31,7 @@
               type="password"
               v-model:value="studentPassword"
               name="password"
+              @keyup.enter="submitStudent"
             />
           </n-form-item>
           <n-alert
@@ -73,6 +74,7 @@
               type="password"
               v-model:value="adminPassword"
               name="password"
+              @keyup.enter="submitAdmin"
             />
           </n-form-item>
           <n-alert

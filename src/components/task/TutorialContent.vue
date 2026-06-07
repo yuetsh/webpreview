@@ -40,6 +40,9 @@ async function render() {
   const data = await Tutorial.get(step.value)
   taskId.value = data.task_ptr
   assetBaseUrl.value = `/media/tasks/tutorial/${step.value}/`
+  html.value = data.example_html ?? ""
+  css.value = data.example_css ?? ""
+  js.value = data.example_js ?? ""
   const merged = `# ${data.display}. ${data.title}\n${data.content}`
   content.value = await marked.parse(merged, { async: true })
 }

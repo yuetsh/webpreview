@@ -76,11 +76,20 @@
             </n-button>
           </n-form-item>
         </n-form>
-        <TaskAssetManager
-          v-if="challenge.display"
-          task-type="challenge"
-          :display="challenge.display"
-        />
+        <n-flex>
+          <TaskAssetManager
+            v-if="challenge.display"
+            task-type="challenge"
+            :display="challenge.display"
+          />
+          <n-button
+            v-if="challenge.display"
+            size="small"
+            @click="showExampleModal = true"
+          >
+            示例代码
+          </n-button>
+        </n-flex>
         <MarkdownEditor
           style="height: calc(100vh - 100px)"
           v-model="challenge.content"
@@ -88,9 +97,28 @@
       </n-flex>
     </n-gi>
   </n-grid>
+
+  <n-modal
+    v-model:show="showExampleModal"
+    preset="card"
+    title="示例代码（点击「看示例」时显示效果）"
+    style="width: 640px"
+  >
+    <n-input
+      type="textarea"
+      v-model:value="rawCode"
+      placeholder="粘贴完整的前端代码，自动拆分为 HTML / CSS / JS..."
+      :autosize="{ minRows: 10, maxRows: 30 }"
+    />
+    <n-flex v-if="splitResult" style="margin-top: 8px">
+      <n-tag size="small" type="success">HTML · {{ splitResult.html.length }} 字符</n-tag>
+      <n-tag size="small" type="info">CSS · {{ splitResult.css.length }} 字符</n-tag>
+      <n-tag size="small" type="warning">JS · {{ splitResult.js.length }} 字符</n-tag>
+    </n-flex>
+  </n-modal>
 </template>
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref } from "vue"
+import { computed, onMounted, reactive, ref, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { Icon } from "@iconify/vue"
 import { Challenge } from "../api"
@@ -105,6 +133,55 @@ const message = useMessage()
 const confirm = useDialog()
 
 const list = ref<ChallengeSlim[]>([])
+const showExampleModal = ref(false)
+const rawCode = ref("")
+const splitResult = ref<{ html: string; css: string; js: string } | null>(null)
+
+function splitHtml(raw: string) {
+  let result = raw
+  const cssBlocks: string[] = []
+  const jsBlocks: string[] = []
+  result = result.replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, (_, c) => {
+    cssBlocks.push(c.trim())
+    return ""
+  })
+  result = result.replace(
+    /<script(?![^>]*\bsrc\b)[^>]*>([\s\S]*?)<\/script>/gi,
+    (_, c) => {
+      jsBlocks.push(c.trim())
+      return ""
+    },
+  )
+  return {
+    html: result.trim(),
+    css: cssBlocks.join("\n\n"),
+    js: jsBlocks.join("\n\n"),
+  }
+}
+
+watch(rawCode, (val) => {
+  if (!val.trim()) {
+    splitResult.value = null
+    challenge.example_html = null
+    challenge.example_css = null
+    challenge.example_js = null
+    return
+  }
+  const split = splitHtml(val)
+  splitResult.value = split
+  challenge.example_html = split.html || null
+  challenge.example_css = split.css || null
+  challenge.example_js = split.js || null
+})
+
+watch(showExampleModal, (visible) => {
+  if (!visible) return
+  const parts: string[] = []
+  if (challenge.example_css) parts.push(`<style>\n${challenge.example_css}\n</style>`)
+  if (challenge.example_html) parts.push(challenge.example_html)
+  if (challenge.example_js) parts.push(`<script>\n${challenge.example_js}\n<\/script>`)
+  rawCode.value = parts.join("\n\n")
+})
 const challenge = reactive({
   display: 0,
   title: "",
@@ -112,6 +189,9 @@ const challenge = reactive({
   score: 0,
   is_public: false,
   author_name: "",
+  example_html: null as string | null,
+  example_css: null as string | null,
+  example_js: null as string | null,
 })
 
 const canSubmit = computed(
@@ -135,6 +215,9 @@ function createNew() {
   challenge.score = 0
   challenge.is_public = false
   challenge.author_name = ""
+  challenge.example_html = null
+  challenge.example_css = null
+  challenge.example_js = null
 }
 
 async function submit() {
@@ -147,6 +230,9 @@ async function submit() {
     challenge.score = 0
     challenge.is_public = false
     challenge.author_name = ""
+    challenge.example_html = null
+    challenge.example_css = null
+    challenge.example_js = null
     await getContent()
   } catch (error: any) {
     message.error(error.response.data.detail)
@@ -176,6 +262,9 @@ async function show(display: number) {
   challenge.score = item.score
   challenge.is_public = item.is_public
   challenge.author_name = item.author_name ?? ""
+  challenge.example_html = item.example_html ?? null
+  challenge.example_css = item.example_css ?? null
+  challenge.example_js = item.example_js ?? null
 }
 
 async function togglePublic(display: number) {

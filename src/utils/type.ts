@@ -54,12 +54,18 @@ export interface TutorialSlim {
 
 export interface TutorialReturn extends TutorialSlim {
   content: string
+  example_html: string | null
+  example_css: string | null
+  example_js: string | null
 }
 
 export interface TutorialIn {
   display: number
   title: string
   content: string
+  example_html?: string | null
+  example_css?: string | null
+  example_js?: string | null
 }
 
 export interface ChallengeSlim {
@@ -72,12 +78,22 @@ export interface ChallengeSlim {
   author_name: string | null
 }
 
+export interface ChallengeReturn extends ChallengeSlim {
+  content: string
+  example_html: string | null
+  example_css: string | null
+  example_js: string | null
+}
+
 export interface ChallengeIn {
   display: number
   title: string
   content: string
   score: number
   is_public: boolean
+  example_html?: string | null
+  example_css?: string | null
+  example_js?: string | null
 }
 
 export interface User {

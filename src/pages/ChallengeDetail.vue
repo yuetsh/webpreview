@@ -36,9 +36,18 @@
         <n-tab-pane name="desc" tab="挑战描述" display-directive="show">
           <div class="desc-pane">
             <div class="challenge-meta">
-              <n-text depth="3">
-                出题人：{{ challengeAuthor || "未设置" }}
-              </n-text>
+              <n-flex align="center" justify="space-between">
+                <n-text depth="3">
+                  出题人：{{ challengeAuthor || "未设置" }}
+                </n-text>
+                <n-button
+                  v-if="exampleCode"
+                  size="small"
+                  @click="previewExample"
+                >
+                  看示例
+                </n-button>
+              </n-flex>
             </div>
             <div
               class="markdown-body content no-select"
@@ -182,6 +191,7 @@ const showStats = ref(false)
 const showAssets = ref(false)
 const assets = ref<TaskAsset[]>([])
 const historyRefreshKey = ref(0)
+const exampleCode = ref<{ html: string; css: string; js: string } | null>(null)
 
 const assetBaseUrl = computed(
   () => `/media/tasks/challenge/${challengeDisplay.value}/`,
@@ -201,6 +211,15 @@ async function loadChallenge() {
   ])
   taskId.value = data.task_ptr
   challengeAuthor.value = data.author_name ?? ""
+  if (data.example_html || data.example_css || data.example_js) {
+    exampleCode.value = {
+      html: data.example_html ?? "",
+      css: data.example_css ?? "",
+      js: data.example_js ?? "",
+    }
+  } else {
+    exampleCode.value = null
+  }
   challengeContent.value = await marked.parse(data.content, {
     async: true,
     renderer: challengeRenderer,
@@ -232,6 +251,13 @@ function edit() {
     name: "challenge-editor",
     params: { display: route.params.display },
   })
+}
+
+function previewExample() {
+  if (!exampleCode.value) return
+  html.value = exampleCode.value.html
+  css.value = exampleCode.value.css
+  js.value = exampleCode.value.js
 }
 
 function clearAll() {
