@@ -247,7 +247,7 @@ async function loadChallenge() {
       historyRefreshKey.value++
       message.success("已自动提交本次对话生成的代码")
     } catch {
-      // 静默失败，不打扰用户
+      message.error("自动提交失败，请稍后重试")
     }
   })
 }
