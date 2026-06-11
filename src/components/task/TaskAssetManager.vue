@@ -1,9 +1,6 @@
 <template>
   <n-flex vertical>
-    <n-flex align="center">
-      <n-text strong>图片素材</n-text>
-      <n-button size="small" @click="showUpload = true">上传</n-button>
-    </n-flex>
+    <n-button size="small" @click="showUpload = true">图片素材</n-button>
     <n-flex v-if="assets.length" wrap>
       <n-card
         v-for="asset in assets"

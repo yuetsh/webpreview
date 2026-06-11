@@ -9,9 +9,6 @@
         </template>
         <template #suffix>
           <n-flex style="margin: 0 8px">
-            <n-button v-if="assets.length" text @click="showAssets = true">
-              <Icon :width="16" icon="lucide:image" />
-            </n-button>
             <n-button
               v-if="roleAdmin || roleSuper"
               text
@@ -40,13 +37,22 @@
                 <n-text depth="3">
                   出题人：{{ challengeAuthor || "未设置" }}
                 </n-text>
-                <n-button
-                  v-if="exampleCode"
-                  size="small"
-                  @click="previewExample"
-                >
-                  看示例
-                </n-button>
+                <n-flex align="center" size="small">
+                  <n-button
+                    v-if="assets.length"
+                    size="small"
+                    @click="showAssets = true"
+                  >
+                    看素材
+                  </n-button>
+                  <n-button
+                    v-if="exampleCode"
+                    size="small"
+                    @click="previewExample"
+                  >
+                    看示例
+                  </n-button>
+                </n-flex>
               </n-flex>
             </div>
             <div
