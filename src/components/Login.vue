@@ -103,6 +103,7 @@ import { ref, computed, onMounted } from "vue"
 import { Account } from "../api"
 import { loginModal } from "../store/modal"
 import { user } from "../store/user"
+import { router } from "../router"
 
 // Tab state
 const activeTab = ref("student")
@@ -190,6 +191,9 @@ async function submitStudent() {
     user.role = data.role
     user.loaded = true
     loginModal.value = false
+    router.replace(
+      window.location.pathname + window.location.search + window.location.hash,
+    )
   } catch {
     showStudentError.value = true
   } finally {
@@ -207,6 +211,9 @@ async function submitAdmin() {
     user.role = data.role
     user.loaded = true
     loginModal.value = false
+    router.replace(
+      window.location.pathname + window.location.search + window.location.hash,
+    )
   } catch {
     showAdminError.value = true
   } finally {

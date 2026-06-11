@@ -3,6 +3,7 @@ import { loginModal } from "./store/modal"
 
 import Workspace from "./pages/Workspace.vue"
 import { STORAGE_KEY } from "./utils/const"
+import { authed } from "./store/user"
 
 const routes = [
   { path: "/", name: "home", component: Workspace, meta: { auth: true } },
@@ -75,7 +76,8 @@ export const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  const isLoggedIn = localStorage.getItem(STORAGE_KEY.LOGIN) === "true"
+  const isLoggedIn =
+    authed.value || localStorage.getItem(STORAGE_KEY.LOGIN) === "true"
   if (to.meta.auth && !isLoggedIn) {
     loginModal.value = true
     return false
