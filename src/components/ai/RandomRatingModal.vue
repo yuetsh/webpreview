@@ -3,7 +3,7 @@
     preset="card"
     :show="show"
     title="等待 AI 回复时，给同学的作品打个分吧"
-    style="width: 480px"
+    style="width: 90vw; max-width: 960px"
     @update:show="onUpdateShow"
   >
     <n-text
@@ -115,7 +115,7 @@ onUnmounted(() => {
 
 <style scoped>
 .preview-wrapper {
-  height: 220px;
+  height: 70vh;
   border: 1px solid #eee;
   border-radius: 4px;
   overflow: hidden;

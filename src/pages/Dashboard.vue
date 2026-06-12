@@ -51,7 +51,7 @@ const menu = computed(() =>
     {
       label: "成绩",
       route: { name: "gradebook" },
-      show: roleAdmin.value || roleSuper.value,
+      show: roleSuper.value,
     },
     {
       label: "提交",
