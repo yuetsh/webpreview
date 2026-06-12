@@ -95,6 +95,7 @@
     </div>
   </div>
   <TaskStatsModal v-model:show="showStats" :task-id="taskId" />
+  <RandomRatingModal v-if="authed" />
   <n-modal
     v-model:show="showAssets"
     preset="card"
@@ -144,6 +145,7 @@ import ExternalAIPanel from "../components/ai/ExternalAIPanel.vue"
 import PromptHistoryPanel from "../components/ai/PromptHistoryPanel.vue"
 import Preview from "../components/editor/Preview.vue"
 import TaskStatsModal from "../components/task/TaskStatsModal.vue"
+import RandomRatingModal from "../components/ai/RandomRatingModal.vue"
 import { Challenge, Submission, TaskAssets } from "../api"
 import type { TaskAsset } from "../utils/type"
 import { html, css, js } from "../store/editors"

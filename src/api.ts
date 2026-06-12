@@ -20,6 +20,7 @@ import type {
   ShowcaseSubmissionLookupOut,
   ShowcaseDetail,
   PromptRound,
+  RandomRatingItem,
 } from "./utils/type"
 import { BASE_URL, STORAGE_KEY } from "./utils/const"
 
@@ -235,6 +236,13 @@ export const Submission = {
   async updateScore(id: string, score: number) {
     const res = await http.put(`/submission/${id}/score`, { score })
     return res.data
+  },
+
+  async randomForRating(excludeId?: string) {
+    const res = await http.get("/submission/random-for-rating/", {
+      params: excludeId ? { exclude_id: excludeId } : {},
+    })
+    return res.data as RandomRatingItem | null
   },
 
   async updateFlag(id: string, flag: FlagType) {

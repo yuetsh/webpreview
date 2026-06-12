@@ -335,3 +335,14 @@ export interface PromptRound {
   css: string | null
   js: string | null
 }
+
+export interface RandomRatingItem {
+  submission_id: string
+  username: string
+  task_title: string
+  task_display: number
+  task_type: TASK_TYPE
+  html: string | null
+  css: string | null
+  js: string | null
+}
