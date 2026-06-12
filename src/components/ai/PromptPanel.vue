@@ -27,6 +27,16 @@
         <div v-if="pair.assistantMsg" class="message assistant">
           <div class="message-role">AI</div>
           <div class="message-content" v-html="renderContent(pair.assistantMsg)"></div>
+          <div v-if="hasCode(pair.assistantMsg)" class="message-actions">
+            <n-button
+              size="tiny"
+              :disabled="pair.assistantMsg.submitted"
+              :loading="submittingId === pair.assistantMsg.id"
+              @click="submitVersion(pair.assistantMsg)"
+            >
+              {{ pair.assistantMsg.submitted ? "已提交" : "提交此版本" }}
+            </n-button>
+          </div>
         </div>
       </div>
 
@@ -113,11 +123,12 @@ import {
   stopPrompt,
   currentTaskId,
   removeMessagePair,
+  markMessageSubmitted,
 } from "../../store/prompt"
-import { Prompt } from "../../api"
+import { Prompt, Submission } from "../../api"
 import { renderMarkdown } from "../../utils/markdown"
 
-const emit = defineEmits<{ deleted: [] }>()
+const emit = defineEmits<{ deleted: []; submitted: [] }>()
 
 const input = ref("")
 const messagesRef = ref<HTMLElement>()
@@ -131,10 +142,18 @@ const modelOptions = [
 const selectedModel = useStorage("prompt-model", "deepseek-v4-flash")
 
 // Group messages into user+assistant pairs
+const submittingId = ref<number | null>(null)
+
 const pairs = computed(() => {
   const result: Array<{
     userMsg: { role: string; content: string; id?: number }
-    assistantMsg: { role: string; content: string; id?: number; code?: any } | null
+    assistantMsg: {
+      role: string
+      content: string
+      id?: number
+      code?: any
+      submitted?: boolean
+    } | null
     index: number
   }> = []
   const msgs = messages.value
@@ -150,6 +169,37 @@ const pairs = computed(() => {
   }
   return result
 })
+
+function hasCode(msg: { code?: any } | null): boolean {
+  if (!msg?.code) return false
+  return !!(msg.code.html || msg.code.css || msg.code.js)
+}
+
+async function submitVersion(msg: {
+  id?: number
+  code?: { html: string | null; css: string | null; js: string | null }
+}) {
+  if (!msg.id || !msg.code || !currentTaskId.value) return
+  submittingId.value = msg.id
+  try {
+    await Submission.create(
+      currentTaskId.value,
+      {
+        html: msg.code.html ?? "",
+        css: msg.code.css ?? "",
+        js: msg.code.js ?? "",
+      },
+      msg.id,
+    )
+    markMessageSubmitted(msg.id)
+    naiveMessage.success("提交成功")
+    emit("submitted")
+  } catch {
+    naiveMessage.error("提交失败，请重试")
+  } finally {
+    submittingId.value = null
+  }
+}
 
 async function deletePair(assistantMsgId: number) {
   try {
@@ -238,6 +288,10 @@ watch([() => messages.value.length, streamingContent], () => {
   border-radius: 4px;
   overflow-x: auto;
   font-size: 13px;
+}
+
+.message-actions {
+  margin-top: 6px;
 }
 
 

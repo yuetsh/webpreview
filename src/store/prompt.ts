@@ -7,6 +7,7 @@ export interface PromptMessage {
   content: string
   id?: number          // assistant message backend pk (for deletion)
   code?: { html: string | null; css: string | null; js: string | null }
+  submitted?: boolean  // whether this assistant message's code has been submitted
   created?: string
 }
 
@@ -66,6 +67,7 @@ export function connectPrompt(taskId: number) {
         content: streamingContent.value,
         id: data.message_id,
         code: data.code,
+        submitted: false,
       })
       streamingContent.value = ""
       if (data.code) {
@@ -122,6 +124,11 @@ export function stopPrompt() {
   if (currentTaskId.value) {
     connectPrompt(currentTaskId.value)
   }
+}
+
+export function markMessageSubmitted(assistantMsgId: number) {
+  const msg = messages.value.find((m) => m.id === assistantMsgId)
+  if (msg) msg.submitted = true
 }
 
 export function removeMessagePair(assistantMsgId: number) {

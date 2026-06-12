@@ -64,7 +64,10 @@
           </div>
         </n-tab-pane>
         <n-tab-pane name="chat" tab="AI 对话" display-directive="show">
-          <PromptPanel @deleted="historyRefreshKey++" />
+          <PromptPanel
+            @deleted="historyRefreshKey++"
+            @submitted="historyRefreshKey++"
+          />
         </n-tab-pane>
         <n-tab-pane name="external" tab="手动提交" display-directive="show">
           <ExternalAIPanel :task-id="taskId" @submitted="historyRefreshKey++" />
@@ -158,6 +161,7 @@ import {
   streaming,
   setOnCodeComplete,
   removeMessagePair,
+  markMessageSubmitted,
 } from "../store/prompt"
 
 const route = useRoute()
@@ -246,6 +250,7 @@ async function loadChallenge() {
         },
         messageId,
       )
+      markMessageSubmitted(messageId)
       historyRefreshKey.value++
       message.success("已自动提交本次对话生成的代码")
     } catch {
