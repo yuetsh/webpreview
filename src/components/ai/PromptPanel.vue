@@ -207,8 +207,8 @@ async function deletePair(assistantMsgId: number) {
     removeMessagePair(assistantMsgId)
     naiveMessage.success("已删除")
     emit("deleted")
-  } catch {
-    naiveMessage.error("删除失败，请重试")
+  } catch (error: any) {
+    naiveMessage.error(error.response?.data?.detail ?? "删除失败，请重试")
   }
 }
 

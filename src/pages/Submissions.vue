@@ -97,7 +97,7 @@
 
 <script setup lang="ts">
 import { computed, h, onMounted, onUnmounted, reactive, ref, watch } from "vue"
-import { NButton, NDataTable, NTag, type DataTableColumn } from "naive-ui"
+import { NButton, NDataTable, NTag, useMessage, type DataTableColumn } from "naive-ui"
 import { Icon } from "@iconify/vue"
 import { Submission } from "../api"
 import type { SubmissionOut, FlagType } from "../utils/type"
@@ -122,6 +122,7 @@ import { roleAdmin, roleSuper, user } from "../store/user"
 
 const route = useRoute()
 const router = useRouter()
+const message = useMessage()
 
 // 列表数据
 const data = ref<SubmissionOut[]>([])
@@ -304,7 +305,12 @@ async function handleExpand(keys: (string | number)[]) {
 }
 
 async function handleDelete(row: SubmissionOut, parentId: string) {
-  await Submission.delete(row.id)
+  try {
+    await Submission.delete(row.id)
+  } catch (error: any) {
+    message.error(error.response?.data?.detail ?? "删除失败，请重试")
+    return
+  }
   const items = expandedData.get(parentId)
   if (items)
     expandedData.set(

@@ -238,12 +238,14 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from "vue"
-import { NPopconfirm, NButton } from "naive-ui"
+import { NPopconfirm, NButton, useMessage } from "naive-ui"
 import { Icon } from "@iconify/vue"
 import { marked } from "marked"
 import { Prompt, Submission } from "../../api"
 import type { PromptRound } from "../../utils/type"
 import { user, roleSuper } from "../../store/user"
+
+const message = useMessage()
 
 const props = defineProps<{
   show: boolean
@@ -270,7 +272,12 @@ const rounds = ref<ChainRound[]>([])
 async function deleteRound(index: number) {
   const round = rounds.value[index]
   if (!round.assistantMsgId) return
-  await Prompt.deleteMessagePair(round.assistantMsgId)
+  try {
+    await Prompt.deleteMessagePair(round.assistantMsgId)
+  } catch (error: any) {
+    message.error(error.response?.data?.detail ?? "删除失败，请重试")
+    return
+  }
   await loadMessages()
   if (selectedRound.value >= rounds.value.length) {
     selectedRound.value = Math.max(0, rounds.value.length - 1)

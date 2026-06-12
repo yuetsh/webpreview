@@ -194,8 +194,8 @@ async function deleteItem(item: HistoryViewItem, e: Event) {
     }
     emit("deleted", item.assistant_message_id)
     naiveMessage.success("已删除")
-  } catch {
-    naiveMessage.error("删除失败，请重试")
+  } catch (error: any) {
+    naiveMessage.error(error.response?.data?.detail ?? "删除失败，请重试")
   } finally {
     deletingId.value = null
   }
