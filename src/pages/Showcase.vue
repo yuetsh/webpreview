@@ -79,10 +79,12 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue"
+import { useRouter } from "vue-router"
 import { Icon } from "@iconify/vue"
-import { Showcase, Submission } from "../api"
+import { Showcase } from "../api"
 import type { AwardSection, ShowcaseItem } from "../utils/type"
 
+const router = useRouter()
 const loading = ref(true)
 const awards = ref<AwardSection[]>([])
 
@@ -93,14 +95,11 @@ function buildSrcdoc(item: ShowcaseItem): string {
 }
 
 function openDetail(item: ShowcaseItem) {
-  const srcdoc = buildSrcdoc(item)
-  const win = window.open("", "_blank")
-  if (win) {
-    win.document.open()
-    win.document.write(srcdoc)
-    win.document.close()
-  }
-  void Submission.incrementView(item.submission_id)
+  const { href } = router.resolve({
+    name: "submission",
+    params: { id: item.submission_id },
+  })
+  window.open(href, "_blank")
 }
 
 async function init() {
