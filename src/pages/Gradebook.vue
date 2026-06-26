@@ -134,7 +134,7 @@ const classOptions = computed(() =>
   classes.value.map((classname) => ({ label: classname, value: classname })),
 )
 const rows = computed(() => gradebook.value?.rows ?? [])
-const scrollX = computed(() => 940 + (gradebook.value?.tasks.length ?? 0) * 96)
+const scrollX = computed(() => 1020 + (gradebook.value?.tasks.length ?? 0) * 96)
 
 function formatScore(value: number | null) {
   if (value === null) return "-"
@@ -235,6 +235,13 @@ const columns = computed<DataTableColumn<GradebookRow>[]>(() => {
           { size: "small", type: gradeTagType(row.assessment_grade) },
           { default: () => row.assessment_grade },
         ),
+    },
+    {
+      title: "考核分数",
+      key: "assessment_score",
+      width: 80,
+      fixed: "left",
+      render: (row) => row.assessment_score,
     },
     {
       title: "学生",

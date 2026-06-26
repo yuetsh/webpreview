@@ -224,6 +224,7 @@ export interface GradebookRow {
   rank: number
   grade: GradebookGrade
   assessment_grade: GradebookGrade
+  assessment_score: number
   best_submission_score: number
   scores: Record<number, GradebookCell>
   tutorial_total: number
