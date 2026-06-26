@@ -223,6 +223,8 @@ export interface GradebookRow {
   classname: string
   rank: number
   grade: GradebookGrade
+  assessment_grade: GradebookGrade
+  best_submission_score: number
   scores: Record<number, GradebookCell>
   tutorial_total: number
   challenge_total: number
