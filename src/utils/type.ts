@@ -225,7 +225,7 @@ export interface GradebookRow {
   grade: GradebookGrade
   assessment_grade: GradebookGrade
   assessment_score: number
-  best_submission_score: number
+  top3_score: number
   scores: Record<number, GradebookCell>
   tutorial_total: number
   challenge_total: number
