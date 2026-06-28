@@ -134,7 +134,7 @@ const classOptions = computed(() =>
   classes.value.map((classname) => ({ label: classname, value: classname })),
 )
 const rows = computed(() => gradebook.value?.rows ?? [])
-const scrollX = computed(() => 1020 + (gradebook.value?.tasks.length ?? 0) * 96)
+const scrollX = computed(() => 1040 + (gradebook.value?.tasks.length ?? 0) * 96)
 
 function formatScore(value: number | null) {
   if (value === null) return "-"
@@ -213,9 +213,9 @@ const columns = computed<DataTableColumn<GradebookRow>[]>(() => {
       fixed: "left",
     },
     {
-      title: "等级",
+      title: "平时等级",
       key: "grade",
-      width: 60,
+      width: 80,
       fixed: "left",
       render: (row) =>
         h(
